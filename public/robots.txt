@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+Allow: /projects/
+Allow: /blog/
+Allow: /media/
+
+Disallow: /admin/
+Disallow: /api/admin/
+Disallow: /api/auth/
+
+Sitemap: https://abdulkhaliq.dev/sitemap.xml
