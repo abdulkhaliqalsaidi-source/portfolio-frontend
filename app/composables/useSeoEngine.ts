@@ -18,7 +18,9 @@ export function useSeoEngine(options: SeoOptions = {}) {
   const defaultDesc = 'معرض أعمال ومشاريع عبد الخالق الصايدي - Senior Full Stack Software Engineer متخصص في بناء الأنظمة السحابية وتطبيقات الويب عالية الأداء والأمان.'
   const defaultImage = `${siteUrl}/avatar.jpg`
 
-  const pageTitle = options.title ? `${options.title} | عبد الخالق الصايدي` : defaultTitle
+  const pageTitle = options.title
+    ? (options.title.includes('عبد الخالق الصايدي') ? options.title : `${options.title} | عبد الخالق الصايدي`)
+    : defaultTitle
   const pageDesc = options.description?.trim() || defaultDesc
   const pageImage = options.image?.startsWith('http')
     ? options.image
