@@ -31,6 +31,12 @@ export function useLocale() {
     }
   }
 
+  if (import.meta.client) {
+    watch(locale, (newVal) => {
+      applyHtmlAttrs(newVal)
+    }, { immediate: true })
+  }
+
   function toggleLocale() {
     locale.value = locale.value === 'ar' ? 'en' : 'ar'
   }
