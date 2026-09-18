@@ -26,6 +26,7 @@ export default defineNuxtConfig({
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
         { name: 'format-detection', content: 'telephone=no' },
         { name: 'theme-color', content: '#0B0F19' },
+        { name: 'google-site-verification', content: '7nXhc3IexdOX9noZEXPCk39Vucx9g2XI_o3Fd4SvZaU' },
       ],
       link: [
         { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
