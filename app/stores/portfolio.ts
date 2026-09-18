@@ -52,6 +52,11 @@ export const usePortfolioStore = defineStore('portfolio', () => {
     return blogPosts.value.slice(0, 3)
   })
 
+  function sanitizeMediaUrl(url: any): string {
+    if (!url || typeof url !== 'string') return ''
+    return url.replace(/^http:\/\/localhost:8000/i, 'https://portfolio-backend-1kar.onrender.com')
+  }
+
   function setPublicContent(data: any) {
     if (!data) return
     if (data.profile || data.developer) {
@@ -59,16 +64,29 @@ export const usePortfolioStore = defineStore('portfolio', () => {
       developer.value = {
         ...prof,
         name: prof.full_name || prof.name || '',
+        avatar: sanitizeMediaUrl(prof.avatar),
+        resume: sanitizeMediaUrl(prof.resume)
       }
     }
     stats.value = Array.isArray(data.stats) ? data.stats : []
     services.value = Array.isArray(data.services) ? data.services : []
     techStack.value = data.tech_stack || data.techStack || {}
     skillCategories.value = Array.isArray(data.skill_categories) ? data.skill_categories : (Array.isArray(data.skillCategories) ? data.skillCategories : [])
-    projects.value = Array.isArray(data.projects) ? data.projects : []
+    projects.value = (Array.isArray(data.projects) ? data.projects : []).map((p: any) => ({
+      ...p,
+      image: sanitizeMediaUrl(p.image),
+      before_image: sanitizeMediaUrl(p.before_image),
+      after_image: sanitizeMediaUrl(p.after_image),
+      gallery: Array.isArray(p.gallery)
+        ? p.gallery.map((g: any) => typeof g === 'string' ? sanitizeMediaUrl(g) : { ...g, image: sanitizeMediaUrl(g.image) })
+        : p.gallery
+    }))
     testimonials.value = Array.isArray(data.testimonials) ? data.testimonials : []
     timeline.value = Array.isArray(data.timeline) ? data.timeline : []
-    blogPosts.value = Array.isArray(data.posts) ? data.posts : []
+    blogPosts.value = (Array.isArray(data.posts) ? data.posts : []).map((b: any) => ({
+      ...b,
+      cover_image: sanitizeMediaUrl(b.cover_image)
+    }))
     settings.value = data.settings || {}
     isInitialized.value = true
   }

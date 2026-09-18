@@ -166,12 +166,14 @@ const hasStatsContent = computed(() => {
 })
 
 const statCards = computed(() => {
-  return (store.stats || []).map((s) => ({
-    ...s,
-    icon: s.icon || 'mdi-rocket-launch',
-    color: s.color || '#3B82F6',
-    description: s.description || ''
-  }))
+  return (store.stats || [])
+    .filter((s) => s && s.is_active !== false)
+    .map((s) => ({
+      ...s,
+      icon: s.icon || 'mdi-rocket-launch',
+      color: s.color || '#3B82F6',
+      description: s.description || ''
+    }))
 })
 
 const allSkills = computed(() => {

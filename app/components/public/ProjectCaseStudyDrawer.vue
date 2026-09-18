@@ -481,38 +481,14 @@
             </div>
 
 
-            <div
-              v-if="beforeImage && afterImage"
-              class="comparison-container"
-              ref="compareContainerRef"
-              @mousemove="handleCompareDrag"
-              @touchmove="handleCompareTouch"
-            >
-
-              <div class="compare-layer compare-after">
-                <img :src="afterImage" :alt="`${project.title} - بعد التحسين`" @error="handleImgFallback" />
-                <span class="compare-badge badge-after">بعد الإنجاز والتحسين ✨</span>
-              </div>
-
-
-              <div class="compare-layer compare-before" :style="{ width: comparePos + '%' }">
-                <img
-                  :src="beforeImage"
-                  :alt="`${project.title} - قبل التحسين`"
-                  :style="{ width: containerWidth ? containerWidth + 'px' : '100%' }"
-                  @error="handleImgFallback"
-                />
-                <span class="compare-badge badge-before">قبل البدء والتطوير ⏳</span>
-              </div>
-
-
-              <div class="compare-handle" :style="{ left: comparePos + '%' }">
-                <div class="handle-line" />
-                <div class="handle-circle">
-                  <v-icon icon="mdi-code-tags" size="16" color="#FFFFFF" />
-                </div>
-                <div class="handle-line" />
-              </div>
+            <div class="comparison-slider-wrapper mb-6" v-if="beforeImage && afterImage">
+              <BeforeAfterSlider
+                :before-image="beforeImage"
+                :after-image="afterImage"
+                :accent-color="project.accent_color || '#3B82F6'"
+                before-label="قبل التحسين والتطوير"
+                after-label="النتيجة النهائية والحل"
+              />
             </div>
 
 
@@ -704,6 +680,7 @@
 
 <script setup>
 import { ref, computed, watch } from 'vue'
+import BeforeAfterSlider from './BeforeAfterSlider.vue'
 
 const props = defineProps({
   modelValue: {
@@ -723,11 +700,6 @@ const activeTab = ref('preview')
 const currentDevice = ref('desktop') // 'desktop' | 'tablet' | 'mobile'
 const previewMode = ref('visual') // 'visual' | 'iframe'
 const selectedArchIndex = ref(0)
-
-// Comparison slider state
-const comparePos = ref(50)
-const compareContainerRef = ref(null)
-const containerWidth = ref(800)
 
 function close() {
   emit('update:modelValue', false)
@@ -798,8 +770,13 @@ const hasMetrics = computed(() => {
 })
 
 // Before & After Images & Notes
-const beforeImage = computed(() => props.project?.before_image || '')
-const afterImage = computed(() => props.project?.after_image || props.project?.image || '')
+const beforeImage = computed(() => {
+  return props.project?.before_image || props.project?.image || 'https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?w=1200&auto=format&fit=crop&q=80'
+})
+
+const afterImage = computed(() => {
+  return props.project?.after_image || props.project?.image || 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1200&auto=format&fit=crop&q=80'
+})
 
 const beforeNotesList = computed(() => {
   const p = props.project
@@ -812,26 +789,11 @@ const afterNotesList = computed(() => {
 })
 
 const hasComparison = computed(() => {
-  return (!!beforeImage.value && !!afterImage.value) || beforeNotesList.value.length > 0 || afterNotesList.value.length > 0
+  return !!(props.project?.before_image && props.project?.after_image) ||
+    beforeNotesList.value.length > 0 ||
+    afterNotesList.value.length > 0 ||
+    !!props.project?.image
 })
-
-function handleCompareDrag(e) {
-  if (!compareContainerRef.value) return
-  const rect = compareContainerRef.value.getBoundingClientRect()
-  containerWidth.value = rect.width
-  const x = e.clientX - rect.left
-  const pct = Math.max(5, Math.min(95, (x / rect.width) * 100))
-  comparePos.value = pct
-}
-
-function handleCompareTouch(e) {
-  if (!compareContainerRef.value || !e.touches[0]) return
-  const rect = compareContainerRef.value.getBoundingClientRect()
-  containerWidth.value = rect.width
-  const x = e.touches[0].clientX - rect.left
-  const pct = Math.max(5, Math.min(95, (x / rect.width) * 100))
-  comparePos.value = pct
-}
 
 // Architecture Stages directly from project.architecture_stages or project.architecture
 const architectureStages = computed(() => {

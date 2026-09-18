@@ -85,24 +85,24 @@
             </div>
 
             <!-- Floating Stat Badge Top: Projects -->
-            <div class="float-card fc-top" v-if="stats[0]">
-              <div class="fc-icon-wrap" :style="{ '--badge-color': stats[0].color || '#3B82F6' }">
-                <v-icon :icon="stats[0].icon || 'mdi-rocket-launch'" size="20" />
+            <div class="float-card fc-top" v-if="activeStats[0]">
+              <div class="fc-icon-wrap" :style="{ '--badge-color': activeStats[0].color || '#3B82F6' }">
+                <v-icon :icon="activeStats[0].icon || 'mdi-rocket-launch'" size="20" />
               </div>
               <div class="fc-content">
-                <div class="fc-val">{{ stats[0].value }}{{ stats[0].suffix || '+' }}</div>
-                <div class="fc-lbl">{{ stats[0].label }}</div>
+                <div class="fc-val">{{ activeStats[0].value }}{{ activeStats[0].suffix || '+' }}</div>
+                <div class="fc-lbl">{{ activeStats[0].label }}</div>
               </div>
             </div>
 
             <!-- Floating Stat Badge Bottom: Clients / Statistics -->
-            <div class="float-card fc-bottom" v-if="stats[1]">
-              <div class="fc-icon-wrap" :style="{ '--badge-color': stats[1].color || '#10B981' }">
-                <v-icon :icon="stats[1].icon || 'mdi-account-group-outline'" size="20" />
+            <div class="float-card fc-bottom" v-if="activeStats[1]">
+              <div class="fc-icon-wrap" :style="{ '--badge-color': activeStats[1].color || '#10B981' }">
+                <v-icon :icon="activeStats[1].icon || 'mdi-account-group-outline'" size="20" />
               </div>
               <div class="fc-content">
-                <div class="fc-val">{{ stats[1].value }}{{ stats[1].suffix || '+' }}</div>
-                <div class="fc-lbl">{{ stats[1].label }}</div>
+                <div class="fc-val">{{ activeStats[1].value }}{{ activeStats[1].suffix || '+' }}</div>
+                <div class="fc-lbl">{{ activeStats[1].label }}</div>
               </div>
             </div>
 
@@ -126,8 +126,11 @@ import { usePortfolioStore } from '~/stores/portfolio'
 import ThreeBackground from './ThreeBackground.vue'
 
 const store = usePortfolioStore()
-const dev = computed(() => store.developer)
-const stats = computed(() => store.stats)
+const dev = computed(() => store.developer || {})
+const stats = computed(() => store.stats || [])
+const activeStats = computed(() => {
+  return stats.value.filter(s => s && s.is_active !== false)
+})
 
 const elBadge = ref(null), elH1 = ref(null), elSub = ref(null)
 const elCtas = ref(null), elSocial = ref(null), elStats = ref(null), elAvatar = ref(null)
@@ -171,8 +174,8 @@ const heroSpecSkills = computed(() => {
 })
 
 const heroStats = computed(() => {
-  if (stats.value?.length) {
-    return stats.value.slice(0, 3).map(s => ({
+  if (activeStats.value.length) {
+    return activeStats.value.slice(0, 3).map(s => ({
       val: `${s.value}${s.suffix || ''}`,
       label: s.label
     }))

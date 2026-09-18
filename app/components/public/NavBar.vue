@@ -14,6 +14,19 @@
         </div>
       </router-link>
 
+      <!-- Live Availability Badge (Interactive WOW) -->
+      <div
+        class="nav-availability-badge"
+        :class="{ 'is-busy': dev.available_for_work === false }"
+        :title="dev.available_for_work !== false ? 'متاح لاستقبال المشاريع والاستشارات الجديدة' : 'مشغول حالياً بمشاريع قائمة'"
+      >
+        <span class="radar-pulse">
+          <span class="radar-ring" />
+          <span class="radar-dot" />
+        </span>
+        <span class="badge-label d-none d-md-inline">{{ dev.available_for_work !== false ? 'متاح للعمل الحر' : 'مشغول حالياً' }}</span>
+      </div>
+
       <!-- Desktop Nav Links -->
       <nav class="nav-links" aria-label="التنقل الرئيسي">
         <a
@@ -31,12 +44,20 @@
 
         <!-- Theme Toggle Button (Dark / Light) -->
         <button
-          class="nav-icon-btn theme-toggle-btn"
+          class="theme-toggle-btn"
           @click="toggleTheme"
-          :title="isDark ? 'التبديل إلى الوضع النهاري' : 'التبديل إلى الوضع الليلي'"
+          :class="{ 'is-light': !isDark }"
+          :title="isDark ? 'التبديل إلى الوضع النهاري (Light Mode)' : 'التبديل إلى الوضع الليلي (Dark Mode)'"
           aria-label="تبديل الوضع النهاري والليلي"
         >
-          <v-icon :icon="isDark ? 'mdi-white-balance-sunny' : 'mdi-weather-night'" size="18" :color="isDark ? '#F59E0B' : '#2563EB'" />
+          <span class="theme-sun-moon">
+            <v-icon
+              :icon="isDark ? 'mdi-weather-night' : 'mdi-white-balance-sunny'"
+              size="17"
+              :class="['theme-icon-animated', isDark ? 'icon-moon' : 'icon-sun']"
+              :color="isDark ? '#A78BFA' : '#F59E0B'"
+            />
+          </span>
         </button>
 
         <button
@@ -70,11 +91,12 @@
       <!-- Mobile Right Controls (Theme + Hamburger) -->
       <div class="mobile-controls">
         <button
-          class="nav-icon-btn"
+          class="theme-toggle-btn mobile-theme-toggle"
           @click="toggleTheme"
-          aria-label="تبديل الوضع"
+          :class="{ 'is-light': !isDark }"
+          :aria-label="isDark ? 'التبديل إلى الوضع النهاري' : 'التبديل إلى الوضع الليلي'"
         >
-          <v-icon :icon="isDark ? 'mdi-white-balance-sunny' : 'mdi-weather-night'" size="18" :color="isDark ? '#F59E0B' : '#2563EB'" />
+          <v-icon :icon="isDark ? 'mdi-weather-night' : 'mdi-white-balance-sunny'" size="17" :color="isDark ? '#A78BFA' : '#F59E0B'" />
         </button>
 
         <!-- Mobile Hamburger Button -->
@@ -341,6 +363,123 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
   color: var(--t3);
   font-family: var(--f-mono);
   line-height: 1.2;
+}
+
+/* Live Availability Badge */
+.nav-availability-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 12px;
+  border-radius: 9999px;
+  background: rgba(16, 185, 129, 0.08);
+  border: 1px solid rgba(16, 185, 129, 0.25);
+  color: #10B981;
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+[data-theme="light"] .nav-availability-badge {
+  background: rgba(16, 185, 129, 0.12);
+  border-color: rgba(16, 185, 129, 0.35);
+  color: #059669;
+}
+
+.nav-availability-badge.is-busy {
+  background: rgba(245, 158, 11, 0.08);
+  border-color: rgba(245, 158, 11, 0.25);
+  color: #F59E0B;
+}
+
+.radar-pulse {
+  position: relative;
+  width: 9px;
+  height: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.radar-ring {
+  position: absolute;
+  inset: -3px;
+  border-radius: 50%;
+  background: #10B981;
+  opacity: 0.75;
+  animation: radar-ping 1.8s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+.is-busy .radar-ring {
+  background: #F59E0B;
+}
+
+.radar-dot {
+  position: relative;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #10B981;
+  box-shadow: 0 0 8px #10B981;
+}
+
+.is-busy .radar-dot {
+  background: #F59E0B;
+  box-shadow: 0 0 8px #F59E0B;
+}
+
+@keyframes radar-ping {
+  75%, 100% {
+    transform: scale(2.4);
+    opacity: 0;
+  }
+}
+
+/* Enhanced Theme Toggle Button */
+.theme-toggle-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: var(--bg-subtle, rgba(255, 255, 255, 0.05));
+  border: 1px solid var(--border, rgba(255, 255, 255, 0.1));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--t1);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.theme-toggle-btn:hover {
+  background: var(--primary-subtle, rgba(99, 102, 241, 0.15));
+  border-color: var(--primary, #6366F1);
+  transform: translateY(-1px);
+}
+
+.theme-sun-moon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.theme-toggle-btn:active .theme-sun-moon {
+  transform: scale(0.85);
+}
+
+.theme-icon-animated.icon-sun {
+  animation: rotate-sun 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes rotate-sun {
+  from { transform: rotate(-90deg) scale(0.6); opacity: 0; }
+  to { transform: rotate(0) scale(1); opacity: 1; }
 }
 
 /* Nav Links */

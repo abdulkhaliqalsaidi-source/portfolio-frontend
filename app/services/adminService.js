@@ -109,7 +109,7 @@ export const adminService = {
     return await api.post('/admin/statistics/', data)
   },
   async updateStatistic(id, data) {
-    return await api.put(`/admin/statistics/${id}/`, data)
+    return await api.patch(`/admin/statistics/${id}/`, data)
   },
   async deleteStatistic(id) {
     return await api.delete(`/admin/statistics/${id}/`)

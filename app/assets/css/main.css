@@ -170,6 +170,7 @@ body, html, #app, .v-application {
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
   line-height: 1.8;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 /* Accessibility Focus States */
