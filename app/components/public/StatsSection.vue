@@ -44,8 +44,8 @@
             </div>
 
             <div class="bio-actions mt-5">
-              <a v-if="dev.resume" :href="dev.resume" target="_blank" class="btn btn-primary btn-sm">
-                <v-icon icon="mdi-file-download-outline" size="16" class="ml-1" />
+              <a :href="store.resumeUrl" download="Abdulkhaliq_Alsaidi_CV.pdf" target="_blank" class="btn btn-primary btn-sm">
+                <v-icon icon="mdi-file-pdf-box" size="18" color="#EF4444" class="ml-1" />
                 <span>{{ t('stats.downloadCv') }}</span>
               </a>
               <a href="#contact" class="btn btn-ghost btn-sm" @click.prevent="go('#contact')">

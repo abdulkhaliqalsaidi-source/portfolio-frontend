@@ -11,6 +11,8 @@ export default {
     blog: 'Blog',
     contact: 'Contact',
     resume: 'Resume / CV',
+    downloadCv: 'Download Resume (PDF)',
+    resumePdf: 'Resume PDF',
     contactMe: 'Get In Touch',
     adminPanel: 'Admin Dashboard',
     copyEmail: 'Copy Email Address',

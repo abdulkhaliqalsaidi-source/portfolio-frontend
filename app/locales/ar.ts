@@ -11,6 +11,8 @@ export default {
     blog: 'المدونة',
     contact: 'تواصل',
     resume: 'السيرة الذاتية',
+    downloadCv: 'تحميل السيرة الذاتية (PDF)',
+    resumePdf: 'السيرة الذاتية PDF',
     contactMe: 'تواصل معي',
     adminPanel: 'لوحة التحكم الإدارية',
     copyEmail: 'نسخ البريد الإلكتروني',

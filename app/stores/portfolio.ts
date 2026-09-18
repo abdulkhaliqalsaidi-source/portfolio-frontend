@@ -52,6 +52,14 @@ export const usePortfolioStore = defineStore('portfolio', () => {
     return blogPosts.value.slice(0, 3)
   })
 
+  const resumeUrl = computed(() => {
+    const r = developer.value.resume
+    if (r && (r.startsWith('http://') || r.startsWith('https://') || r.startsWith('/media/'))) {
+      return sanitizeMediaUrl(r)
+    }
+    return '/Abdulkhaliq_Alsaidi_CV.pdf'
+  })
+
   function sanitizeMediaUrl(url: any): string {
     if (!url || typeof url !== 'string') return ''
     return url.replace(/^http:\/\/localhost:8000/i, 'https://portfolio-backend-1kar.onrender.com')
@@ -177,6 +185,7 @@ export const usePortfolioStore = defineStore('portfolio', () => {
 
   return {
     developer,
+    resumeUrl,
     stats,
     services,
     techStack,

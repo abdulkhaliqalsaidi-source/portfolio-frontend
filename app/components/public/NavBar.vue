@@ -87,11 +87,17 @@
           {{ t('nav.contactMe') }}
         </a>
 
-        <a v-if="dev.resume" :href="dev.resume" target="_blank" class="btn btn-primary btn-sm nav-btn">
-          <span>{{ t('nav.resume') }}</span>
-          <svg width="11" height="11" viewBox="0 0 12 12" fill="none">
-            <path d="M2 10L10 2M10 2H4M10 2V8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-          </svg>
+        <!-- PDF Resume Direct Download Action Button -->
+        <a
+          :href="store.resumeUrl"
+          download="Abdulkhaliq_Alsaidi_CV.pdf"
+          target="_blank"
+          class="btn btn-primary btn-sm nav-btn cv-download-btn"
+          :title="t('nav.downloadCv')"
+        >
+          <span class="pdf-pill font-mono">PDF</span>
+          <span>{{ t('nav.resumePdf') }}</span>
+          <v-icon icon="mdi-download" size="15" class="download-icon" />
         </a>
 
         <router-link to="/admin" class="admin-quick-btn" :title="t('nav.adminPanel')">
@@ -113,14 +119,24 @@
           class="theme-toggle-btn mobile-theme-toggle"
           @click="toggleTheme"
           :class="{ 'is-light': !isDark }"
-          :aria-label="isDark ? 'التبديل إلى الوضع النهاري' : 'التبديل إلى الوضع الليلي'"
+          :title="isDark ? t('nav.switchThemeLight') : t('nav.switchThemeDark')"
+          :aria-label="isDark ? t('nav.switchThemeLight') : t('nav.switchThemeDark')"
         >
-          <v-icon :icon="isDark ? 'mdi-weather-night' : 'mdi-white-balance-sunny'" size="17" :color="isDark ? '#A78BFA' : '#F59E0B'" />
+          <div class="theme-icon-slot">
+            <v-icon :icon="isDark ? 'mdi-white-balance-sunny' : 'mdi-weather-night'" size="16" />
+          </div>
         </button>
 
         <!-- Mobile Hamburger Button -->
-        <button class="burger" @click="open = !open" :class="{ active: open }" aria-label="القائمة">
-          <span/><span/><span/>
+        <button
+          class="nav-toggle"
+          @click="open = !open"
+          :aria-expanded="open"
+          aria-label="القائمة"
+        >
+          <span class="bar" :class="{ open }" />
+          <span class="bar" :class="{ open }" />
+          <span class="bar" :class="{ open }" />
         </button>
       </div>
 
@@ -159,25 +175,32 @@
             <button class="mobile-theme-btn" @click="toggleTheme">
               <div class="d-flex align-center gap-2">
                 <v-icon :icon="isDark ? 'mdi-white-balance-sunny' : 'mdi-weather-night'" size="18" :color="isDark ? '#F59E0B' : '#2563EB'" />
-                <span class="text-caption font-weight-bold">{{ isDark ? 'التبديل للوضع النهاري' : 'التبديل للوضع الليلي' }}</span>
+                <span class="text-caption font-weight-bold">{{ isDark ? t('nav.switchThemeLight') : t('nav.switchThemeDark') }}</span>
               </div>
-              <span class="theme-mode-tag">{{ isDark ? 'داكن' : 'فاتح' }}</span>
+              <span class="theme-mode-tag">{{ isDark ? (locale === 'ar' ? 'داكن' : 'Dark') : (locale === 'ar' ? 'فاتح' : 'Light') }}</span>
             </button>
           </div>
 
           <div class="mobile-sheet-footer">
-            <a v-if="dev.resume" :href="dev.resume" target="_blank" class="btn btn-primary w-100 mb-2">
-              <v-icon icon="mdi-file-document-outline" size="16" class="ml-1" />
-              تحميل السيرة الذاتية (CV)
+            <a
+              :href="store.resumeUrl"
+              download="Abdulkhaliq_Alsaidi_CV.pdf"
+              target="_blank"
+              class="btn btn-primary w-100 mb-2 cv-mobile-download-btn"
+              :title="t('nav.downloadCv')"
+            >
+              <span class="pdf-pill font-mono">PDF</span>
+              <span>{{ t('nav.downloadCv') }}</span>
+              <v-icon icon="mdi-download" size="16" class="download-icon" />
             </a>
             <div class="d-flex gap-2">
               <a v-if="dev.email" :href="`mailto:${dev.email}`" class="btn btn-ghost flex-1">
                 <v-icon icon="mdi-email-outline" size="16" class="ml-1" />
-                راسلني
+                <span>{{ t('nav.contactMe') }}</span>
               </a>
               <router-link to="/admin" class="btn btn-ghost" @click="open = false">
                 <v-icon icon="mdi-shield-lock-outline" size="16" class="ml-1" />
-                لوحة التحكم
+                <span>{{ t('nav.adminPanel') }}</span>
               </router-link>
             </div>
           </div>
@@ -759,5 +782,81 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
 }
 .mobile-menu-enter-from .nav-mobile-sheet, .mobile-menu-leave-to .nav-mobile-sheet {
   transform: translateX(100%);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   CV DIRECT PDF DOWNLOAD BUTTON ENHANCEMENTS
+   ═══════════════════════════════════════════════════════════ */
+.cv-download-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: linear-gradient(135deg, #2563EB, #1D4ED8);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+  font-weight: 700;
+  color: #FFFFFF !important;
+  text-decoration: none;
+  padding: 6px 14px;
+  border-radius: var(--r-xs, 8px);
+  transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.cv-download-btn:hover {
+  transform: translateY(-2px);
+  background: linear-gradient(135deg, #3B82F6, #2563EB);
+  box-shadow: 0 8px 24px rgba(59, 130, 246, 0.55), 0 0 12px rgba(239, 68, 68, 0.35);
+  border-color: rgba(255, 255, 255, 0.3);
+  color: #FFFFFF !important;
+}
+
+.pdf-pill {
+  background: linear-gradient(135deg, #EF4444, #DC2626);
+  color: #FFFFFF;
+  font-size: 0.65rem;
+  font-weight: 900;
+  padding: 1px 5px;
+  border-radius: 4px;
+  letter-spacing: 0.4px;
+  box-shadow: 0 0 8px rgba(239, 68, 68, 0.6);
+  display: inline-flex;
+  align-items: center;
+  line-height: 1.2;
+}
+
+.download-icon {
+  transition: transform 0.2s ease;
+}
+
+.cv-download-btn:hover .download-icon,
+.cv-mobile-download-btn:hover .download-icon {
+  transform: translateY(2px);
+}
+
+.cv-mobile-download-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: linear-gradient(135deg, #2563EB, #1D4ED8);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  font-weight: 700;
+  color: #FFFFFF !important;
+  text-decoration: none;
+  padding: 12px 16px;
+  border-radius: var(--r-xs, 8px);
+  box-shadow: 0 4px 16px rgba(37, 99, 235, 0.4);
+}
+
+.cv-mobile-download-btn:hover {
+  background: linear-gradient(135deg, #3B82F6, #2563EB);
+  color: #FFFFFF !important;
+}
+
+[data-theme="light"] .cv-download-btn,
+[data-theme="light"] .cv-mobile-download-btn {
+  background: linear-gradient(135deg, #2563EB, #1D4ED8) !important;
+  color: #FFFFFF !important;
+  border-color: rgba(37, 99, 235, 0.3) !important;
 }
 </style>

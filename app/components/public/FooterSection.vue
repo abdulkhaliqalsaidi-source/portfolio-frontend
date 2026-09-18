@@ -95,7 +95,7 @@ const cols = computed(() => [
   { title: isRtl.value ? 'أقسام الموقع' : 'Navigation', links: siteLinks.value },
   { title: isRtl.value ? 'روابط وتواصل' : 'Connect', links: [
     { label: t('nav.contactMe'), href: '#contact' },
-    { label: t('nav.resume'),    href: dev.value.resume || '#contact' },
+    { label: t('nav.downloadCv'), href: store.resumeUrl },
     { label: t('nav.adminPanel'), href: '/admin' },
   ]},
 ])
