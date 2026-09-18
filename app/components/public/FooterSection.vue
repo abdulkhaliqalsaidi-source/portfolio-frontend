@@ -34,9 +34,9 @@
 
       <!-- Footer Bottom -->
       <div class="footer-bottom">
-        <span class="copy">© {{ year }} {{ dev.name || dev.full_name }} — جميع الحقوق محفوظة</span>
+        <span class="copy">© {{ year }} {{ dev.name || dev.full_name }} — {{ t('footer.rights') }}</span>
         <span class="made">
-          بورتفوليو رقمي متكامل واحترافي
+          {{ t('footer.builtWith') }}
         </span>
       </div>
     </div>
@@ -46,14 +46,16 @@
 <script setup>
 import { computed } from 'vue'
 import { usePortfolioStore } from '~/stores/portfolio'
+import { useLocale } from '~/composables/useLocale'
 
 const store = usePortfolioStore()
-const dev = computed(() => store.developer)
+const { t, isRtl } = useLocale()
+const dev = computed(() => store.developer || {})
 const year = new Date().getFullYear()
 
 const socials = computed(() => {
   const list = []
-  if (dev.value.email) list.push({ label: 'البريد الإلكتروني', icon: 'mdi-email-outline', href: `mailto:${dev.value.email}` })
+  if (dev.value.email) list.push({ label: 'Email', icon: 'mdi-email-outline', href: `mailto:${dev.value.email}` })
   if (dev.value.phone) list.push({ label: 'WhatsApp', icon: 'mdi-whatsapp', href: `https://wa.me/${dev.value.whatsapp || dev.value.phone.replace(/[^0-9]/g, '')}` })
   if (dev.value.linkedin) list.push({ label: 'LinkedIn', icon: 'mdi-linkedin', href: dev.value.linkedin })
   if (dev.value.behance) list.push({ label: 'Behance', icon: 'mdi-behance', href: dev.value.behance })
@@ -61,7 +63,7 @@ const socials = computed(() => {
   if (dev.value.instagram) list.push({ label: 'Instagram', icon: 'mdi-instagram', href: dev.value.instagram })
   if (dev.value.twitter) list.push({ label: 'X', icon: 'mdi-twitter', href: dev.value.twitter })
   if (dev.value.youtube) list.push({ label: 'YouTube', icon: 'mdi-youtube', href: dev.value.youtube })
-  if (dev.value.website) list.push({ label: 'الموقع الشخصي', icon: 'mdi-web', href: dev.value.website })
+  if (dev.value.website) list.push({ label: 'Website', icon: 'mdi-web', href: dev.value.website })
   if (dev.value.github) list.push({ label: 'GitHub', icon: 'mdi-github', href: dev.value.github })
   return list
 })
@@ -69,32 +71,32 @@ const socials = computed(() => {
 const siteLinks = computed(() => {
   const list = []
   if (dev.value?.bio || dev.value?.tagline || (store.stats && store.stats.length > 0)) {
-    list.push({ label: 'نبذة عني', href: '#stats' })
+    list.push({ label: t('nav.about'), href: '#stats' })
   }
   if (Array.isArray(store.services) && store.services.length > 0 && store.settings.enable_services !== false) {
-    list.push({ label: 'الخدمات', href: '#services' })
+    list.push({ label: t('nav.services'), href: '#services' })
   }
   if (((store.techStack && Object.keys(store.techStack).length > 0) || (store.skillCategories && store.skillCategories.length > 0)) && store.settings.enable_skills !== false) {
-    list.push({ label: 'المهارات والخبرات', href: '#stack' })
+    list.push({ label: t('nav.skills'), href: '#stack' })
   }
   if (Array.isArray(store.projects) && store.projects.length > 0 && store.settings.enable_projects !== false) {
-    list.push({ label: 'الأعمال والمشاريع', href: '#projects' })
+    list.push({ label: t('nav.projects'), href: '#projects' })
   }
   if (Array.isArray(store.testimonials) && store.testimonials.length > 0 && store.settings.enable_testimonials !== false) {
-    list.push({ label: 'آراء العملاء', href: '#testimonials' })
+    list.push({ label: t('nav.testimonials'), href: '#testimonials' })
   }
   if (Array.isArray(store.timeline) && store.timeline.length > 0 && store.settings.enable_timeline !== false) {
-    list.push({ label: 'المسار المهني', href: '#timeline' })
+    list.push({ label: t('nav.experience'), href: '#timeline' })
   }
   return list
 })
 
 const cols = computed(() => [
-  { title: 'أقسام الموقع', links: siteLinks.value },
-  { title: 'روابط وتواصل', links: [
-    { label: 'تواصل مباشر',     href: '#contact' },
-    { label: 'السيرة الذاتية',  href: dev.value.resume || '#contact' },
-    { label: 'لوحة التحكم',     href: '/admin' },
+  { title: isRtl.value ? 'أقسام الموقع' : 'Navigation', links: siteLinks.value },
+  { title: isRtl.value ? 'روابط وتواصل' : 'Connect', links: [
+    { label: t('nav.contactMe'), href: '#contact' },
+    { label: t('nav.resume'),    href: dev.value.resume || '#contact' },
+    { label: t('nav.adminPanel'), href: '/admin' },
   ]},
 ])
 

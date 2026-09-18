@@ -9,8 +9,8 @@
         v-if="show"
         class="back-to-top-btn"
         @click="scrollTop"
-        aria-label="العودة للأعلى"
-        title="العودة للأعلى"
+        :aria-label="locale === 'en' ? 'Back to top' : 'العودة للأعلى'"
+        :title="locale === 'en' ? 'Back to top' : 'العودة للأعلى'"
       >
         <!-- Circular Progress Ring SVG -->
         <svg class="progress-ring" width="46" height="46" viewBox="0 0 46 46">
@@ -35,7 +35,7 @@
           <v-icon icon="mdi-arrow-up" size="18" />
         </div>
 
-        <span class="top-tooltip">للأعلى</span>
+        <span class="top-tooltip">{{ locale === 'en' ? 'Top' : 'للأعلى' }}</span>
       </button>
     </transition>
   </div>
@@ -43,7 +43,9 @@
 
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { useLocale } from '~/composables/useLocale'
 
+const { locale } = useLocale()
 const show = ref(false)
 const progress = ref(0)
 const radius = 19

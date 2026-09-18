@@ -6,9 +6,9 @@
 
         <!-- Info & Channels Column -->
         <div class="contact-info-col anim-left">
-          <div class="eyebrow">{{ store.settings.contact_section_eyebrow || 'تواصل مباشر' }}</div>
-          <h2 class="s-title">{{ store.settings.contact_section_title || 'لنناقش مشروعك' }} <span class="g-text">أو عملك القادم</span></h2>
-          <p class="s-sub">{{ store.settings.contact_section_sub || 'هل لديك فكرة عمل أو مشروع أو استشارة تحتاج تنفيذها؟ يسعدني دائماً دراسة متطلباتك وتقديم أفضل الحلول والنتائج.' }}</p>
+          <div class="eyebrow">{{ isRtl ? (store.settings.contact_section_eyebrow || t('contact.eyebrow')) : t('contact.eyebrow') }}</div>
+          <h2 class="s-title">{{ isRtl ? (store.settings.contact_section_title || t('contact.title')) : t('contact.title') }} <span class="g-text">{{ isRtl ? 'أو عملك القادم' : t('contact.titleHighlight') }}</span></h2>
+          <p class="s-sub">{{ isRtl ? (store.settings.contact_section_sub || t('contact.sub')) : t('contact.sub') }}</p>
 
           <!-- Featured Direct Channels (Email & WhatsApp) -->
           <div class="primary-channels" v-if="primaryContacts.length">
@@ -86,10 +86,10 @@
             <v-form ref="form" @submit.prevent="submit">
               <div class="field-row">
                 <div class="field-wrap">
-                  <label class="field-label">الاسم الكامل *</label>
+                  <label class="field-label">{{ t('contact.nameLabel') }}</label>
                   <v-text-field
                     v-model="f.sender_name"
-                    placeholder="مثال: أحمد محمد"
+                    :placeholder="t('contact.namePlaceholder')"
                     variant="outlined"
                     density="comfortable"
                     color="primary"
@@ -97,10 +97,10 @@
                   />
                 </div>
                 <div class="field-wrap">
-                  <label class="field-label">البريد الإلكتروني *</label>
+                  <label class="field-label">{{ t('contact.emailLabel') }}</label>
                   <v-text-field
                     v-model="f.sender_email"
-                    placeholder="name@example.com"
+                    :placeholder="t('contact.emailPlaceholder')"
                     variant="outlined"
                     density="comfortable"
                     color="primary"
@@ -112,10 +112,10 @@
 
               <div class="field-row">
                 <div class="field-wrap">
-                  <label class="field-label">الموضوع *</label>
+                  <label class="field-label">{{ t('contact.subjectLabel') }}</label>
                   <v-text-field
                     v-model="f.subject"
-                    placeholder="طلب استشارة / عرض عمل / مشروع جديد"
+                    :placeholder="t('contact.subjectPlaceholder')"
                     variant="outlined"
                     density="comfortable"
                     color="primary"
@@ -123,10 +123,10 @@
                   />
                 </div>
                 <div class="field-wrap">
-                  <label class="field-label">رقم الهاتف (اختياري)</label>
+                  <label class="field-label">{{ t('contact.phoneLabel') }}</label>
                   <v-text-field
                     v-model="f.sender_phone"
-                    placeholder="+966 / +967..."
+                    :placeholder="t('contact.phonePlaceholder')"
                     variant="outlined"
                     density="comfortable"
                     color="primary"
@@ -136,10 +136,10 @@
               </div>
 
               <div class="field-wrap mb-4">
-                <label class="field-label">تفاصيل الرسالة أو متطلبات العمل *</label>
+                <label class="field-label">{{ t('contact.messageLabel') }}</label>
                 <v-textarea
                   v-model="f.message"
-                  placeholder="اشرح باختصار فكرة العمل أو الاستشارة والمخرجات المطلوبة..."
+                  :placeholder="t('contact.messagePlaceholder')"
                   variant="outlined"
                   rows="4"
                   color="primary"
@@ -154,7 +154,7 @@
               >
                 <v-progress-circular v-if="submitting" indeterminate size="18" class="ml-2" />
                 <v-icon v-else icon="mdi-send-outline" size="18" class="ml-2" />
-                <span>{{ submitting ? 'جاري إرسال الرسالة...' : 'إرسال الرسالة الآن' }}</span>
+                <span>{{ submitting ? t('contact.sending') : t('contact.sendBtn') }}</span>
               </button>
             </v-form>
           </div>
@@ -176,9 +176,11 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { usePortfolioStore } from '~/stores/portfolio'
+import { useLocale } from '~/composables/useLocale'
 import { useScrollReveal } from '~/composables/useScrollReveal'
 
 const store = usePortfolioStore()
+const { t, isRtl } = useLocale()
 const dev = computed(() => store.developer || {})
 
 useScrollReveal('.anim, .anim-left, .anim-right')
@@ -187,7 +189,7 @@ const form = ref(null)
 const submitting = ref(false)
 const snack = ref(false)
 const submitError = ref(null)
-const successMessage = ref('تم استلام رسالتك بنجاح! سأتواصل معك قريباً.')
+const successMessage = computed(() => t('contact.successMsg'))
 
 const f = ref({
   sender_name: '',

@@ -17,7 +17,7 @@
 
           <!-- Main Editorial Heading -->
           <h1 class="hero-h1" ref="elH1" v-if="(dev.name || dev.full_name) || dev.title || typed">
-            <span class="hero-greeting" v-if="dev.name || dev.full_name">مرحباً بك، أنا</span>
+            <span class="hero-greeting" v-if="dev.name || dev.full_name">{{ t('hero.greeting') }}</span>
             <span class="hero-name" v-if="dev.name || dev.full_name">{{ dev.name || dev.full_name }}</span>
             <span class="hero-role" v-if="dev.title || typed">
               <span class="typed-wrap">
@@ -28,19 +28,19 @@
 
           <!-- Confident Positioning Statement -->
           <p class="hero-sub" ref="elSub" v-if="dev.tagline || dev.bio">
-            {{ dev.tagline || dev.bio }}
+            {{ isRtl ? (dev.tagline || dev.bio) : t('hero.tagline') }}
           </p>
 
           <!-- Action Buttons -->
           <div class="hero-ctas" ref="elCtas">
             <button class="btn btn-primary btn-lg" @click="go('#projects')">
-              <span>استكشف الأعمال والإنجازات</span>
+              <span>{{ t('hero.exploreProjects') }}</span>
               <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
                 <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
             </button>
             <button class="btn btn-ghost btn-lg" @click="go('#contact')">
-              <span>تواصل مباشر</span>
+              <span>{{ t('hero.contactMe') }}</span>
             </button>
           </div>
 
@@ -109,7 +109,7 @@
             <!-- Live Availability Pill -->
             <div class="avail-badge" v-if="dev.available_for_work">
               <span class="avail-dot" />
-              <span class="avail-text">متاح لاستقبال المشاريع الآن</span>
+              <span class="avail-text">{{ t('hero.liveBadgeText') }}</span>
             </div>
           </div>
         </v-col>
@@ -123,9 +123,11 @@
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { gsap } from 'gsap'
 import { usePortfolioStore } from '~/stores/portfolio'
+import { useLocale } from '~/composables/useLocale'
 import ThreeBackground from './ThreeBackground.vue'
 
 const store = usePortfolioStore()
+const { t, isRtl } = useLocale()
 const dev = computed(() => store.developer || {})
 const stats = computed(() => store.stats || [])
 const activeStats = computed(() => {

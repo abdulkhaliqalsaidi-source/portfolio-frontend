@@ -18,13 +18,13 @@
       <div
         class="nav-availability-badge"
         :class="{ 'is-busy': dev.available_for_work === false }"
-        :title="dev.available_for_work !== false ? 'متاح لاستقبال المشاريع والاستشارات الجديدة' : 'مشغول حالياً بمشاريع قائمة'"
+        :title="dev.available_for_work !== false ? t('nav.availableTooltip') : t('nav.busyTooltip')"
       >
         <span class="radar-pulse">
           <span class="radar-ring" />
           <span class="radar-dot" />
         </span>
-        <span class="badge-label d-none d-md-inline">{{ dev.available_for_work !== false ? 'متاح للعمل الحر' : 'مشغول حالياً' }}</span>
+        <span class="badge-label d-none d-md-inline">{{ dev.available_for_work !== false ? t('nav.availableForWork') : t('nav.currentlyBusy') }}</span>
       </div>
 
       <!-- Desktop Nav Links -->
@@ -42,12 +42,23 @@
       <!-- Desktop Actions -->
       <div class="nav-actions">
 
+        <!-- Language Switcher Button (AR / EN) -->
+        <button
+          class="lang-toggle-btn"
+          @click="toggleLocale"
+          :title="locale === 'ar' ? 'Switch to English' : 'التحويل إلى العربية'"
+          aria-label="تبديل لغة الموقع"
+        >
+          <v-icon icon="mdi-translate" size="16" />
+          <span>{{ locale === 'ar' ? 'EN' : 'عربي' }}</span>
+        </button>
+
         <!-- Theme Toggle Button (Dark / Light) -->
         <button
           class="theme-toggle-btn"
           @click="toggleTheme"
           :class="{ 'is-light': !isDark }"
-          :title="isDark ? 'التبديل إلى الوضع النهاري (Light Mode)' : 'التبديل إلى الوضع الليلي (Dark Mode)'"
+          :title="isDark ? t('nav.switchThemeLight') : t('nav.switchThemeDark')"
           aria-label="تبديل الوضع النهاري والليلي"
         >
           <span class="theme-sun-moon">
@@ -64,32 +75,40 @@
           class="nav-icon-btn"
           @click="copyEmail"
           :class="{ copied }"
-          :title="copied ? 'تم نسخ البريد!' : 'نسخ البريد الإلكتروني'"
+          :title="copied ? t('nav.copied') : t('nav.copyEmail')"
           aria-label="نسخ البريد الإلكتروني"
           v-if="dev.email"
         >
           <v-icon :icon="copied ? 'mdi-check' : 'mdi-email-outline'" size="16" />
-          <span v-if="copied" class="copy-tooltip">تم النسخ!</span>
+          <span v-if="copied" class="copy-tooltip">{{ t('nav.copied') }}</span>
         </button>
 
         <a v-if="dev.email" :href="`mailto:${dev.email}`" class="btn btn-ghost btn-sm nav-btn">
-          تواصل معي
+          {{ t('nav.contactMe') }}
         </a>
 
         <a v-if="dev.resume" :href="dev.resume" target="_blank" class="btn btn-primary btn-sm nav-btn">
-          <span>السيرة الذاتية</span>
+          <span>{{ t('nav.resume') }}</span>
           <svg width="11" height="11" viewBox="0 0 12 12" fill="none">
             <path d="M2 10L10 2M10 2H4M10 2V8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
           </svg>
         </a>
 
-        <router-link to="/admin" class="admin-quick-btn" title="لوحة التحكم الإدارية">
+        <router-link to="/admin" class="admin-quick-btn" :title="t('nav.adminPanel')">
           <v-icon icon="mdi-shield-lock-outline" size="16" />
         </router-link>
       </div>
 
-      <!-- Mobile Right Controls (Theme + Hamburger) -->
+      <!-- Mobile Right Controls (Lang + Theme + Hamburger) -->
       <div class="mobile-controls">
+        <button
+          class="lang-toggle-btn mobile-lang-toggle"
+          @click="toggleLocale"
+          aria-label="تبديل لغة الموقع"
+        >
+          <span>{{ locale === 'ar' ? 'EN' : 'عربي' }}</span>
+        </button>
+
         <button
           class="theme-toggle-btn mobile-theme-toggle"
           @click="toggleTheme"
@@ -172,12 +191,14 @@
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { usePortfolioStore } from '~/stores/portfolio'
 import { useTheme } from '~/composables/useTheme'
+import { useLocale } from '~/composables/useLocale'
 import { useRouter } from 'vue-router'
 
 const store = usePortfolioStore()
 const router = useRouter()
 const dev = computed(() => store.developer)
 const { isDark, toggle: toggleTheme } = useTheme()
+const { locale, isRtl, toggleLocale, t } = useLocale()
 
 const scrolled = ref(false)
 const open = ref(false)
@@ -236,28 +257,28 @@ const hasBlog = computed(() => {
 const links = computed(() => {
   const list = []
   if (hasStats.value) {
-    list.push({ label: 'عني', href: '#stats' })
+    list.push({ label: t('nav.about'), href: '#stats' })
   }
   if (hasServices.value) {
-    list.push({ label: 'الخدمات', href: '#services' })
+    list.push({ label: t('nav.services'), href: '#services' })
   }
   if (hasSkills.value) {
-    list.push({ label: 'المهارات', href: '#stack' })
+    list.push({ label: t('nav.skills'), href: '#stack' })
   }
   if (hasProjects.value) {
-    list.push({ label: 'الأعمال', href: '#projects' })
+    list.push({ label: t('nav.projects'), href: '#projects' })
   }
   if (hasBlog.value) {
-    list.push({ label: 'المدونة', href: '#blog' })
+    list.push({ label: t('nav.blog'), href: '#blog' })
   }
   if (hasTestimonials.value) {
-    list.push({ label: 'آراء العملاء', href: '#testimonials' })
+    list.push({ label: t('nav.testimonials'), href: '#testimonials' })
   }
   if (hasTimeline.value) {
-    list.push({ label: 'المسار المهني', href: '#timeline' })
+    list.push({ label: t('nav.experience'), href: '#timeline' })
   }
   if (store.settings.enable_contact !== false) {
-    list.push({ label: 'تواصل', href: '#contact' })
+    list.push({ label: t('nav.contact'), href: '#contact' })
   }
   return list
 })

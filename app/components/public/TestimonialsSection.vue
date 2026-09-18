@@ -3,39 +3,39 @@
     <div class="container">
 
       <div class="section-head text-center">
-        <div class="eyebrow">{{ store.settings.testimonials_section_eyebrow || 'شهادات وتوصيات العملاء • Testimonials' }}</div>
-        <h2 class="s-title">{{ store.settings.testimonials_section_title || 'ماذا يقول' }} <span class="g-text">الشركاء والعملاء</span></h2>
-        <p class="s-sub">{{ store.settings.testimonials_section_sub || 'تجارب حقيقية لمؤسسات وشركات قمت بتطوير أنظمتها وإدارتها وتسليمها بنجاح بأعلى معايير الجودة.' }}</p>
+        <div class="eyebrow">{{ eyebrow }}</div>
+        <h2 class="s-title">{{ title }} <span class="g-text">{{ titleHighlight }}</span></h2>
+        <p class="s-sub">{{ sub }}</p>
       </div>
 
       <div class="testimonials-grid">
         <div
-          v-for="(t, i) in displayTestimonials" :key="i"
+          v-for="(tItem, i) in displayTestimonials" :key="i"
           class="t-card anim" :class="`d-${(i % 4) + 1}`"
         >
           <!-- Top Row: Stars Rating & Verified Badge -->
           <div class="t-stars-wrap">
             <div class="t-stars">
-              <v-icon v-for="s in (t.rating || 5)" :key="s" icon="mdi-star" size="16" color="#F59E0B" />
+              <v-icon v-for="s in (tItem.rating || 5)" :key="s" icon="mdi-star" size="16" color="#F59E0B" />
             </div>
             <span class="t-verified-tag">
               <v-icon icon="mdi-check-decagram" size="13" color="#10B981" />
-              <span>عميل موثق</span>
+              <span>{{ locale === 'en' ? 'Verified Client' : 'عميل موثق' }}</span>
             </span>
           </div>
 
           <!-- Quote Text -->
-          <p class="t-text">"{{ t.feedback_text || t.text }}"</p>
+          <p class="t-text">"{{ tItem.feedback_text || tItem.text }}"</p>
 
           <!-- Author Info -->
           <div class="t-author">
             <div class="t-avatar">
-              <img v-if="t.avatar" :src="t.avatar" :alt="t.client_name || t.name" class="t-avatar-img" />
-              <span v-else>{{ (t.client_name || t.name || 'ع')[0] }}</span>
+              <img v-if="tItem.avatar" :src="tItem.avatar" :alt="tItem.client_name || tItem.name" class="t-avatar-img" />
+              <span v-else>{{ (tItem.client_name || tItem.name || 'ع')[0] }}</span>
             </div>
             <div class="t-info">
-              <div class="t-name">{{ t.client_name || t.name }}</div>
-              <div class="t-role">{{ t.client_role || t.role }} {{ t.client_company ? `— ${t.client_company}` : '' }}</div>
+              <div class="t-name">{{ tItem.client_name || tItem.name }}</div>
+              <div class="t-role">{{ tItem.client_role || tItem.role }} {{ tItem.client_company ? `— ${tItem.client_company}` : '' }}</div>
             </div>
           </div>
         </div>
@@ -49,9 +49,31 @@
 import { computed } from 'vue'
 import { usePortfolioStore } from '~/stores/portfolio'
 import { useScrollReveal } from '~/composables/useScrollReveal'
+import { useLocale } from '~/composables/useLocale'
 
 const store = usePortfolioStore()
+const { t, locale } = useLocale()
 useScrollReveal('.anim')
+
+const eyebrow = computed(() => {
+  if (locale.value === 'en') return t('testimonials.eyebrow')
+  return store.settings.testimonials_section_eyebrow || t('testimonials.eyebrow')
+})
+
+const title = computed(() => {
+  if (locale.value === 'en') return t('testimonials.title')
+  return store.settings.testimonials_section_title || t('testimonials.title')
+})
+
+const titleHighlight = computed(() => {
+  if (locale.value === 'en') return t('testimonials.titleHighlight')
+  return store.settings.testimonials_section_title_span || t('testimonials.titleHighlight')
+})
+
+const sub = computed(() => {
+  if (locale.value === 'en') return t('testimonials.sub')
+  return store.settings.testimonials_section_sub || t('testimonials.sub')
+})
 
 const displayTestimonials = computed(() => {
   return store.testimonials || []

@@ -3,9 +3,9 @@
     <div class="container">
 
       <div class="section-head">
-        <div class="eyebrow">{{ store.settings.services_section_eyebrow || 'الخدمات والحلول' }}</div>
-        <h2 class="s-title">{{ store.settings.services_section_title || 'خدمات وحلول متخصصة' }} <span class="g-text">للأفراد والشركات</span></h2>
-        <p class="s-sub">{{ store.settings.services_section_sub || 'باقة متكاملة من الخدمات المصممة لتلبية احتياجاتك وتحقيق أهدافك بكفاءة عالية.' }}</p>
+        <div class="eyebrow">{{ eyebrow }}</div>
+        <h2 class="s-title">{{ title }} <span class="g-text">{{ titleHighlight }}</span></h2>
+        <p class="s-sub">{{ sub }}</p>
       </div>
 
       <!-- Dynamic Services Grid -->
@@ -44,9 +44,31 @@
 import { computed } from 'vue'
 import { usePortfolioStore } from '~/stores/portfolio'
 import { useScrollReveal } from '~/composables/useScrollReveal'
+import { useLocale } from '~/composables/useLocale'
 
 const store = usePortfolioStore()
+const { t, locale } = useLocale()
 useScrollReveal('.anim')
+
+const eyebrow = computed(() => {
+  if (locale.value === 'en') return t('services.eyebrow')
+  return store.settings.services_section_eyebrow || t('services.eyebrow')
+})
+
+const title = computed(() => {
+  if (locale.value === 'en') return t('services.title')
+  return store.settings.services_section_title || t('services.title')
+})
+
+const titleHighlight = computed(() => {
+  if (locale.value === 'en') return t('services.titleHighlight')
+  return store.settings.services_section_title_span || t('services.titleHighlight')
+})
+
+const sub = computed(() => {
+  if (locale.value === 'en') return t('services.sub')
+  return store.settings.services_section_sub || t('services.sub')
+})
 
 const displayServices = computed(() => {
   return store.services || []

@@ -2,9 +2,9 @@
   <section class="section" id="stack" v-if="Object.keys(displayTechStack).length > 0">
     <div class="container">
       <div class="section-head">
-        <div class="eyebrow">{{ store.settings.skills_section_eyebrow || 'المهارات والخبرات' }}</div>
-        <h2 class="s-title">{{ store.settings.skills_section_title || 'المهارات والخبرات' }} <span class="g-text">التخصصية</span></h2>
-        <p class="s-sub">{{ store.settings.skills_section_sub || 'المهارات والقدرات والمناهج المعتمدة في تنفيذ الأعمال وتحقيق الأهداف بأعلى مستويات الجودة.' }}</p>
+        <div class="eyebrow">{{ eyebrow }}</div>
+        <h2 class="s-title">{{ title }} <span class="g-text">{{ titleHighlight }}</span></h2>
+        <p class="s-sub">{{ sub }}</p>
       </div>
 
       <div class="stack-grid">
@@ -23,7 +23,7 @@
             </div>
             <div class="tech-count-badge">
               <span>{{ techs.length }}</span>
-              <span class="count-label">مهارات</span>
+              <span class="count-label">{{ t('stack.skillsCount') }}</span>
             </div>
           </div>
 
@@ -58,9 +58,31 @@
 import { computed } from 'vue'
 import { usePortfolioStore } from '~/stores/portfolio'
 import { useScrollReveal } from '~/composables/useScrollReveal'
+import { useLocale } from '~/composables/useLocale'
 
 const store = usePortfolioStore()
+const { t, locale } = useLocale()
 useScrollReveal('.anim')
+
+const eyebrow = computed(() => {
+  if (locale.value === 'en') return t('stack.eyebrow')
+  return store.settings.skills_section_eyebrow || t('stack.eyebrow')
+})
+
+const title = computed(() => {
+  if (locale.value === 'en') return t('stack.title')
+  return store.settings.skills_section_title || t('stack.title')
+})
+
+const titleHighlight = computed(() => {
+  if (locale.value === 'en') return t('stack.titleHighlight')
+  return store.settings.skills_section_title_span || t('stack.titleHighlight')
+})
+
+const sub = computed(() => {
+  if (locale.value === 'en') return t('stack.sub')
+  return store.settings.skills_section_sub || t('stack.sub')
+})
 
 const displayTechStack = computed(() => {
   if (store.techStack && Object.keys(store.techStack).length) {
@@ -80,10 +102,12 @@ const displayTechStack = computed(() => {
 })
 
 const archNoteTitle = computed(() => {
+  if (locale.value === 'en') return 'Quality Standards & Delivery Methodology:'
   return store.settings.architecture_note_title || 'معايير الجودة ومنهجية العمل المعتمدة:'
 })
 
 const archNoteDesc = computed(() => {
+  if (locale.value === 'en') return 'Committed to rigorous engineering practices, continuous integration, responsive communication, punctual delivery, and maximum business impact.'
   return store.settings.architecture_note_desc || 'الالتزام بأعلى معايير الدقة والاحترافية، المتابعة المستمرة لمتطلبات العمل، تسليم المخرجات في المواعيد المحددة، وضمان تحقيق أفضل قيمة مضافة وتجربة متكاملة للعميل.'
 })
 

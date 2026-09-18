@@ -5,12 +5,12 @@
       <!-- Section Header -->
       <div class="proj-head">
         <div>
-          <div class="eyebrow">{{ store.settings.projects_section_eyebrow || 'الأعمال ودراسات الحالة • Selected Work' }}</div>
-          <h2 class="s-title">{{ store.settings.projects_section_title || 'أبرز المشاريع' }} <span class="g-text">وقصص النجاح</span></h2>
-          <p class="s-sub">{{ store.settings.projects_section_sub || 'نماذج حقيقية من الأعمال والمشاريع المنجزة مع توضيح أهداف العمل والحلول المطبقة والنتائج المحققة.' }}</p>
+          <div class="eyebrow">{{ isRtl ? (store.settings.projects_section_eyebrow || t('projects.eyebrow')) : t('projects.eyebrow') }}</div>
+          <h2 class="s-title">{{ isRtl ? (store.settings.projects_section_title || t('projects.title')) : t('projects.title') }} <span class="g-text">{{ isRtl ? 'وقصص النجاح' : t('projects.titleHighlight') }}</span></h2>
+          <p class="s-sub">{{ isRtl ? (store.settings.projects_section_sub || t('projects.sub')) : t('projects.sub') }}</p>
         </div>
         <a href="#contact" class="btn btn-ghost" @click.prevent="go('#contact')">
-          <span>طلب تنفيذ عمل جديد</span>
+          <span>{{ isRtl ? 'طلب تنفيذ عمل جديد' : 'Request a Project' }}</span>
           <svg width="12" height="12" viewBox="0 0 13 13" fill="none">
             <path d="M2 11L11 2M11 2H5M11 2V8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
           </svg>
@@ -242,10 +242,12 @@
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { usePortfolioStore } from '~/stores/portfolio'
+import { useLocale } from '~/composables/useLocale'
 import { useScrollReveal } from '~/composables/useScrollReveal'
 import ProjectCaseStudyDrawer from '~/components/public/ProjectCaseStudyDrawer.vue'
 
 const store = usePortfolioStore()
+const { t, isRtl } = useLocale()
 const router = useRouter()
 
 // Interactive Case Study Drawer State

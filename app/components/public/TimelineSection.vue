@@ -5,14 +5,14 @@
 
         <!-- Left Column: Sticky Title & Quick Summary -->
         <div class="tl-left anim-left">
-          <div class="eyebrow">{{ store.settings.timeline_section_eyebrow || 'المسيرة والمحطات • Career & Milestones' }}</div>
-          <h2 class="s-title">{{ store.settings.timeline_section_title || 'الخبرة المهنية' }} <span class="g-text">والمسار الوظيفي</span></h2>
-          <p class="s-sub">{{ store.settings.timeline_section_sub || 'أبرز المحطات والإنجازات المهنية والأنظمة والمشاريع البرمجية التي ساهمت في إنجازها بنجاح.' }}</p>
+          <div class="eyebrow">{{ eyebrow }}</div>
+          <h2 class="s-title">{{ title }} <span class="g-text">{{ titleHighlight }}</span></h2>
+          <p class="s-sub">{{ sub }}</p>
 
           <div class="tl-summary d-none d-md-flex">
             <div class="tls-header">
               <v-icon icon="mdi-history" size="18" color="#3B82F6" />
-              <span>تسلسل المحطات الزمنية</span>
+              <span>{{ locale === 'en' ? 'Chronological Milestones' : 'تسلسل المحطات الزمنية' }}</span>
             </div>
             <div class="tls-row" v-for="item in displayTimeline" :key="item.year">
               <span
@@ -69,9 +69,31 @@
 import { computed } from 'vue'
 import { usePortfolioStore } from '~/stores/portfolio'
 import { useScrollReveal } from '~/composables/useScrollReveal'
+import { useLocale } from '~/composables/useLocale'
 
 const store = usePortfolioStore()
+const { t, locale } = useLocale()
 useScrollReveal('.anim, .anim-left')
+
+const eyebrow = computed(() => {
+  if (locale.value === 'en') return t('timeline.eyebrow')
+  return store.settings.timeline_section_eyebrow || t('timeline.eyebrow')
+})
+
+const title = computed(() => {
+  if (locale.value === 'en') return t('timeline.title')
+  return store.settings.timeline_section_title || t('timeline.title')
+})
+
+const titleHighlight = computed(() => {
+  if (locale.value === 'en') return t('timeline.titleHighlight')
+  return store.settings.timeline_section_title_span || t('timeline.titleHighlight')
+})
+
+const sub = computed(() => {
+  if (locale.value === 'en') return t('timeline.sub')
+  return store.settings.timeline_section_sub || t('timeline.sub')
+})
 
 const displayTimeline = computed(() => {
   return store.timeline || []

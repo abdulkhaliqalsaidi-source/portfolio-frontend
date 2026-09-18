@@ -7,13 +7,16 @@
 </template>
 
 <script setup>
+import { useLocale } from '~/composables/useLocale'
+
 const theme = useCookie('theme', { default: () => 'dark' })
+const { locale, dir } = useLocale()
 
 useHead({
   htmlAttrs: {
     'data-theme': () => theme.value,
-    lang: 'ar',
-    dir: 'rtl'
+    lang: () => locale.value,
+    dir: () => dir.value
   }
 })
 </script>

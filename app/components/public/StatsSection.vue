@@ -2,9 +2,9 @@
   <section class="section stats-section-wrap" id="stats" v-if="hasStatsContent">
     <div class="container">
       <div class="section-head text-center">
-        <div class="eyebrow">{{ store.settings.stats_section_eyebrow || 'الرؤية والمنهجية المهنية • About & Philosophy' }}</div>
-        <h2 class="s-title">{{ store.settings.stats_section_title || 'تقديم حلول احترافية متكاملة' }} <span class="g-text">تخدم الأهداف بكفاءة</span></h2>
-        <p class="s-sub">{{ store.settings.stats_section_sub || 'منهجية عمل تركز على الدقة، الالتزام بأعلى معايير الجودة، وتحقيق النتائج المرجوة للعملاء والشركاء.' }}</p>
+        <div class="eyebrow">{{ isRtl ? (store.settings.stats_section_eyebrow || t('stats.eyebrow')) : t('stats.eyebrow') }}</div>
+        <h2 class="s-title">{{ isRtl ? (store.settings.stats_section_title || t('stats.title')) : t('stats.title') }} <span class="g-text">{{ isRtl ? 'تخدم الأهداف بكفاءة' : t('stats.titleHighlight') }}</span></h2>
+        <p class="s-sub">{{ isRtl ? (store.settings.stats_section_sub || t('stats.sub')) : t('stats.sub') }}</p>
       </div>
 
       <!-- Bento Grid Layout -->
@@ -24,7 +24,7 @@
                 <h3 class="bio-name">{{ dev.name || dev.full_name }}</h3>
                 <div class="bio-role">
                   <v-icon icon="mdi-code-tags" size="14" class="ml-1" />
-                  <span>{{ dev.title || 'Senior Software Engineer' }}</span>
+                  <span>{{ dev.title || t('stats.role') }}</span>
                 </div>
               </div>
             </div>
@@ -32,7 +32,7 @@
             <div class="bio-quote-box" v-if="dev.bio || dev.tagline">
               <v-icon icon="mdi-format-quote-open" size="24" class="quote-icon" />
               <p class="bio-text">
-                {{ dev.bio || dev.tagline }}
+                {{ isRtl ? (dev.bio || dev.tagline) : t('hero.tagline') }}
               </p>
             </div>
 
@@ -46,11 +46,11 @@
             <div class="bio-actions mt-5">
               <a v-if="dev.resume" :href="dev.resume" target="_blank" class="btn btn-primary btn-sm">
                 <v-icon icon="mdi-file-download-outline" size="16" class="ml-1" />
-                <span>تحميل السيرة الذاتية (CV)</span>
+                <span>{{ t('stats.downloadCv') }}</span>
               </a>
               <a href="#contact" class="btn btn-ghost btn-sm" @click.prevent="go('#contact')">
                 <v-icon icon="mdi-send-outline" size="15" class="ml-1" />
-                <span>طلب استشارة أو عمل</span>
+                <span>{{ t('stats.requestConsultation') }}</span>
               </a>
             </div>
           </div>
@@ -72,7 +72,7 @@
               </div>
               <span class="stat-badge">
                 <span class="badge-point" />
-                <span>إنجاز معتمد</span>
+                <span>{{ t('stats.verifiedAchievement') }}</span>
               </span>
             </div>
             
@@ -97,13 +97,13 @@
                   <v-icon icon="mdi-lightning-bolt" size="20" color="#F59E0B" />
                 </div>
                 <div>
-                  <h4 class="skills-title">{{ store.settings.skills_box_title || 'المهارات والخبرات التخصصية' }}</h4>
-                  <span class="skills-subtitle">تقييم الكفاءة ومستوى الاحتراف البرمجي لجميع الأدوات والتقنيات</span>
+                  <h4 class="skills-title">{{ isRtl ? (store.settings.skills_box_title || t('stats.coreCompetencies')) : t('stats.coreCompetencies') }}</h4>
+                  <span class="skills-subtitle">{{ isRtl ? 'تقييم الكفاءة ومستوى الاحتراف البرمجي لجميع الأدوات والتقنيات' : t('stats.competenciesDesc') }}</span>
                 </div>
               </div>
               <span class="skills-badge">
                 <v-icon icon="mdi-check-all" size="14" class="ml-1" />
-                <span>{{ allSkills.length }} مهارات معتمدة</span>
+                <span>{{ allSkills.length }} {{ t('stats.verifiedSkills') }}</span>
               </span>
             </div>
 
@@ -141,10 +141,12 @@
 <script setup>
 import { ref, computed, onMounted, nextTick } from 'vue'
 import { usePortfolioStore } from '~/stores/portfolio'
+import { useLocale } from '~/composables/useLocale'
 import CountUp from './CountUp.vue'
 import { useScrollReveal } from '~/composables/useScrollReveal'
 
 const store = usePortfolioStore()
+const { t, isRtl } = useLocale()
 const dev = computed(() => store.developer || {})
 const animated = ref(true)
 

@@ -2,9 +2,9 @@
   <section class="section" id="blog" v-if="blogPosts.length > 0">
     <div class="container">
       <div class="section-head">
-        <div class="eyebrow">{{ store.settings.blog_section_eyebrow || 'المقالات والرؤى' }}</div>
-        <h2 class="s-title">{{ store.settings.blog_section_title || 'المدونة والمقالات' }} <span class="g-text">المتخصصة</span></h2>
-        <p class="s-sub">{{ store.settings.blog_section_sub || 'مشاركات وتجارب عملية، شروحات وحلول مبتكرة، ورؤى متخصصة عبر مختلف مجالات العمل.' }}</p>
+        <div class="eyebrow">{{ eyebrow }}</div>
+        <h2 class="s-title">{{ title }} <span class="g-text">{{ titleHighlight }}</span></h2>
+        <p class="s-sub">{{ sub }}</p>
       </div>
 
       <!-- Blog Posts Grid -->
@@ -32,12 +32,12 @@
               <span class="category-badge">{{ post.category }}</span>
               <span class="featured-badge" v-if="post.is_featured">
                 <v-icon icon="mdi-star-four-points" size="12" class="ml-1" />
-                <span>مميز</span>
+                <span>{{ t('blog.featured') }}</span>
               </span>
             </div>
             <div class="reading-time-chip">
               <v-icon icon="mdi-clock-outline" size="13" class="ml-1" />
-              <span>{{ post.reading_time_minutes || 4 }} دقائق قراءة</span>
+              <span>{{ post.reading_time_minutes || 4 }} {{ t('blog.minRead') }}</span>
             </div>
           </div>
 
@@ -70,8 +70,8 @@
                 </span>
               </div>
               <div class="read-more-link">
-                <span>قراءة المقال</span>
-                <v-icon icon="mdi-arrow-left" size="16" class="read-arrow" />
+                <span>{{ t('blog.readMore') }}</span>
+                <v-icon :icon="locale === 'en' ? 'mdi-arrow-right' : 'mdi-arrow-left'" size="16" class="read-arrow" />
               </div>
             </div>
           </div>
@@ -81,9 +81,9 @@
       <!-- View All Blog CTA -->
       <div class="blog-all-cta text-center mt-10 anim d-4" v-if="blogPosts.length >= 3">
         <router-link to="/blog" class="btn btn-secondary btn-lg">
-          <v-icon icon="mdi-newspaper-variant-multiple-outline" size="18" class="ml-2" />
-          <span>استكشاف جميع المقالات في المدونة ({{ blogPosts.length }})</span>
-          <v-icon icon="mdi-arrow-left" size="18" class="mr-2" />
+          <v-icon icon="mdi-newspaper-variant-multiple-outline" size="18" class="mx-2" />
+          <span>{{ t('blog.allArticles') }} ({{ blogPosts.length }})</span>
+          <v-icon :icon="locale === 'en' ? 'mdi-arrow-right' : 'mdi-arrow-left'" size="18" class="mx-2" />
         </router-link>
       </div>
     </div>
@@ -95,10 +95,32 @@ import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { usePortfolioStore } from '~/stores/portfolio'
 import { useScrollReveal } from '~/composables/useScrollReveal'
+import { useLocale } from '~/composables/useLocale'
 
 const store = usePortfolioStore()
 const router = useRouter()
+const { t, locale } = useLocale()
 useScrollReveal('.anim')
+
+const eyebrow = computed(() => {
+  if (locale.value === 'en') return t('blog.eyebrow')
+  return store.settings.blog_section_eyebrow || t('blog.eyebrow')
+})
+
+const title = computed(() => {
+  if (locale.value === 'en') return t('blog.title')
+  return store.settings.blog_section_title || t('blog.title')
+})
+
+const titleHighlight = computed(() => {
+  if (locale.value === 'en') return t('blog.titleHighlight')
+  return store.settings.blog_section_title_span || t('blog.titleHighlight')
+})
+
+const sub = computed(() => {
+  if (locale.value === 'en') return t('blog.sub')
+  return store.settings.blog_section_sub || t('blog.sub')
+})
 
 const blogPosts = computed(() => store.blogPosts || [])
 const displayPosts = computed(() => blogPosts.value.slice(0, 3))
@@ -108,10 +130,10 @@ function navigateToPost(post) {
 }
 
 function formatDate(dateStr) {
-  if (!dateStr) return 'مؤخراً'
+  if (!dateStr) return locale.value === 'en' ? 'Recent' : 'مؤخراً'
   try {
     const d = new Date(dateStr)
-    return d.toLocaleDateString('ar-EG', { year: 'numeric', month: 'short', day: 'numeric' })
+    return d.toLocaleDateString(locale.value === 'en' ? 'en-US' : 'ar-EG', { year: 'numeric', month: 'short', day: 'numeric' })
   } catch (e) {
     return dateStr
   }
