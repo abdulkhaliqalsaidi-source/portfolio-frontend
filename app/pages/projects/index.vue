@@ -118,7 +118,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { usePortfolioStore } from '~/stores/portfolio'
 import { useSeoEngine } from '~/composables/useSeoEngine'
 import { useJsonLd } from '~/composables/useJsonLd'
@@ -126,10 +126,12 @@ import { useJsonLd } from '~/composables/useJsonLd'
 const portfolioStore = usePortfolioStore()
 
 await useAsyncData('projects-list', async () => {
-  if (!portfolioStore.isInitialized) {
-    await portfolioStore.fetchPublicContent()
-  }
+  await portfolioStore.fetchPublicContent()
   return true
+})
+
+onMounted(() => {
+  portfolioStore.fetchPublicContent()
 })
 
 const projects = computed(() => portfolioStore.projects || [])

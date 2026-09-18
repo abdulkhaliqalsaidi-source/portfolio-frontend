@@ -48,20 +48,20 @@ export default defineNuxtConfig({
   },
 
   runtimeConfig: {
-    apiServerUrl: process.env.NUXT_API_SERVER_URL || process.env.API_BASE_URL || 'http://127.0.0.1:8000/api',
+    apiServerUrl: process.env.NUXT_API_SERVER_URL || process.env.API_BASE_URL || 'https://portfolio-backend-1kar.onrender.com/api',
     public: {
-      apiBaseUrl: process.env.NUXT_PUBLIC_API_BASE_URL || process.env.API_BASE_URL || 'http://localhost:8000/api',
-      siteUrl: process.env.NUXT_PUBLIC_SITE_URL || process.env.SITE_URL || 'http://localhost:3000'
+      apiBaseUrl: process.env.NUXT_PUBLIC_API_BASE_URL || process.env.API_BASE_URL || 'https://portfolio-backend-1kar.onrender.com/api',
+      siteUrl: process.env.NUXT_PUBLIC_SITE_URL || process.env.SITE_URL || 'https://portfolio-frontend-pink-mu.vercel.app'
     }
   },
 
   // Hybrid Rendering Rules
   routeRules: {
-    '/': { prerender: true },
-    '/projects': { swr: 3600 },
-    '/projects/**': { swr: 3600 },
-    '/blog': { swr: 3600 },
-    '/blog/**': { swr: 3600 },
+    '/': { swr: 60 },
+    '/projects': { swr: 60 },
+    '/projects/**': { swr: 60 },
+    '/blog': { swr: 60 },
+    '/blog/**': { swr: 60 },
     '/admin/**': { ssr: false },
     '/project': { redirect: { to: '/projects', statusCode: 301 } },
     '/project/**': { redirect: { to: '/projects', statusCode: 301 } }

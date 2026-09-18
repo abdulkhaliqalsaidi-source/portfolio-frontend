@@ -22,16 +22,20 @@ import TechStack from '~/components/public/TechStack.vue'
 import ProjectsSection from '~/components/public/ProjectsSection.vue'
 import TestimonialsSection from '~/components/public/TestimonialsSection.vue'
 import TimelineSection from '~/components/public/TimelineSection.vue'
+import { onMounted } from 'vue'
 import ContactSection from '~/components/public/ContactSection.vue'
 
 const portfolioStore = usePortfolioStore()
 
 // Server-side data pre-fetch for instant SSR HTML rendering
 await useAsyncData('home-content', async () => {
-  if (!portfolioStore.isInitialized) {
-    await portfolioStore.fetchPublicContent()
-  }
+  await portfolioStore.fetchPublicContent()
   return true
+})
+
+// Ensure client-side always receives newest live content
+onMounted(() => {
+  portfolioStore.fetchPublicContent()
 })
 
 const dev = portfolioStore.developer
