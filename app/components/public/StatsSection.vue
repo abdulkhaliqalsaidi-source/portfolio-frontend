@@ -12,7 +12,6 @@
 
         <!-- Bento 1: Philosophy & Bio Card (Spans 2 cols on desktop) -->
         <div class="bento-card bento-bio anim">
-          <div class="card-ambient-glow bio-glow" />
           <div class="bio-inner">
             <div class="bio-header">
               <div class="bio-avatar-wrap">
@@ -64,7 +63,6 @@
           :class="`d-${(i % 4) + 1}`"
           :style="{ '--card-accent': s.color || '#3B82F6' }"
         >
-          <div class="card-ambient-glow" />
           <div class="stat-inner">
             <div class="stat-top">
               <div class="stat-icon-wrap">
@@ -89,7 +87,6 @@
 
         <!-- Bento Skills: Core Competencies (Spans full width) -->
         <div class="bento-card bento-skills anim d-4" v-if="allSkills.length">
-          <div class="card-ambient-glow skills-glow" />
           <div class="skills-inner">
             <div class="skills-head">
               <div class="skills-title-wrap">
@@ -122,11 +119,9 @@
                     class="sr-fill"
                     :style="{
                       width: getPct(s) + '%',
-                      background: `linear-gradient(90deg, ${s.color || '#3B82F6'}, #38BDF8)`
+                      background: s.color || 'var(--primary)'
                     }"
-                  >
-                    <span class="sr-glow-head" />
-                  </div>
+                  />
                 </div>
               </div>
             </div>
@@ -235,53 +230,19 @@ onMounted(async () => {
 /* Base Bento Card */
 .bento-card {
   position: relative;
-  background: rgba(15, 23, 42, 0.75);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 24px;
-  padding: clamp(22px, 3vw, 30px);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-xl, 12px);
+  padding: clamp(20px, 2.5vw, 26px);
   overflow: hidden;
-  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05) inset;
-  transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--t-base), border-color var(--t-base), box-shadow var(--t-base);
 }
 
 .bento-card:hover {
-  transform: translateY(-5px);
-  border-color: rgba(59, 130, 246, 0.4);
-  box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.7), 0 0 30px rgba(59, 130, 246, 0.15);
-}
-
-/* Card Ambient Background Glow */
-.card-ambient-glow {
-  position: absolute;
-  top: -30px;
-  right: -30px;
-  width: 140px;
-  height: 140px;
-  border-radius: 50%;
-  background: radial-gradient(circle, var(--card-accent, rgba(59, 130, 246, 0.3)) 0%, transparent 70%);
-  opacity: 0.25;
-  filter: blur(25px);
-  pointer-events: none;
-  transition: opacity 0.3s ease;
-}
-.bento-card:hover .card-ambient-glow {
-  opacity: 0.5;
-}
-
-.bio-glow {
-  background: radial-gradient(circle, rgba(59, 130, 246, 0.35), rgba(123, 110, 246, 0.2), transparent 70%);
-  width: 220px;
-  height: 220px;
-}
-
-.skills-glow {
-  background: radial-gradient(circle, rgba(245, 158, 11, 0.25), rgba(59, 130, 246, 0.2), transparent 70%);
-  width: 280px;
-  height: 280px;
-  top: -40px;
-  left: 20%;
+  transform: translateY(-2px);
+  border-color: var(--border-h);
+  box-shadow: var(--shadow-md);
 }
 
 /* Bio Card */
@@ -309,12 +270,11 @@ onMounted(async () => {
 
 .bio-avatar-wrap {
   position: relative;
-  width: 56px;
-  height: 56px;
-  border-radius: 16px;
+  width: 52px;
+  height: 52px;
+  border-radius: var(--r-md, 8px);
   overflow: hidden;
-  border: 2px solid rgba(59, 130, 246, 0.35);
-  box-shadow: 0 0 20px rgba(59, 130, 246, 0.25);
+  border: 1px solid var(--border);
   background: var(--bg-subtle);
   flex-shrink: 0;
 }
@@ -330,25 +290,24 @@ onMounted(async () => {
   position: absolute;
   bottom: 2px;
   left: 2px;
-  width: 10px;
-  height: 10px;
+  width: 9px;
+  height: 9px;
   border-radius: 50%;
   background: #10B981;
-  border: 2px solid #0F172A;
-  box-shadow: 0 0 6px #10B981;
+  border: 2px solid var(--bg-card);
 }
 
 .bio-name {
   font-family: var(--f-display, 'Tajawal', sans-serif);
-  font-size: 1.25rem;
+  font-size: 1.2rem;
   font-weight: 800;
-  color: #FFFFFF;
+  color: var(--t1);
   line-height: 1.2;
 }
 
 .bio-role {
   font-size: 0.8rem;
-  color: #38BDF8;
+  color: var(--primary);
   font-family: var(--f-mono, 'Tajawal', sans-serif);
   font-weight: 600;
   display: inline-flex;
@@ -358,11 +317,11 @@ onMounted(async () => {
 
 .bio-quote-box {
   position: relative;
-  background: rgba(30, 41, 59, 0.4);
+  background: var(--bg-subtle);
   border-right: 3px solid var(--primary);
-  border-radius: 12px;
-  padding: 14px 18px 14px 14px;
-  margin-bottom: 18px;
+  border-radius: var(--r-md, 8px);
+  padding: 14px 16px;
+  margin-bottom: 16px;
 }
 
 .quote-icon {
@@ -372,9 +331,9 @@ onMounted(async () => {
 }
 
 .bio-text {
-  font-size: 0.92rem;
-  color: #E2E8F0;
-  line-height: 1.8;
+  font-size: 0.9rem;
+  color: var(--t2);
+  line-height: 1.75;
   font-family: var(--f-body, 'Cairo', sans-serif);
 }
 
@@ -387,31 +346,30 @@ onMounted(async () => {
 
 .bio-tag {
   font-size: 0.76rem;
-  font-weight: 700;
-  padding: 5px 12px;
-  border-radius: 100px;
-  background: rgba(59, 130, 246, 0.1);
-  border: 1px solid rgba(59, 130, 246, 0.25);
-  color: #93C5FD;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: var(--r-xs, 4px);
+  background: var(--bg-subtle);
+  border: 1px solid var(--border);
+  color: var(--t2);
   font-family: var(--f-body, 'Cairo', sans-serif);
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  transition: all 0.2s ease;
+  transition: all var(--t-fast);
 }
 
 .bio-tag:hover {
-  background: rgba(59, 130, 246, 0.2);
-  border-color: rgba(59, 130, 246, 0.5);
-  color: #FFFFFF;
-  transform: translateY(-2px);
+  background: var(--primary-subtle);
+  border-color: var(--primary-border);
+  color: var(--primary);
 }
 
 .tag-bullet {
   width: 5px;
   height: 5px;
   border-radius: 50%;
-  background: #38BDF8;
+  background: var(--primary);
 }
 
 .bio-actions {
@@ -441,37 +399,30 @@ onMounted(async () => {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 20px;
+  margin-bottom: 18px;
 }
 
 .stat-icon-wrap {
-  width: 44px;
-  height: 44px;
-  border-radius: 14px;
-  background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(59, 130, 246, 0.03));
-  border: 1px solid var(--card-accent, rgba(59, 130, 246, 0.35));
-  color: var(--card-accent, #3B82F6);
+  width: 40px;
+  height: 40px;
+  border-radius: var(--r-sm, 6px);
+  background: var(--bg-subtle);
+  border: 1px solid var(--border);
+  color: var(--card-accent, var(--primary));
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 0 16px rgba(59, 130, 246, 0.2);
-  transition: all 0.3s ease;
-}
-
-.bento-stat:hover .stat-icon-wrap {
-  transform: scale(1.1) rotate(5deg);
-  box-shadow: 0 0 25px rgba(59, 130, 246, 0.4);
 }
 
 .stat-badge {
   font-size: 0.7rem;
   font-weight: 700;
-  color: #38BDF8;
+  color: var(--primary);
   font-family: var(--f-body, 'Cairo', sans-serif);
-  background: rgba(59, 130, 246, 0.08);
-  border: 1px solid rgba(59, 130, 246, 0.2);
-  padding: 4px 10px;
-  border-radius: 100px;
+  background: var(--primary-subtle);
+  border: 1px solid var(--primary-border);
+  padding: 3px 8px;
+  border-radius: var(--r-xs, 4px);
   display: inline-flex;
   align-items: center;
   gap: 5px;
@@ -481,8 +432,7 @@ onMounted(async () => {
   width: 5px;
   height: 5px;
   border-radius: 50%;
-  background: #38BDF8;
-  box-shadow: 0 0 6px #38BDF8;
+  background: var(--primary);
 }
 
 .stat-number-wrap {
@@ -492,24 +442,24 @@ onMounted(async () => {
 
 .stat-number {
   font-family: var(--f-display, 'Tajawal', sans-serif);
-  font-size: clamp(2.4rem, 3.2vw, 3rem);
+  font-size: clamp(2.2rem, 3vw, 2.8rem);
   font-weight: 900;
-  color: #FFFFFF;
+  color: var(--t1);
   line-height: 1;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.01em;
   margin-bottom: 6px;
 }
 
 .stat-label {
-  font-size: 0.95rem;
-  font-weight: 800;
-  color: #94A3B8;
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--t2);
   font-family: var(--f-display, 'Tajawal', sans-serif);
 }
 
 .stat-desc {
   font-size: 0.78rem;
-  color: #64748B;
+  color: var(--t3);
   font-family: var(--f-body, 'Cairo', sans-serif);
   line-height: 1.5;
   margin-top: 4px;
@@ -529,23 +479,23 @@ onMounted(async () => {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 24px;
-  padding-bottom: 16px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  margin-bottom: 20px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--border);
 }
 
 .skills-title-wrap {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 12px;
 }
 
 .skills-icon-wrap {
-  width: 42px;
-  height: 42px;
-  border-radius: 12px;
-  background: rgba(245, 158, 11, 0.12);
-  border: 1px solid rgba(245, 158, 11, 0.3);
+  width: 38px;
+  height: 38px;
+  border-radius: var(--r-sm, 6px);
+  background: var(--bg-subtle);
+  border: 1px solid var(--border);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -553,26 +503,26 @@ onMounted(async () => {
 
 .skills-title {
   font-family: var(--f-display, 'Tajawal', sans-serif);
-  font-size: 1.2rem;
+  font-size: 1.15rem;
   font-weight: 800;
-  color: #FFFFFF;
+  color: var(--t1);
   margin-bottom: 2px;
 }
 
 .skills-subtitle {
   font-size: 0.78rem;
-  color: #94A3B8;
+  color: var(--t3);
   font-family: var(--f-body, 'Cairo', sans-serif);
 }
 
 .skills-badge {
-  font-size: 0.76rem;
+  font-size: 0.74rem;
   font-weight: 700;
   color: #10B981;
-  background: rgba(16, 185, 129, 0.1);
+  background: rgba(16, 185, 129, 0.08);
   border: 1px solid rgba(16, 185, 129, 0.25);
-  padding: 5px 12px;
-  border-radius: 100px;
+  padding: 4px 10px;
+  border-radius: var(--r-xs, 4px);
   display: inline-flex;
   align-items: center;
 }
@@ -580,13 +530,13 @@ onMounted(async () => {
 .skills-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 20px 32px;
+  gap: 18px 28px;
 }
 
 .skill-row {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
 }
 
 .sr-info {
@@ -605,17 +555,16 @@ onMounted(async () => {
 }
 
 .sr-bullet {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
   border-radius: 50%;
-  box-shadow: 0 0 8px currentColor;
   flex-shrink: 0;
 }
 
 .sr-name {
-  font-size: 0.92rem;
-  font-weight: 700;
-  color: #F1F5F9;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--t1);
   font-family: var(--f-body, 'Cairo', sans-serif);
   white-space: nowrap;
   overflow: hidden;
@@ -623,55 +572,36 @@ onMounted(async () => {
 }
 
 .sr-pct {
-  font-size: 0.88rem;
-  font-weight: 800;
-  font-family: var(--f-mono, 'Tajawal', sans-serif);
-  color: #38BDF8;
+  font-size: 0.82rem;
+  font-weight: 700;
+  font-family: var(--f-mono);
+  color: var(--primary);
   flex-shrink: 0;
   white-space: nowrap;
 }
 
 .sr-track {
-  height: 10px;
-  background: rgba(30, 41, 59, 0.9);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 100px;
+  height: 6px;
+  background: var(--bg-subtle);
+  border: 1px solid var(--border);
+  border-radius: var(--r-xs, 3px);
   overflow: hidden;
   position: relative;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3) inset;
 }
 
 .sr-fill {
   height: 100%;
-  border-radius: 100px;
+  border-radius: var(--r-xs, 3px);
   position: relative;
-  min-width: 14px;
-  box-shadow: 0 0 14px rgba(59, 130, 246, 0.6);
-  transition: width 1.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-  animation: grow-fill 1.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-@keyframes grow-fill {
-  from { width: 0% !important; }
-}
-
-.sr-glow-head {
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  width: 10px;
-  background: #FFFFFF;
-  opacity: 0.9;
-  filter: blur(1.5px);
-  border-radius: 100px;
+  min-width: 8px;
+  transition: width 1s ease;
 }
 
 /* Light Theme Overrides */
 [data-theme="light"] .bento-card {
-  background: rgba(255, 255, 255, 0.85);
-  border-color: rgba(226, 232, 240, 0.9);
-  box-shadow: 0 20px 40px -15px rgba(15, 23, 42, 0.08), 0 0 0 1px rgba(255, 255, 255, 0.9) inset;
+  background: #FFFFFF;
+  border-color: var(--border);
+  box-shadow: var(--shadow-sm);
 }
 
 [data-theme="light"] .bio-name,

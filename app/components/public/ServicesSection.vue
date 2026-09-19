@@ -84,123 +84,119 @@ const displayServices = computed(() => {
 
 .service-card {
   position: relative;
-  background: rgba(15, 23, 42, 0.75);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 22px;
-  padding: clamp(22px, 2.8vw, 30px);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg, 10px);
+  padding: clamp(20px, 2.5vw, 26px);
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05) inset;
-  transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--t-base), border-color var(--t-base), box-shadow var(--t-base);
 }
 
 .service-card:hover {
-  transform: translateY(-6px);
-  border-color: var(--sc, rgba(59, 130, 246, 0.5));
-  box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.7), 0 0 30px var(--sc, rgba(59, 130, 246, 0.2));
+  transform: translateY(-2px);
+  border-color: var(--border-h);
+  box-shadow: var(--shadow-md);
 }
 
 .s-top {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 20px;
+  margin-bottom: 18px;
 }
 
 .s-icon-box {
-  width: 48px;
-  height: 48px;
-  border-radius: 14px;
-  background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(59, 130, 246, 0.03));
-  border: 1px solid var(--sc, rgba(59, 130, 246, 0.35));
+  width: 42px;
+  height: 42px;
+  border-radius: var(--r-sm, 6px);
+  background: var(--bg-subtle);
+  border: 1px solid var(--border);
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 0 16px rgba(59, 130, 246, 0.2);
-  transition: all 0.3s ease;
+  transition: border-color var(--t-fast);
 }
 
 .service-card:hover .s-icon-box {
-  transform: scale(1.1) rotate(6deg);
-  box-shadow: 0 0 25px var(--sc, rgba(59, 130, 246, 0.4));
+  border-color: var(--border-h);
 }
 
 .s-num {
-  font-size: 0.84rem;
+  font-size: 0.8rem;
   color: var(--t3);
-  font-weight: 800;
-  font-family: var(--f-mono, 'Tajawal', sans-serif);
-  padding: 3px 10px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 100px;
+  font-weight: 700;
+  font-family: var(--f-mono);
+  padding: 2px 8px;
+  background: var(--bg-subtle);
+  border: 1px solid var(--border);
+  border-radius: var(--r-xs, 4px);
 }
 
 .s-card-title {
   font-family: var(--f-display, 'Tajawal', sans-serif);
-  font-size: clamp(1.1rem, 1.4vw, 1.25rem);
-  font-weight: 800;
-  color: #FFFFFF;
-  margin-bottom: 10px;
+  font-size: clamp(1.05rem, 1.3vw, 1.2rem);
+  font-weight: 700;
+  color: var(--t1);
+  margin-bottom: 8px;
   line-height: 1.35;
 }
 
 .s-card-desc {
-  font-size: 0.9rem;
-  color: #94A3B8;
-  line-height: 1.8;
-  margin-bottom: 20px;
+  font-size: 0.88rem;
+  color: var(--t2);
+  line-height: 1.75;
+  margin-bottom: 18px;
   font-family: var(--f-body, 'Cairo', sans-serif);
 }
 
 .s-features {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
   margin-top: auto;
-  padding-top: 16px;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
 }
 
 .s-feature-item {
   display: flex;
   align-items: center;
-  font-size: 0.84rem;
-  font-weight: 600;
-  color: #CBD5E1;
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--t2);
   font-family: var(--f-body, 'Cairo', sans-serif);
 }
 
 /* Light Mode Overrides */
 [data-theme="light"] .service-card {
-  background: rgba(255, 255, 255, 0.88);
-  border-color: rgba(226, 232, 240, 0.9);
-  box-shadow: 0 20px 40px -15px rgba(15, 23, 42, 0.08), 0 0 0 1px rgba(255, 255, 255, 0.9) inset;
+  background: #FFFFFF;
+  border-color: var(--border);
+  box-shadow: var(--shadow-sm);
 }
 
 [data-theme="light"] .s-card-title {
-  color: #0F172A;
+  color: var(--t1);
 }
 
 [data-theme="light"] .s-card-desc {
-  color: #475569;
+  color: var(--t2);
 }
 
 [data-theme="light"] .s-feature-item {
-  color: #334155;
+  color: var(--t2);
 }
 
 [data-theme="light"] .s-features {
-  border-top-color: #E2E8F0;
+  border-top-color: var(--border);
 }
 
 [data-theme="light"] .s-num {
-  background: #F1F5F9;
-  border-color: #E2E8F0;
-  color: #64748B;
+  background: var(--bg-subtle);
+  border-color: var(--border);
+  color: var(--t3);
 }
 
 @media (max-width: 600px) {

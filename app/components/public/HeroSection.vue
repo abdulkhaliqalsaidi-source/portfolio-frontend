@@ -64,10 +64,6 @@
         <!-- Right: Prominent Developer Photo & Identity Frame -->
         <v-col cols="12" lg="5" md="5" class="hero-avatar-col">
           <div class="avatar-wrap" ref="elAvatar">
-            <!-- Dynamic 3D Ambient Aura & Glow Mesh -->
-            <div class="avatar-ambient-glow" />
-            <div class="avatar-glow-ring" />
-
             <!-- Main Portrait Frame -->
             <div class="avatar-frame">
               <img
@@ -80,8 +76,6 @@
               <div v-else class="d-flex align-center justify-center h-100 w-100 fallback-avatar">
                 <v-icon icon="mdi-account-tie" size="110" color="var(--primary)" />
               </div>
-              <div class="avatar-shine" />
-              <div class="avatar-border-glow" />
             </div>
 
             <!-- Floating Stat Badge Top: Projects -->
@@ -322,34 +316,7 @@ onUnmounted(() => clearTimeout(timer))
   }
 }
 
-/* Ambient Aura & Rings */
-.avatar-ambient-glow {
-  position: absolute;
-  inset: -20px;
-  border-radius: 40px;
-  background: radial-gradient(circle at 35% 30%, rgba(59, 130, 246, 0.45), rgba(123, 110, 246, 0.35) 45%, rgba(16, 185, 129, 0.25) 75%, transparent 90%);
-  filter: blur(40px);
-  opacity: 0.85;
-  z-index: 1;
-  pointer-events: none;
-  animation: aura-pulse 8s ease-in-out infinite alternate;
-}
-@keyframes aura-pulse {
-  0% { transform: scale(0.95); opacity: 0.7; }
-  100% { transform: scale(1.05); opacity: 1; filter: blur(48px); }
-}
-
-.avatar-glow-ring {
-  position: absolute;
-  inset: -5px;
-  border-radius: 32px;
-  background: linear-gradient(135deg, rgba(59, 130, 246, 0.5), rgba(123, 110, 246, 0.3) 50%, rgba(16, 185, 129, 0.4));
-  opacity: 0.65;
-  z-index: 1;
-  filter: blur(8px);
-}
-
-/* Avatar Frame */
+/* Avatar Frame & Identity Presentation */
 .avatar-wrap {
   position: relative;
   width: clamp(290px, 28vw, 370px);
@@ -361,19 +328,20 @@ onUnmounted(() => clearTimeout(timer))
 .avatar-frame {
   width: 100%;
   height: 100%;
-  border-radius: 28px;
+  border-radius: var(--r-xl, 14px);
   overflow: hidden;
   position: relative;
-  border: 2px solid rgba(255, 255, 255, 0.16);
-  background: linear-gradient(180deg, rgba(30, 41, 59, 0.7) 0%, rgba(15, 23, 42, 0.95) 100%);
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.08) inset;
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  box-shadow: var(--shadow-lg);
   z-index: 2;
-  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.4s ease;
+  transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .avatar-wrap:hover .avatar-frame {
-  transform: translateY(-6px) scale(1.01);
-  box-shadow: 0 35px 65px -15px rgba(0, 0, 0, 0.8), 0 0 30px rgba(59, 130, 246, 0.3);
+  transform: translateY(-3px);
+  border-color: var(--border-h);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.35);
 }
 
 .avatar-img {
@@ -382,92 +350,60 @@ onUnmounted(() => clearTimeout(timer))
   object-fit: cover;
   object-position: top center;
   display: block;
-  transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+  transition: transform 0.4s ease;
 }
 
 .avatar-wrap:hover .avatar-img {
-  transform: scale(1.04);
+  transform: scale(1.02);
 }
 
 .fallback-avatar {
   min-height: 370px;
-  background: linear-gradient(135deg, var(--bg-subtle), var(--bg-2));
+  background: var(--bg-card);
 }
 
-.avatar-shine {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(180deg, transparent 55%, rgba(10, 15, 29, 0.6) 85%, rgba(10, 15, 29, 0.9) 100%);
-  pointer-events: none;
-}
-
-.avatar-border-glow {
-  position: absolute;
-  inset: 0;
-  border-radius: 26px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  pointer-events: none;
-}
-
-/* Floating Bento Badges */
+/* Stationary Metric Badges */
 .float-card {
   position: absolute;
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 12px 18px;
-  border-radius: 18px;
-  background: rgba(15, 23, 42, 0.82);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.08) inset;
+  padding: 10px 16px;
+  border-radius: var(--r-lg, 10px);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-md);
   font-family: var(--f-body, 'Cairo', sans-serif);
   z-index: 5;
-  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
 }
 
 .float-card:hover {
-  transform: translateY(-4px) scale(1.05);
-  box-shadow: 0 25px 50px -10px rgba(0, 0, 0, 0.75), 0 0 25px rgba(59, 130, 246, 0.3);
-  border-color: rgba(255, 255, 255, 0.25);
+  transform: translateY(-2px);
+  border-color: var(--border-h);
+  box-shadow: var(--shadow-lg);
 }
 
 .fc-top {
   top: 24px;
-  right: -24px;
-  animation: float-badge-1 5s ease-in-out infinite alternate;
+  right: -16px;
 }
 
 .fc-bottom {
-  bottom: 30px;
-  left: -24px;
-  animation: float-badge-2 6s ease-in-out infinite alternate;
-}
-
-@keyframes float-badge-1 {
-  0% { transform: translateY(0px) rotate(0deg); }
-  50% { transform: translateY(-8px) rotate(1deg); }
-  100% { transform: translateY(-3px) rotate(-1deg); }
-}
-
-@keyframes float-badge-2 {
-  0% { transform: translateY(0px) rotate(0deg); }
-  50% { transform: translateY(8px) rotate(-1deg); }
-  100% { transform: translateY(3px) rotate(1deg); }
+  bottom: 24px;
+  left: -16px;
 }
 
 .fc-icon-wrap {
-  width: 40px;
-  height: 40px;
-  border-radius: 12px;
-  background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(59, 130, 246, 0.05));
-  border: 1px solid var(--badge-color, rgba(59, 130, 246, 0.4));
-  color: var(--badge-color, #3B82F6);
+  width: 38px;
+  height: 38px;
+  border-radius: var(--r-sm, 6px);
+  background: var(--bg-subtle);
+  border: 1px solid var(--border);
+  color: var(--badge-color, var(--primary));
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 0 16px rgba(59, 130, 246, 0.25);
   flex-shrink: 0;
 }
 
@@ -477,17 +413,17 @@ onUnmounted(() => clearTimeout(timer))
 }
 
 .fc-val {
-  font-size: 1.18rem;
+  font-size: 1.12rem;
   font-weight: 800;
-  color: #FFFFFF;
+  color: var(--t1);
   line-height: 1.2;
   font-family: var(--f-display, 'Tajawal', sans-serif);
-  letter-spacing: -0.02em;
+  letter-spacing: -0.01em;
 }
 
 .fc-lbl {
   font-size: 0.74rem;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--t3);
   font-weight: 600;
   margin-top: 1px;
 }
@@ -495,71 +431,66 @@ onUnmounted(() => clearTimeout(timer))
 /* Live Availability Status Pill */
 .avail-badge {
   position: absolute;
-  bottom: -16px;
+  bottom: -14px;
   right: 50%;
   transform: translateX(50%);
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 8px 20px;
-  border-radius: 100px;
-  background: rgba(15, 23, 42, 0.88);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(16, 185, 129, 0.45);
-  box-shadow: 0 12px 30px -5px rgba(0, 0, 0, 0.6), 0 0 20px rgba(16, 185, 129, 0.25);
+  padding: 6px 16px;
+  border-radius: 9999px;
+  background: var(--bg-card);
+  border: 1px solid rgba(16, 185, 129, 0.35);
+  box-shadow: var(--shadow-sm);
   white-space: nowrap;
   z-index: 6;
-  transition: all 0.3s ease;
+  transition: transform 0.2s ease, border-color 0.2s ease;
 }
 
 .avail-badge:hover {
-  transform: translateX(50%) translateY(-2px);
-  box-shadow: 0 16px 35px -5px rgba(0, 0, 0, 0.7), 0 0 25px rgba(16, 185, 129, 0.4);
-  border-color: rgba(16, 185, 129, 0.7);
+  transform: translateX(50%) translateY(-1px);
+  border-color: rgba(16, 185, 129, 0.6);
 }
 
 .avail-dot {
-  width: 8px;
-  height: 8px;
+  width: 7px;
+  height: 7px;
   border-radius: 50%;
   background: #10B981;
-  box-shadow: 0 0 10px #10B981;
-  animation: pulse-dot 1.8s infinite;
 }
 
 .avail-text {
-  font-size: 0.82rem;
-  font-weight: 800;
-  color: #34D399;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #10B981;
   font-family: var(--f-body, 'Cairo', sans-serif);
 }
 
 /* Light Theme Overrides */
 [data-theme="light"] .avatar-frame {
-  border-color: rgba(255, 255, 255, 0.9);
-  background: linear-gradient(180deg, rgba(241, 245, 249, 0.8), rgba(226, 232, 240, 0.95));
-  box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.15), 0 0 0 1px rgba(226, 232, 240, 0.8);
+  border-color: var(--border);
+  background: #FFFFFF;
+  box-shadow: var(--shadow-md);
 }
 
 [data-theme="light"] .float-card {
-  background: rgba(255, 255, 255, 0.88);
-  border-color: rgba(226, 232, 240, 0.9);
-  box-shadow: 0 20px 40px -10px rgba(15, 23, 42, 0.12), 0 0 0 1px rgba(255, 255, 255, 0.9) inset;
+  background: #FFFFFF;
+  border-color: var(--border);
+  box-shadow: var(--shadow-sm);
 }
 
 [data-theme="light"] .fc-val {
-  color: #0F172A;
+  color: var(--t1);
 }
 
 [data-theme="light"] .fc-lbl {
-  color: #64748B;
+  color: var(--t3);
 }
 
 [data-theme="light"] .avail-badge {
-  background: rgba(255, 255, 255, 0.92);
-  border-color: rgba(16, 185, 129, 0.5);
-  box-shadow: 0 12px 30px -5px rgba(16, 185, 129, 0.18);
+  background: #FFFFFF;
+  border-color: rgba(16, 185, 129, 0.4);
+  box-shadow: var(--shadow-sm);
 }
 
 [data-theme="light"] .avail-text {

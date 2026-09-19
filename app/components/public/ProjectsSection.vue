@@ -433,20 +433,18 @@ function handleImgFallback(e) {
 .hero-case-study {
   display: grid;
   grid-template-columns: 1.25fr 1fr;
-  background: rgba(15, 23, 42, 0.8);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 26px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-xl, 12px);
   overflow: hidden;
   cursor: pointer;
-  box-shadow: 0 25px 50px -15px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.05) inset;
-  transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: var(--shadow-md);
+  transition: transform var(--t-base), border-color var(--t-base), box-shadow var(--t-base);
 }
 .hero-case-study:hover {
-  border-color: var(--proj-accent, rgba(59, 130, 246, 0.5));
-  transform: translateY(-6px);
-  box-shadow: 0 35px 70px -15px rgba(0, 0, 0, 0.75), 0 0 35px color-mix(in srgb, var(--proj-accent, #3B82F6) 25%, transparent);
+  border-color: var(--border-h);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
 }
 
 .hcs-preview {
@@ -488,12 +486,12 @@ function handleImgFallback(e) {
   display: inline-flex;
   align-items: center;
   font-size: 0.78rem;
-  font-weight: 800;
-  color: #38BDF8;
-  background: rgba(59, 130, 246, 0.12);
-  border: 1px solid rgba(59, 130, 246, 0.3);
-  padding: 5px 14px;
-  border-radius: 100px;
+  font-weight: 700;
+  color: var(--primary);
+  background: var(--primary-subtle);
+  border: 1px solid var(--primary-border);
+  padding: 4px 10px;
+  border-radius: var(--r-xs, 4px);
   font-family: var(--f-body, 'Cairo', sans-serif);
 }
 .hcs-year {
@@ -524,9 +522,9 @@ function handleImgFallback(e) {
   grid-template-columns: 1fr 1fr;
   gap: 12px;
   padding: 14px 18px;
-  background: rgba(30, 41, 59, 0.5);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 16px;
+  background: var(--bg-subtle);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md, 8px);
   margin-bottom: 20px;
 }
 .hcs-spec-item { display: flex; flex-direction: column; }
@@ -608,15 +606,13 @@ function handleImgFallback(e) {
 .split-card {
   display: grid;
   grid-template-columns: 1.1fr 1fr;
-  background: rgba(15, 23, 42, 0.75);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 24px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-xl, 12px);
   overflow: hidden;
   cursor: pointer;
-  box-shadow: 0 20px 45px -12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05) inset;
-  transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--t-base), border-color var(--t-base), box-shadow var(--t-base);
 }
 .split-card.reverse-split {
   grid-template-columns: 1fr 1.1fr;
@@ -624,19 +620,19 @@ function handleImgFallback(e) {
 .split-card.reverse-split .split-preview {
   order: 2;
   border-left: none;
-  border-right: 1px solid rgba(255, 255, 255, 0.08);
+  border-right: 1px solid var(--border);
 }
 .split-card:hover {
-  border-color: color-mix(in srgb, var(--proj-accent, #3B82F6) 50%, transparent);
-  transform: translateY(-5px);
-  box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.7), 0 0 30px color-mix(in srgb, var(--proj-accent, #3B82F6) 20%, transparent);
+  border-color: var(--border-h);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
 }
 
 .split-preview {
   display: flex;
   flex-direction: column;
-  background: #0B1120;
-  border-left: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--bg-subtle);
+  border-left: 1px solid var(--border);
 }
 .split-img-box {
   height: 100%;
@@ -649,37 +645,37 @@ function handleImgFallback(e) {
   height: 100%;
   object-fit: cover;
   display: block;
-  transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+  transition: transform 0.4s ease;
 }
-.split-card:hover .split-img-box img { transform: scale(1.04); }
+.split-card:hover .split-img-box img { transform: scale(1.02); }
 
 .split-content {
-  padding: clamp(22px, 3.2vw, 34px);
+  padding: clamp(20px, 3vw, 30px);
   display: flex;
   flex-direction: column;
   justify-content: center;
 }
 .tag-primary {
   font-size: 0.78rem;
-  font-weight: 800;
-  color: var(--proj-accent, #38BDF8);
+  font-weight: 700;
+  color: var(--primary);
   font-family: var(--f-body, 'Cairo', sans-serif);
 }
-.split-year { color: #64748B; font-weight: 700; }
+.split-year { color: var(--t3); font-weight: 600; }
 
 .split-title {
   font-family: var(--f-display, 'Tajawal', sans-serif);
-  font-size: clamp(1.2rem, 1.8vw, 1.5rem);
+  font-size: clamp(1.15rem, 1.6vw, 1.4rem);
   font-weight: 800;
-  color: #FFFFFF;
-  margin-bottom: 10px;
+  color: var(--t1);
+  margin-bottom: 8px;
   line-height: 1.3;
 }
 .split-desc {
   font-size: 0.88rem;
-  color: #94A3B8;
+  color: var(--t2);
   line-height: 1.75;
-  margin-bottom: 18px;
+  margin-bottom: 16px;
   font-family: var(--f-body, 'Cairo', sans-serif);
 }
 .split-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; }
@@ -694,22 +690,20 @@ function handleImgFallback(e) {
   gap: clamp(18px, 2.5vw, 26px);
 }
 .grid-proj-card {
-  background: rgba(15, 23, 42, 0.75);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 22px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg, 10px);
   overflow: hidden;
   cursor: pointer;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05) inset;
-  transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--t-base), border-color var(--t-base), box-shadow var(--t-base);
 }
 .grid-proj-card:hover {
-  border-color: rgba(59, 130, 246, 0.45);
-  transform: translateY(-5px);
-  box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.7), 0 0 30px rgba(59, 130, 246, 0.18);
+  border-color: var(--border-h);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
 }
 
 .gpc-window { background: #0B1120; border-bottom: 1px solid rgba(255, 255, 255, 0.08); }

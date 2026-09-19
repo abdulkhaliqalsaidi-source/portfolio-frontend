@@ -117,12 +117,11 @@ const displayTimeline = computed(() => {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  padding: 20px;
-  background: rgba(15, 23, 42, 0.75);
-  backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 20px;
-  box-shadow: 0 15px 35px -10px rgba(0, 0, 0, 0.5);
+  padding: 18px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg, 10px);
+  box-shadow: var(--shadow-sm);
 }
 
 .tls-header {
@@ -130,10 +129,10 @@ const displayTimeline = computed(() => {
   align-items: center;
   gap: 8px;
   font-size: 0.82rem;
-  font-weight: 800;
-  color: #38BDF8;
+  font-weight: 700;
+  color: var(--primary);
   padding-bottom: 10px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid var(--border);
   font-family: var(--f-display, 'Tajawal', sans-serif);
 }
 
@@ -144,22 +143,22 @@ const displayTimeline = computed(() => {
 }
 
 .tls-year {
-  font-size: 0.78rem;
-  font-weight: 800;
-  font-family: var(--f-mono, 'Tajawal', sans-serif);
-  color: #38BDF8;
-  min-width: 65px;
-  padding: 2px 8px;
-  border-radius: 6px;
-  background: rgba(59, 130, 246, 0.1);
-  border: 1px solid rgba(59, 130, 246, 0.25);
+  font-size: 0.76rem;
+  font-weight: 700;
+  font-family: var(--f-mono);
+  color: var(--primary);
+  min-width: 60px;
+  padding: 2px 6px;
+  border-radius: var(--r-xs, 4px);
+  background: var(--primary-subtle);
+  border: 1px solid var(--primary-border);
   text-align: center;
 }
 
 .tls-title {
   font-size: 0.82rem;
   font-weight: 600;
-  color: #CBD5E1;
+  color: var(--t2);
   font-family: var(--f-body, 'Cairo', sans-serif);
   white-space: nowrap;
   overflow: hidden;
@@ -185,102 +184,97 @@ const displayTimeline = computed(() => {
 }
 
 .tli-icon-box {
-  width: 44px;
-  height: 44px;
-  border-radius: 14px;
-  background: linear-gradient(135deg, color-mix(in srgb, var(--tl-color, #3B82F6) 22%, transparent), color-mix(in srgb, var(--tl-color, #3B82F6) 6%, transparent));
-  border: 1.5px solid color-mix(in srgb, var(--tl-color, #3B82F6) 45%, transparent);
-  color: var(--tl-color, #38BDF8);
+  width: 40px;
+  height: 40px;
+  border-radius: var(--r-sm, 6px);
+  background: var(--bg-subtle);
+  border: 1px solid var(--border);
+  color: var(--tl-color, var(--primary));
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 0 18px color-mix(in srgb, var(--tl-color, #3B82F6) 25%, transparent);
   z-index: 2;
-  transition: all 0.3s ease;
+  transition: border-color var(--t-fast);
 }
 
 .tl-item:hover .tli-icon-box {
-  transform: scale(1.1);
-  box-shadow: 0 0 25px color-mix(in srgb, var(--tl-color, #3B82F6) 50%, transparent);
-  border-color: var(--tl-color, #3B82F6);
+  border-color: var(--border-h);
 }
 
 .tli-track {
   width: 2px;
   flex: 1;
   min-height: 40px;
-  background: linear-gradient(180deg, color-mix(in srgb, var(--tl-color, #3B82F6) 45%, transparent), rgba(255, 255, 255, 0.05));
-  margin: 8px 0;
+  background: var(--border);
+  margin: 6px 0;
 }
 
 .tli-card {
   flex: 1;
-  background: rgba(15, 23, 42, 0.75);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 22px;
-  padding: clamp(20px, 2.5vw, 28px);
-  margin-bottom: 24px;
-  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05) inset;
-  transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg, 10px);
+  padding: clamp(18px, 2.2vw, 24px);
+  margin-bottom: 20px;
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--t-base), border-color var(--t-base), box-shadow var(--t-base);
 }
 
 .tli-card:hover {
-  border-color: color-mix(in srgb, var(--tl-color, #3B82F6) 50%, transparent);
-  transform: translateY(-4px);
-  box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.7), 0 0 30px color-mix(in srgb, var(--tl-color, #3B82F6) 18%, transparent);
+  border-color: var(--border-h);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
 }
 
 .tli-year {
-  font-size: 0.82rem;
-  font-weight: 800;
-  color: var(--tl-color, #38BDF8);
-  font-family: var(--f-mono, 'Tajawal', sans-serif);
-  padding: 3px 10px;
-  border-radius: 100px;
-  background: color-mix(in srgb, var(--tl-color, #3B82F6) 12%, transparent);
-  border: 1px solid color-mix(in srgb, var(--tl-color, #3B82F6) 30%, transparent);
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--primary);
+  font-family: var(--f-mono);
+  padding: 2px 8px;
+  border-radius: var(--r-xs, 4px);
+  background: var(--primary-subtle);
+  border: 1px solid var(--primary-border);
 }
 
 .tli-org {
   font-size: 0.76rem;
-  font-weight: 700;
-  color: #94A3B8;
+  font-weight: 600;
+  color: var(--t3);
   font-family: var(--f-body, 'Cairo', sans-serif);
-  background: rgba(255, 255, 255, 0.04);
-  padding: 4px 10px;
-  border-radius: 100px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--bg-subtle);
+  padding: 2px 8px;
+  border-radius: var(--r-xs, 4px);
+  border: 1px solid var(--border);
   display: inline-flex;
   align-items: center;
 }
 
 .tli-title {
   font-family: var(--f-display, 'Tajawal', sans-serif);
-  font-size: clamp(1.1rem, 1.4vw, 1.25rem);
+  font-size: clamp(1.05rem, 1.3vw, 1.2rem);
   font-weight: 800;
-  color: #FFFFFF;
-  margin-bottom: 8px;
+  color: var(--t1);
+  margin-bottom: 6px;
 }
 
 .tli-desc {
-  font-size: 0.9rem;
-  color: #94A3B8;
-  line-height: 1.8;
+  font-size: 0.88rem;
+  color: var(--t2);
+  line-height: 1.75;
   font-family: var(--f-body, 'Cairo', sans-serif);
 }
 
 /* Light Theme Overrides */
 [data-theme="light"] .tl-summary,
 [data-theme="light"] .tli-card {
-  background: rgba(255, 255, 255, 0.88);
-  border-color: rgba(226, 232, 240, 0.9);
-  box-shadow: 0 20px 40px -15px rgba(15, 23, 42, 0.08), 0 0 0 1px rgba(255, 255, 255, 0.9) inset;
+  background: #FFFFFF;
+  border-color: var(--border);
+  box-shadow: var(--shadow-sm);
 }
 
 [data-theme="light"] .tli-title {
-  color: #0F172A;
+  color: var(--t1);
 }
 
 [data-theme="light"] .tli-desc,

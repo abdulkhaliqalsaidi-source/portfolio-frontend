@@ -76,33 +76,30 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
   top: 0;
   right: 0;
   left: 0;
-  height: 3px;
+  height: 2px;
   z-index: 99999;
-  background: linear-gradient(90deg, #3B82F6, #8B5CF6);
+  background: var(--primary);
   transition: width 0.1s linear;
   transform-origin: right;
-  box-shadow: 0 0 10px rgba(59, 130, 246, 0.6);
 }
 
 .back-to-top-btn {
   position: fixed;
   bottom: 88px;
   left: 28px;
-  width: 46px;
-  height: 46px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
-  background: rgba(15, 23, 42, 0.85);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  color: #F8FAFC;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  color: var(--t1);
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 8999;
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05);
-  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--t-base), border-color var(--t-base), box-shadow var(--t-base), color var(--t-base);
 }
 
 .progress-ring {
@@ -115,14 +112,14 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
 
 .progress-ring-bg {
   fill: transparent;
-  stroke: rgba(255, 255, 255, 0.08);
-  stroke-width: 2.5;
+  stroke: var(--border);
+  stroke-width: 2;
 }
 
 .progress-ring-circle {
   fill: transparent;
-  stroke: #3B82F6;
-  stroke-width: 2.5;
+  stroke: var(--primary);
+  stroke-width: 2;
   stroke-linecap: round;
   transition: stroke-dashoffset 0.15s linear;
 }
@@ -131,19 +128,18 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: transform 0.25s ease;
+  transition: transform var(--t-fast);
 }
 
 .back-to-top-btn:hover {
-  transform: translateY(-3px) scale(1.05);
-  background: rgba(30, 41, 59, 0.95);
-  border-color: rgba(59, 130, 246, 0.5);
-  color: #38BDF8;
-  box-shadow: 0 15px 30px -5px rgba(0, 0, 0, 0.6), 0 0 20px rgba(59, 130, 246, 0.3);
+  transform: translateY(-2px);
+  border-color: var(--border-h);
+  color: var(--primary);
+  box-shadow: var(--shadow-md);
 }
 
 .back-to-top-btn:hover .arrow-wrap {
-  transform: translateY(-2px);
+  transform: translateY(-1px);
 }
 
 .top-tooltip {
@@ -151,20 +147,19 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
   left: calc(100% + 10px);
   top: 50%;
   transform: translateY(-50%) translateX(-6px);
-  background: rgba(15, 23, 42, 0.9);
-  backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  color: #FFFFFF;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  color: var(--t1);
   font-size: 0.75rem;
-  font-weight: 700;
+  font-weight: 600;
   font-family: var(--f-body, 'Cairo', sans-serif);
-  padding: 4px 10px;
-  border-radius: 8px;
+  padding: 4px 8px;
+  border-radius: var(--r-xs, 4px);
   white-space: nowrap;
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.2s, transform 0.2s;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+  box-shadow: var(--shadow-sm);
 }
 
 .back-to-top-btn:hover .top-tooltip {

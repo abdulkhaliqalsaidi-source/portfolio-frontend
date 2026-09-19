@@ -874,8 +874,7 @@ watch(() => props.project, (newP) => {
   align-items: center;
   justify-content: space-between;
   padding: 16px 24px;
-  background: rgba(15, 23, 42, 0.85);
-  backdrop-filter: blur(16px);
+  background: rgba(15, 23, 42, 0.95);
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   gap: 16px;
   flex-shrink: 0;
@@ -1238,7 +1237,6 @@ watch(() => props.project, (newP) => {
   height: 8px;
   border-radius: 50%;
   background: #10B981;
-  box-shadow: 0 0 8px #10B981;
   display: inline-block;
   margin-left: 6px;
 }
@@ -1521,10 +1519,9 @@ watch(() => props.project, (newP) => {
   position: absolute;
   bottom: 20px;
   padding: 6px 14px;
-  border-radius: 8px;
+  border-radius: 6px;
   font-size: 0.8rem;
-  font-weight: 800;
-  backdrop-filter: blur(8px);
+  font-weight: 700;
   z-index: 5;
 }
 
@@ -1558,7 +1555,6 @@ watch(() => props.project, (newP) => {
   flex: 1;
   width: 2px;
   background: #FFFFFF;
-  box-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
 }
 
 .handle-circle {
@@ -1570,7 +1566,7 @@ watch(() => props.project, (newP) => {
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
 }
 
 .comparison-notes-grid {
@@ -1580,7 +1576,7 @@ watch(() => props.project, (newP) => {
 }
 
 .comp-note-col {
-  border-radius: 16px;
+  border-radius: 10px;
   padding: 20px;
   border: 1px solid transparent;
 }
@@ -1909,8 +1905,7 @@ watch(() => props.project, (newP) => {
 .gallery-overlay {
   position: absolute;
   inset: 0;
-  background: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(4px);
+  background: rgba(0, 0, 0, 0.65);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -2117,22 +2112,15 @@ watch(() => props.project, (newP) => {
 .drawer-testimonial-card {
   position: relative;
   overflow: hidden;
-  background: linear-gradient(135deg, rgba(30, 41, 59, 0.6) 0%, rgba(15, 23, 42, 0.8) 100%);
-  border: 1px solid rgba(245, 158, 11, 0.3);
-  border-radius: 20px;
+  background: #1E293B;
+  border: 1px solid rgba(245, 158, 11, 0.25);
+  border-radius: 12px;
   padding: 32px;
-  box-shadow: 0 16px 36px -12px rgba(0, 0, 0, 0.4), 0 0 20px -5px rgba(245, 158, 11, 0.1);
-  backdrop-filter: blur(14px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
 }
 
 .dt-decor-blur {
-  position: absolute;
-  top: -40px;
-  right: -40px;
-  width: 160px;
-  height: 160px;
-  background: radial-gradient(circle, rgba(245, 158, 11, 0.15) 0%, transparent 70%);
-  pointer-events: none;
+  display: none;
 }
 
 .dt-quote-symbol {

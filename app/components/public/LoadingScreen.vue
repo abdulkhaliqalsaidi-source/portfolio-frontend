@@ -40,13 +40,13 @@ const dashOffset = computed(() => 226 - (226 * progress.value) / 100)
 
 onMounted(() => {
   const interval = setInterval(() => {
-    progress.value += Math.random() * 22 + 8
+    progress.value += Math.random() * 25 + 15
     if (progress.value >= 100) {
       progress.value = 100
       clearInterval(interval)
-      setTimeout(() => { visible.value = false }, 350)
+      setTimeout(() => { visible.value = false }, 250)
     }
-  }, 90)
+  }, 60)
 })
 </script>
 
@@ -58,7 +58,7 @@ onMounted(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #0B0F19;
+  background: var(--bg);
 }
 .loader-content {
   position: relative;
@@ -69,7 +69,7 @@ onMounted(() => {
 }
 .loader-logo {
   position: relative;
-  width: 72px; height: 72px;
+  width: 64px; height: 64px;
   display: flex; align-items: center; justify-content: center;
   margin-bottom: 4px;
 }
@@ -81,35 +81,35 @@ onMounted(() => {
 }
 .loader-letter {
   font-family: var(--f-display);
-  font-size: 1.8rem;
+  font-size: 1.6rem;
   font-weight: 800;
-  color: #3B82F6;
+  color: var(--primary);
   position: relative;
   z-index: 1;
 }
 .loader-name {
   font-family: var(--f-display);
-  font-size: 1.15rem;
+  font-size: 1.1rem;
   font-weight: 700;
-  color: #fff;
+  color: var(--t1);
 }
 .loader-role {
   font-size: 0.75rem;
   color: var(--t3);
   font-family: var(--f-mono);
-  letter-spacing: 1px;
+  letter-spacing: 0.5px;
 }
 .loader-bar-wrap {
-  width: 160px;
+  width: 140px;
   height: 2px;
-  background: rgba(255,255,255,0.06);
+  background: var(--border);
   border-radius: 2px;
   overflow: hidden;
   margin-top: 6px;
 }
 .loader-bar {
   height: 100%;
-  background: #3B82F6;
+  background: var(--primary);
   border-radius: 2px;
   transition: width 0.15s ease;
 }

@@ -7,7 +7,7 @@
         <!-- Info & Channels Column -->
         <div class="contact-info-col anim-left">
           <div class="eyebrow">{{ isRtl ? (store.settings.contact_section_eyebrow || t('contact.eyebrow')) : t('contact.eyebrow') }}</div>
-          <h2 class="s-title">{{ isRtl ? (store.settings.contact_section_title || t('contact.title')) : t('contact.title') }} <span class="g-text">{{ isRtl ? 'أو عملك القادم' : t('contact.titleHighlight') }}</span></h2>
+          <h2 class="s-title">{{ isRtl ? (store.settings.contact_section_title || t('contact.title')) : t('contact.title') }} <span class="g-text">{{ isRtl ? (store.settings.contact_section_title_span || t('contact.titleHighlight')) : t('contact.titleHighlight') }}</span></h2>
           <p class="s-sub">{{ isRtl ? (store.settings.contact_section_sub || t('contact.sub')) : t('contact.sub') }}</p>
 
           <!-- Featured Direct Channels (Email & WhatsApp) -->
@@ -35,7 +35,7 @@
 
           <!-- Social & Professional Networks Bento Grid -->
           <div class="social-channels-block" v-if="socialContacts.length">
-            <div class="social-block-title">المنصات والشبكات المهنية</div>
+            <div class="social-block-title">{{ t('contact.socialNetworks') }}</div>
             <div class="social-grid">
               <a
                 v-for="s in socialContacts"
@@ -61,8 +61,8 @@
           <div class="avail-card" v-if="dev.available_for_work">
             <div class="avail-ring"><span class="avail-dot" /></div>
             <div class="avail-content">
-              <div class="avail-title">متاح لاستقبال المشاريع والاستشارات</div>
-              <div class="avail-sub">{{ dev.title ? `تنفيذ وإدارة أعمال متخصصة في ${dev.title}` : 'تنفيذ أعمال واستشارات احترافية بأعلى معايير الجودة' }}</div>
+              <div class="avail-title">{{ t('contact.availTitle') }}</div>
+              <div class="avail-sub">{{ dev.title ? (locale === 'en' ? `Specialized execution and consulting in ${dev.title}` : `تنفيذ وإدارة أعمال متخصصة في ${dev.title}`) : t('contact.availSub') }}</div>
             </div>
           </div>
         </div>
@@ -73,10 +73,10 @@
             <div class="form-card-header">
               <div class="form-badge">
                 <v-icon icon="mdi-message-draw" size="16" color="var(--primary)" class="ml-1" />
-                <span>نموذج التواصل السريع</span>
+                <span>{{ t('contact.quickBadge') }}</span>
               </div>
-              <h3 class="form-title">إرسال رسالة مباشرة</h3>
-              <p class="form-sub">سيتم استلام رسالتك والرد عليك خلال 24 ساعة كحد أقصى.</p>
+              <h3 class="form-title">{{ t('contact.directMessage') }}</h3>
+              <p class="form-sub">{{ t('contact.responseTime') }}</p>
             </div>
 
             <v-alert v-if="submitError" type="error" variant="tonal" class="mb-4" closable @click:close="submitError = null">
@@ -93,7 +93,7 @@
                     variant="outlined"
                     density="comfortable"
                     color="primary"
-                    :rules="[v => !!v || 'الاسم مطلوب', v => (v && v.length >= 2) || 'الاسم يجب أن لا يقل عن حرفين']"
+                    :rules="[v => !!v || t('contact.nameRequired'), v => (v && v.length >= 2) || t('contact.nameMin')]"
                   />
                 </div>
                 <div class="field-wrap">
@@ -105,7 +105,7 @@
                     density="comfortable"
                     color="primary"
                     dir="ltr"
-                    :rules="[v => !!v || 'البريد مطلوب', v => /.+@.+\..+/.test(v) || 'يرجى إدخال بريد صحيح']"
+                    :rules="[v => !!v || t('contact.emailRequired'), v => /.+@.+\..+/.test(v) || t('contact.emailInvalid')]"
                   />
                 </div>
               </div>
@@ -119,7 +119,7 @@
                     variant="outlined"
                     density="comfortable"
                     color="primary"
-                    :rules="[v => !!v || 'الموضوع مطلوب']"
+                    :rules="[v => !!v || t('contact.subjectRequired')]"
                   />
                 </div>
                 <div class="field-wrap">
@@ -143,7 +143,7 @@
                   variant="outlined"
                   rows="4"
                   color="primary"
-                  :rules="[v => !!v || 'نص الرسالة مطلوب', v => (v && v.length >= 10) || 'يرجى كتابة 10 أحرف على الأقل']"
+                  :rules="[v => !!v || t('contact.messageRequired'), v => (v && v.length >= 10) || t('contact.messageMin')]"
                 />
               </div>
 
@@ -180,7 +180,7 @@ import { useLocale } from '~/composables/useLocale'
 import { useScrollReveal } from '~/composables/useScrollReveal'
 
 const store = usePortfolioStore()
-const { t, isRtl } = useLocale()
+const { t, isRtl, locale } = useLocale()
 const dev = computed(() => store.developer || {})
 
 useScrollReveal('.anim, .anim-left, .anim-right')
@@ -189,7 +189,8 @@ const form = ref(null)
 const submitting = ref(false)
 const snack = ref(false)
 const submitError = ref(null)
-const successMessage = computed(() => t('contact.successMsg'))
+const customSuccessMsg = ref('')
+const successMessage = computed(() => customSuccessMsg.value || t('contact.successMsg'))
 
 const f = ref({
   sender_name: '',
@@ -209,7 +210,7 @@ const primaryContacts = computed(() => {
   const list = []
   if (dev.value.email) {
     list.push({
-      label: 'البريد الإلكتروني',
+      label: t('contact.emailChannel'),
       val: dev.value.email,
       href: `mailto:${dev.value.email}`,
       icon: 'mdi-email-outline',
@@ -221,7 +222,7 @@ const primaryContacts = computed(() => {
     const rawNum = dev.value.whatsapp || dev.value.phone
     const cleanNum = String(rawNum).replace(/[^0-9]/g, '')
     list.push({
-      label: 'محادثة WhatsApp مباشرة',
+      label: t('contact.whatsappChannel'),
       val: dev.value.phone || dev.value.whatsapp,
       href: `https://wa.me/${cleanNum}`,
       icon: 'mdi-whatsapp',
@@ -251,13 +252,13 @@ const socialContacts = computed(() => {
     list.push({ label: 'Instagram', handle: cleanHandle(dev.value.instagram), href: dev.value.instagram, icon: 'mdi-instagram', color: '#E1306C' })
   }
   if (dev.value.twitter) {
-    list.push({ label: 'منصة X', handle: cleanHandle(dev.value.twitter), href: dev.value.twitter, icon: 'mdi-twitter', color: '#CBD5E1' })
+    list.push({ label: t('contact.xPlatform'), handle: cleanHandle(dev.value.twitter), href: dev.value.twitter, icon: 'mdi-twitter', color: '#CBD5E1' })
   }
   if (dev.value.youtube) {
     list.push({ label: 'YouTube', handle: cleanHandle(dev.value.youtube), href: dev.value.youtube, icon: 'mdi-youtube', color: '#EF4444' })
   }
   if (dev.value.website) {
-    list.push({ label: 'الموقع الشخصي', handle: cleanHandle(dev.value.website), href: dev.value.website, icon: 'mdi-web', color: '#8B5CF6' })
+    list.push({ label: t('contact.personalWebsite'), handle: cleanHandle(dev.value.website), href: dev.value.website, icon: 'mdi-web', color: '#8B5CF6' })
   }
   return list
 })
@@ -278,13 +279,15 @@ async function submit() {
     })
 
     if (res?.message) {
-      successMessage.value = res.message
+      customSuccessMsg.value = res.message
+    } else {
+      customSuccessMsg.value = ''
     }
     snack.value = true
     f.value = { sender_name: '', sender_email: '', sender_phone: '', subject: '', message: '' }
     form.value.reset()
   } catch (err) {
-    submitError.value = err.message || 'تعذر إرسال الرسالة، يرجى المحاولة مرة أخرى أو التواصل عبر البريد/الواتساب.'
+    submitError.value = err.message || t('contact.errorMsg')
   } finally {
     submitting.value = false
   }
@@ -316,55 +319,38 @@ async function submit() {
   display: flex;
   align-items: center;
   gap: 16px;
-  padding: 16px 20px;
-  background: rgba(15, 23, 42, 0.75);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 20px;
+  padding: 14px 18px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg, 10px);
   text-decoration: none;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 15px 35px -10px rgba(0, 0, 0, 0.4);
-  transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-.primary-channel-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 4px;
-  height: 100%;
-  background: var(--accent-c, var(--primary));
-  opacity: 0;
-  transition: opacity 0.25s ease;
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--t-base), border-color var(--t-base), box-shadow var(--t-base);
 }
 
 .primary-channel-card:hover {
-  border-color: var(--accent-c, rgba(59, 130, 246, 0.5));
-  transform: translateY(-4px);
-  box-shadow: 0 25px 50px -10px rgba(0, 0, 0, 0.6), 0 0 25px var(--accent-c, rgba(59, 130, 246, 0.2));
-}
-
-.primary-channel-card:hover::before {
-  opacity: 1;
+  border-color: var(--border-h);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
 }
 
 .channel-icon-wrap {
-  width: 48px;
-  height: 48px;
-  border-radius: 14px;
+  width: 42px;
+  height: 42px;
+  border-radius: var(--r-sm, 6px);
+  background: var(--bg-subtle);
+  border: 1px solid var(--border);
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  box-shadow: 0 0 16px rgba(59, 130, 246, 0.2);
-  transition: transform 0.3s ease;
+  transition: border-color var(--t-fast);
 }
 
 .primary-channel-card:hover .channel-icon-wrap {
-  transform: scale(1.1) rotate(5deg);
+  border-color: var(--border-h);
 }
 
 .channel-meta {
@@ -377,15 +363,15 @@ async function submit() {
 
 .channel-label {
   font-size: 0.78rem;
-  color: #94A3B8;
+  color: var(--t3);
   font-weight: 600;
   font-family: var(--f-body, 'Cairo', sans-serif);
 }
 
 .channel-val {
-  font-size: 0.96rem;
-  color: #FFFFFF;
-  font-weight: 800;
+  font-size: 0.94rem;
+  color: var(--t1);
+  font-weight: 700;
   font-family: var(--f-display, 'Tajawal', sans-serif);
   overflow: hidden;
   text-overflow: ellipsis;
@@ -394,14 +380,14 @@ async function submit() {
 }
 
 .channel-arrow {
-  color: #64748B;
+  color: var(--t3);
   flex-shrink: 0;
-  transition: all 0.25s ease;
+  transition: transform var(--t-fast), color var(--t-fast);
 }
 
 .primary-channel-card:hover .channel-arrow {
-  transform: translate(-3px, -3px);
-  color: var(--accent-c, #FFFFFF);
+  transform: translate(-2px, -2px);
+  color: var(--t1);
 }
 
 /* Social & Professional Networks Block */
@@ -414,8 +400,8 @@ async function submit() {
 
 .social-block-title {
   font-size: 0.84rem;
-  font-weight: 800;
-  color: #94A3B8;
+  font-weight: 700;
+  color: var(--t2);
   font-family: var(--f-display, 'Tajawal', sans-serif);
 }
 
@@ -429,28 +415,28 @@ async function submit() {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 12px 16px;
-  background: rgba(15, 23, 42, 0.7);
-  backdrop-filter: blur(14px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 16px;
+  padding: 10px 14px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md, 8px);
   text-decoration: none;
-  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--t-base), border-color var(--t-base), box-shadow var(--t-base);
   min-width: 0;
 }
 
 .social-chip-card:hover {
-  background: rgba(30, 41, 59, 0.8);
-  border-color: rgba(59, 130, 246, 0.4);
-  transform: translateY(-3px);
-  box-shadow: 0 12px 25px -5px rgba(0, 0, 0, 0.4);
+  border-color: var(--border-h);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
 }
 
 .social-icon-box {
   width: 32px;
   height: 32px;
-  border-radius: 10px;
-  background: rgba(255, 255, 255, 0.05);
+  border-radius: var(--r-xs, 4px);
+  background: var(--bg-subtle);
+  border: 1px solid var(--border);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -468,7 +454,7 @@ async function submit() {
 .social-name {
   font-size: 0.82rem;
   font-weight: 700;
-  color: #F1F5F9;
+  color: var(--t1);
   font-family: var(--f-body, 'Cairo', sans-serif);
   white-space: nowrap;
   overflow: hidden;
@@ -477,7 +463,7 @@ async function submit() {
 
 .social-handle {
   font-size: 0.72rem;
-  color: #94A3B8;
+  color: var(--t3);
   font-family: var(--f-mono, 'Tajawal', sans-serif);
   white-space: nowrap;
   overflow: hidden;
@@ -485,16 +471,15 @@ async function submit() {
 }
 
 .social-external-icon {
-  color: #64748B;
+  color: var(--t3);
   opacity: 0.6;
   flex-shrink: 0;
-  transition: all 0.2s ease;
+  transition: opacity var(--t-fast), color var(--t-fast);
 }
 
 .social-chip-card:hover .social-external-icon {
   opacity: 1;
-  color: #38BDF8;
-  transform: translate(-2px, -2px);
+  color: var(--primary);
 }
 
 /* Availability Badge */
@@ -502,19 +487,19 @@ async function submit() {
   display: flex;
   align-items: center;
   gap: 14px;
-  padding: 16px 20px;
-  border-radius: 20px;
-  background: rgba(16, 185, 129, 0.08);
+  padding: 14px 18px;
+  border-radius: var(--r-md, 8px);
+  background: var(--bg-card);
   border: 1px solid rgba(16, 185, 129, 0.3);
-  box-shadow: 0 10px 25px -5px rgba(16, 185, 129, 0.15);
+  box-shadow: var(--shadow-sm);
   margin-top: 6px;
 }
 
 .avail-ring {
-  width: 34px;
-  height: 34px;
+  width: 30px;
+  height: 30px;
   border-radius: 50%;
-  background: rgba(16, 185, 129, 0.18);
+  background: rgba(16, 185, 129, 0.12);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -522,12 +507,10 @@ async function submit() {
 }
 
 .avail-dot {
-  width: 9px;
-  height: 9px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
   background: #10B981;
-  box-shadow: 0 0 10px #10B981;
-  animation: pulse-dot 2s infinite;
 }
 
 .avail-content {
@@ -537,15 +520,15 @@ async function submit() {
 }
 
 .avail-title {
-  font-size: 0.88rem;
+  font-size: 0.86rem;
   font-weight: 800;
-  color: #34D399;
+  color: #10B981;
   font-family: var(--f-display, 'Tajawal', sans-serif);
 }
 
 .avail-sub {
   font-size: 0.78rem;
-  color: #CBD5E1;
+  color: var(--t3);
   margin-top: 2px;
   line-height: 1.5;
   font-family: var(--f-body, 'Cairo', sans-serif);
@@ -553,51 +536,49 @@ async function submit() {
 
 /* Form Column */
 .form-card {
-  background: rgba(15, 23, 42, 0.8);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 28px;
-  padding: clamp(26px, 4vw, 44px);
-  box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.05) inset;
-  transition: all 0.35s ease;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-xl, 12px);
+  padding: clamp(22px, 3.5vw, 36px);
+  box-shadow: var(--shadow-md);
+  transition: border-color var(--t-base), box-shadow var(--t-base);
 }
 
 .form-card:hover {
-  border-color: rgba(59, 130, 246, 0.4);
-  box-shadow: 0 35px 70px -15px rgba(0, 0, 0, 0.75), 0 0 30px rgba(59, 130, 246, 0.12);
+  border-color: var(--border-h);
+  box-shadow: var(--shadow-lg);
 }
 
 .form-card-header {
-  margin-bottom: 26px;
+  margin-bottom: 24px;
   text-align: right;
 }
 
 .form-badge {
   display: inline-flex;
   align-items: center;
-  font-size: 0.76rem;
-  font-weight: 800;
-  color: #38BDF8;
-  background: rgba(59, 130, 246, 0.12);
-  border: 1px solid rgba(59, 130, 246, 0.3);
-  padding: 5px 14px;
-  border-radius: 100px;
-  margin-bottom: 12px;
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: var(--primary);
+  background: var(--primary-subtle);
+  border: 1px solid var(--primary-border);
+  padding: 4px 10px;
+  border-radius: var(--r-xs, 4px);
+  margin-bottom: 10px;
   font-family: var(--f-body, 'Cairo', sans-serif);
 }
 
 .form-title {
   font-family: var(--f-display, 'Tajawal', sans-serif);
-  font-size: clamp(1.3rem, 2.2vw, 1.65rem);
-  font-weight: 900;
-  color: #FFFFFF;
+  font-size: clamp(1.25rem, 2vw, 1.5rem);
+  font-weight: 800;
+  color: var(--t1);
   margin-bottom: 6px;
 }
 
 .form-sub {
   font-size: 0.88rem;
-  color: #94A3B8;
+  color: var(--t2);
   font-family: var(--f-body, 'Cairo', sans-serif);
 }
 
@@ -613,47 +594,42 @@ async function submit() {
 }
 
 .field-label {
-  font-size: 0.84rem;
+  font-size: 0.82rem;
   font-weight: 700;
-  color: #CBD5E1;
+  color: var(--t2);
   margin-bottom: 6px;
   text-align: right;
   font-family: var(--f-body, 'Cairo', sans-serif);
 }
 
 .submit-btn {
-  border-radius: 16px;
-  font-size: 1rem;
-  font-weight: 800;
-  padding: 16px 28px;
+  border-radius: var(--r-sm, 6px);
+  font-size: 0.95rem;
+  font-weight: 700;
+  padding: 12px 24px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #2563EB, #3B82F6) !important;
+  background: var(--primary) !important;
   color: #FFFFFF !important;
-  box-shadow: 0 10px 25px -5px rgba(37, 99, 235, 0.5);
-  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--t-fast), background var(--t-fast), box-shadow var(--t-fast);
   font-family: var(--f-display, 'Tajawal', sans-serif);
 }
 
 .submit-btn:hover:not(:disabled) {
-  transform: translateY(-3px);
-  box-shadow: 0 15px 35px -5px rgba(37, 99, 235, 0.7);
-}
-
-@keyframes pulse-dot {
-  0% { transform: scale(0.95); opacity: 0.8; }
-  50% { transform: scale(1.2); opacity: 1; }
-  100% { transform: scale(0.95); opacity: 0.8; }
+  transform: translateY(-1px);
+  background: var(--primary-hover) !important;
+  box-shadow: var(--shadow-md);
 }
 
 /* Light Theme Overrides */
 [data-theme="light"] .primary-channel-card,
 [data-theme="light"] .social-chip-card,
 [data-theme="light"] .form-card {
-  background: rgba(255, 255, 255, 0.88);
-  border-color: rgba(226, 232, 240, 0.9);
-  box-shadow: 0 20px 40px -15px rgba(15, 23, 42, 0.08), 0 0 0 1px rgba(255, 255, 255, 0.9) inset;
+  background: #FFFFFF;
+  border-color: var(--border);
+  box-shadow: var(--shadow-sm);
 }
 
 [data-theme="light"] .channel-val,

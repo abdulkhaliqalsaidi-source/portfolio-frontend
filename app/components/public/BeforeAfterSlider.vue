@@ -197,46 +197,42 @@ onUnmounted(() => {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 6px 14px;
-  border-radius: 9999px;
-  font-size: 0.78rem;
+  padding: 5px 12px;
+  border-radius: var(--r-xs, 4px);
+  font-size: 0.76rem;
   font-weight: 700;
   letter-spacing: 0.02em;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  box-shadow: var(--shadow-sm);
   transition: opacity 0.25s ease;
   z-index: 5;
 }
 
 .badge-before {
   left: 16px;
-  background: rgba(15, 23, 42, 0.78);
+  background: var(--bg-card);
   border: 1px solid rgba(245, 158, 11, 0.35);
-  color: #FBBF24;
+  color: #F59E0B;
 }
 
 .badge-after {
   right: 16px;
-  background: rgba(15, 23, 42, 0.78);
+  background: var(--bg-card);
   border: 1px solid rgba(16, 185, 129, 0.35);
-  color: #34D399;
+  color: #10B981;
 }
 
 .badge-dot {
-  width: 7px;
-  height: 7px;
+  width: 6px;
+  height: 6px;
   border-radius: 50%;
 }
 
 .orange-dot {
   background: #F59E0B;
-  box-shadow: 0 0 8px #F59E0B;
 }
 
 .green-dot {
   background: #10B981;
-  box-shadow: 0 0 8px #10B981;
 }
 
 /* Divider Line */
@@ -249,21 +245,11 @@ onUnmounted(() => {
   transform: translateX(-50%);
   z-index: 10;
   pointer-events: none;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.4);
 }
 
 .handle-glow {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  background: var(--accent-color);
-  opacity: 0.25;
-  filter: blur(12px);
-  pointer-events: none;
+  display: none;
 }
 
 .handle-knob {
@@ -271,12 +257,12 @@ onUnmounted(() => {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 40px;
-  height: 40px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
-  background: #0B0F19;
+  background: var(--bg-card);
   border: 2px solid #FFFFFF;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6), 0 0 0 4px rgba(255, 255, 255, 0.15);
+  box-shadow: var(--shadow-md);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -288,34 +274,32 @@ onUnmounted(() => {
 
 .before-after-container:active .handle-knob {
   cursor: grabbing;
-  transform: translate(-50%, -50%) scale(1.1);
-  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.8), 0 0 0 6px rgba(255, 255, 255, 0.25);
+  transform: translate(-50%, -50%) scale(1.05);
+  box-shadow: var(--shadow-lg);
 }
 
 .handle-arrows {
-  width: 18px;
-  height: 18px;
+  width: 16px;
+  height: 16px;
 }
 
 /* Drag Hint */
 .drag-hint {
   position: absolute;
-  bottom: 16px;
+  bottom: 14px;
   left: 50%;
   transform: translateX(-50%);
   display: inline-flex;
   align-items: center;
-  padding: 6px 14px;
-  border-radius: 9999px;
-  background: rgba(11, 15, 25, 0.85);
-  backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  color: var(--t2, #E2E8F0);
-  font-size: 0.75rem;
+  padding: 4px 12px;
+  border-radius: var(--r-xs, 4px);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  color: var(--t2);
+  font-size: 0.74rem;
   font-weight: 600;
   z-index: 6;
   pointer-events: none;
-  animation: pulse-hint 2s infinite ease-in-out;
 }
 
 @keyframes pulse-hint {

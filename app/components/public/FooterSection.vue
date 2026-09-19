@@ -123,7 +123,7 @@ function nav(href) {
 }
 .footer-line {
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.4), rgba(123, 110, 246, 0.4), transparent);
+  background: var(--border);
 }
 
 .footer-grid {
@@ -140,19 +140,19 @@ function nav(href) {
   margin-bottom: 12px;
 }
 .brand-mark {
-  width: 36px;
-  height: 36px;
-  border-radius: 12px;
-  background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(59, 130, 246, 0.05));
-  border: 1.5px solid rgba(59, 130, 246, 0.4);
+  width: 32px;
+  height: 32px;
+  border-radius: var(--r-sm, 6px);
+  background: var(--primary-subtle);
+  border: 1px solid var(--primary-border);
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 0 16px rgba(59, 130, 246, 0.25);
+  color: var(--primary);
 }
 .brand-name {
   font-family: var(--f-display, 'Tajawal', sans-serif);
-  font-size: 1.15rem;
+  font-size: 1.1rem;
   font-weight: 800;
   color: var(--t1);
 }
@@ -170,24 +170,23 @@ function nav(href) {
   gap: 8px;
 }
 .social-btn {
-  width: 36px;
-  height: 36px;
-  border-radius: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  background: rgba(30, 41, 59, 0.6);
+  width: 34px;
+  height: 34px;
+  border-radius: var(--r-xs, 4px);
+  border: 1px solid var(--border);
+  background: var(--bg-subtle);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #94A3B8;
+  color: var(--t2);
   text-decoration: none;
-  transition: all 0.25s ease;
+  transition: all var(--t-fast);
 }
 .social-btn:hover {
-  color: #FFFFFF;
-  border-color: rgba(59, 130, 246, 0.5);
-  background: rgba(59, 130, 246, 0.2);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(59, 130, 246, 0.3);
+  color: var(--primary);
+  border-color: var(--border-h);
+  background: var(--primary-subtle);
+  transform: translateY(-1px);
 }
 
 .col-title {
@@ -207,12 +206,11 @@ function nav(href) {
   color: var(--t3);
   text-decoration: none;
   font-family: var(--f-body, 'Cairo', sans-serif);
-  transition: all 0.2s ease;
+  transition: color var(--t-fast);
   cursor: pointer;
 }
 .col-link:hover {
-  color: #38BDF8;
-  transform: translateX(-3px);
+  color: var(--primary);
 }
 
 .footer-bottom {

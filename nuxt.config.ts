@@ -20,7 +20,7 @@ export default defineNuxtConfig({
         lang: 'ar',
         dir: 'rtl'
       },
-      title: 'عبد الخالق الصايدي | مهندس برمجيات متكامل',
+      title: 'عبد الخالق علي محمد الصايدي | مطور واجهات أمامية وبرمجيات',
       meta: [
         { charset: 'utf-8' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },

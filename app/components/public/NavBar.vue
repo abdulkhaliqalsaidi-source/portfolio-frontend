@@ -451,11 +451,11 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
 
 .radar-ring {
   position: absolute;
-  inset: -3px;
+  inset: -2px;
   border-radius: 50%;
   background: #10B981;
-  opacity: 0.75;
-  animation: radar-ping 1.8s cubic-bezier(0, 0, 0.2, 1) infinite;
+  opacity: 0.5;
+  animation: radar-ping 2.5s cubic-bezier(0, 0, 0.2, 1) infinite;
 }
 
 .is-busy .radar-ring {
@@ -468,17 +468,15 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
   height: 7px;
   border-radius: 50%;
   background: #10B981;
-  box-shadow: 0 0 8px #10B981;
 }
 
 .is-busy .radar-dot {
   background: #F59E0B;
-  box-shadow: 0 0 8px #F59E0B;
 }
 
 @keyframes radar-ping {
   75%, 100% {
-    transform: scale(2.4);
+    transform: scale(1.8);
     opacity: 0;
   }
 }
@@ -791,34 +789,33 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background: linear-gradient(135deg, #2563EB, #1D4ED8);
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+  background: var(--primary);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: var(--shadow-sm);
   font-weight: 700;
   color: #FFFFFF !important;
   text-decoration: none;
   padding: 6px 14px;
-  border-radius: var(--r-xs, 8px);
-  transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+  border-radius: var(--r-xs, 6px);
+  transition: all var(--t-fast);
 }
 
 .cv-download-btn:hover {
-  transform: translateY(-2px);
-  background: linear-gradient(135deg, #3B82F6, #2563EB);
-  box-shadow: 0 8px 24px rgba(59, 130, 246, 0.55), 0 0 12px rgba(239, 68, 68, 0.35);
-  border-color: rgba(255, 255, 255, 0.3);
+  transform: translateY(-1px);
+  background: var(--primary-hover);
+  box-shadow: var(--shadow-md);
   color: #FFFFFF !important;
 }
 
 .pdf-pill {
-  background: linear-gradient(135deg, #EF4444, #DC2626);
-  color: #FFFFFF;
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  color: #EF4444;
   font-size: 0.65rem;
-  font-weight: 900;
+  font-weight: 800;
   padding: 1px 5px;
-  border-radius: 4px;
+  border-radius: 3px;
   letter-spacing: 0.4px;
-  box-shadow: 0 0 8px rgba(239, 68, 68, 0.6);
   display: inline-flex;
   align-items: center;
   line-height: 1.2;
@@ -830,7 +827,7 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
 
 .cv-download-btn:hover .download-icon,
 .cv-mobile-download-btn:hover .download-icon {
-  transform: translateY(2px);
+  transform: translateY(1px);
 }
 
 .cv-mobile-download-btn {
@@ -838,25 +835,25 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
   align-items: center;
   justify-content: center;
   gap: 8px;
-  background: linear-gradient(135deg, #2563EB, #1D4ED8);
-  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: var(--primary);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   font-weight: 700;
   color: #FFFFFF !important;
   text-decoration: none;
-  padding: 12px 16px;
-  border-radius: var(--r-xs, 8px);
-  box-shadow: 0 4px 16px rgba(37, 99, 235, 0.4);
+  padding: 10px 16px;
+  border-radius: var(--r-xs, 6px);
+  box-shadow: var(--shadow-sm);
 }
 
 .cv-mobile-download-btn:hover {
-  background: linear-gradient(135deg, #3B82F6, #2563EB);
+  background: var(--primary-hover);
   color: #FFFFFF !important;
 }
 
 [data-theme="light"] .cv-download-btn,
 [data-theme="light"] .cv-mobile-download-btn {
-  background: linear-gradient(135deg, #2563EB, #1D4ED8) !important;
+  background: var(--primary) !important;
   color: #FFFFFF !important;
-  border-color: rgba(37, 99, 235, 0.3) !important;
+  border-color: rgba(37, 99, 235, 0.2) !important;
 }
 </style>

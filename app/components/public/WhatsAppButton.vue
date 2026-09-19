@@ -32,8 +32,8 @@ const whatsappNumber = computed(() => {
   bottom: 26px;
   left: 26px;
   z-index: 9000;
-  width: 50px;
-  height: 50px;
+  width: 48px;
+  height: 48px;
   border-radius: 50%;
   background: #25D366;
   color: #fff;
@@ -41,32 +41,31 @@ const whatsappNumber = computed(() => {
   align-items: center;
   justify-content: center;
   text-decoration: none;
-  box-shadow: 0 4px 20px rgba(37, 211, 102, 0.4);
-  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.25s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  transition: transform var(--t-fast), box-shadow var(--t-fast);
 }
 .wa-btn:hover {
-  transform: scale(1.08) translateY(-2px);
-  box-shadow: 0 8px 28px rgba(37, 211, 102, 0.55);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
 }
 .wa-btn:hover .wa-tooltip { opacity: 1; transform: translateY(-50%) translateX(0); pointer-events: auto; }
 
-.wa-icon { width: 26px; height: 26px; position: relative; z-index: 1; }
+.wa-icon { width: 24px; height: 24px; position: relative; z-index: 1; }
 
 .wa-tooltip {
   position: absolute;
   left: calc(100% + 10px);
   top: 50%;
   transform: translateY(-50%) translateX(-6px);
-  background: rgba(15, 23, 42, 0.9);
-  backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  color: #FFFFFF;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  color: var(--t1);
+  box-shadow: var(--shadow-sm);
   font-size: 0.75rem;
-  font-weight: 700;
+  font-weight: 600;
   font-family: var(--f-body, 'Cairo', sans-serif);
-  padding: 4px 10px;
-  border-radius: 8px;
+  padding: 4px 8px;
+  border-radius: var(--r-xs, 4px);
   white-space: nowrap;
   opacity: 0;
   pointer-events: none;
@@ -74,27 +73,17 @@ const whatsappNumber = computed(() => {
 }
 
 :global([data-theme="light"] .wa-tooltip) {
-  background: #0F172A !important;
-  color: #FFFFFF !important;
+  background: #FFFFFF !important;
+  color: var(--t1) !important;
+  border-color: var(--border) !important;
 }
 
 .wa-pulse {
-  position: absolute;
-  inset: -4px;
-  border-radius: 50%;
-  border: 2px solid #25D366;
-  opacity: 0;
-  animation: wa-pulse-anim 2.5s cubic-bezier(0.24,0,0.38,1) infinite;
-}
-
-@keyframes wa-pulse-anim {
-  0% { transform: scale(0.95); opacity: 0.8; }
-  50% { transform: scale(1.3); opacity: 0; }
-  100% { transform: scale(1.3); opacity: 0; }
+  display: none;
 }
 
 @media (max-width: 600px) {
-  .wa-btn { bottom: 20px; left: 20px; width: 44px; height: 44px; }
-  .wa-icon { width: 22px; height: 22px; }
+  .wa-btn { bottom: 20px; left: 20px; width: 42px; height: 42px; }
+  .wa-icon { width: 20px; height: 20px; }
 }
 </style>

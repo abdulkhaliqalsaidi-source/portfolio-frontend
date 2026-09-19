@@ -89,23 +89,21 @@ const displayTestimonials = computed(() => {
 
 .t-card {
   position: relative;
-  background: rgba(15, 23, 42, 0.75);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 24px;
-  padding: clamp(22px, 3vw, 30px);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-xl, 12px);
+  padding: clamp(20px, 2.5vw, 26px);
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05) inset;
-  transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--t-base), border-color var(--t-base), box-shadow var(--t-base);
 }
 
 .t-card:hover {
-  transform: translateY(-5px);
-  border-color: rgba(59, 130, 246, 0.45);
-  box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.7), 0 0 30px rgba(59, 130, 246, 0.15);
+  transform: translateY(-2px);
+  border-color: var(--border-h);
+  box-shadow: var(--shadow-md);
 }
 
 .t-stars-wrap {
@@ -118,58 +116,57 @@ const displayTestimonials = computed(() => {
 .t-stars {
   display: inline-flex;
   gap: 3px;
-  padding: 4px 10px;
-  background: rgba(245, 158, 11, 0.1);
-  border: 1px solid rgba(245, 158, 11, 0.25);
-  border-radius: 100px;
+  padding: 3px 8px;
+  background: rgba(245, 158, 11, 0.08);
+  border: 1px solid rgba(245, 158, 11, 0.2);
+  border-radius: var(--r-xs, 4px);
 }
 
 .t-verified-tag {
   font-size: 0.72rem;
   font-weight: 700;
-  color: #34D399;
+  color: #10B981;
   font-family: var(--f-body, 'Cairo', sans-serif);
   display: inline-flex;
   align-items: center;
   gap: 4px;
   background: rgba(16, 185, 129, 0.08);
   padding: 3px 8px;
-  border-radius: 100px;
+  border-radius: var(--r-xs, 4px);
   border: 1px solid rgba(16, 185, 129, 0.2);
 }
 
 .t-text {
-  font-size: 0.92rem;
-  color: #E2E8F0;
-  line-height: 1.85;
+  font-size: 0.9rem;
+  color: var(--t2);
+  line-height: 1.8;
   font-family: var(--f-body, 'Cairo', sans-serif);
   flex: 1;
-  margin-bottom: 20px;
+  margin-bottom: 18px;
 }
 
 .t-author {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 12px;
   margin-top: auto;
-  padding-top: 16px;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
 }
 
 .t-avatar {
-  width: 44px;
-  height: 44px;
-  border-radius: 14px;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--r-sm, 6px);
   display: flex;
   align-items: center;
   justify-content: center;
   font-family: var(--f-display, 'Tajawal', sans-serif);
-  font-size: 1.1rem;
+  font-size: 1rem;
   font-weight: 800;
-  color: #38BDF8;
-  background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(59, 130, 246, 0.05));
-  border: 1.5px solid rgba(59, 130, 246, 0.35);
-  box-shadow: 0 0 16px rgba(59, 130, 246, 0.2);
+  color: var(--primary);
+  background: var(--bg-subtle);
+  border: 1px solid var(--border);
   flex-shrink: 0;
   overflow: hidden;
 }
@@ -182,39 +179,39 @@ const displayTestimonials = computed(() => {
 
 .t-name {
   font-family: var(--f-display, 'Tajawal', sans-serif);
-  font-size: 1.02rem;
-  font-weight: 800;
-  color: #FFFFFF;
+  font-size: 0.96rem;
+  font-weight: 700;
+  color: var(--t1);
 }
 
 .t-role {
   font-family: var(--f-body, 'Cairo', sans-serif);
-  font-size: 0.78rem;
-  color: #94A3B8;
+  font-size: 0.76rem;
+  color: var(--t3);
   margin-top: 2px;
 }
 
 /* Light Theme Overrides */
 [data-theme="light"] .t-card {
-  background: rgba(255, 255, 255, 0.88);
-  border-color: rgba(226, 232, 240, 0.9);
-  box-shadow: 0 20px 40px -15px rgba(15, 23, 42, 0.08), 0 0 0 1px rgba(255, 255, 255, 0.9) inset;
+  background: #FFFFFF;
+  border-color: var(--border);
+  box-shadow: var(--shadow-sm);
 }
 
 [data-theme="light"] .t-text {
-  color: #334155;
+  color: var(--t2);
 }
 
 [data-theme="light"] .t-name {
-  color: #0F172A;
+  color: var(--t1);
 }
 
 [data-theme="light"] .t-role {
-  color: #64748B;
+  color: var(--t3);
 }
 
 [data-theme="light"] .t-author {
-  border-top-color: #E2E8F0;
+  border-top-color: var(--border);
 }
 
 @media (max-width: 600px) {
