@@ -1,9 +1,14 @@
-import { defineEventHandler, setResponseHeader } from 'h3'
+import { defineEventHandler, setResponseHeader, getRequestHost, getRequestProtocol } from 'h3'
 
 export default defineEventHandler(async (event) => {
   const config = useRuntimeConfig()
-  const siteUrl = config.public.siteUrl || 'https://example.com'
-  const apiUrl = config.apiServerUrl || 'http://127.0.0.1:8000/api'
+  const host = getRequestHost(event)
+  const protocol = getRequestProtocol(event)
+  const fallbackUrl = 'https://portfolio-frontend-pink-mu.vercel.app'
+  const siteUrl = (config.public.siteUrl && !config.public.siteUrl.includes('render.com') && !config.public.siteUrl.includes('example.com'))
+    ? config.public.siteUrl
+    : (host ? `${protocol}://${host}` : fallbackUrl)
+  const apiUrl = config.apiServerUrl || config.public.apiBaseUrl || 'https://portfolio-backend-1kar.onrender.com/api'
 
   setResponseHeader(event, 'Content-Type', 'application/xml; charset=utf-8')
   setResponseHeader(event, 'Cache-Control', 'public, max-age=3600, s-maxage=3600')

@@ -1,8 +1,13 @@
-import { defineEventHandler, setResponseHeader } from 'h3'
+import { defineEventHandler, setResponseHeader, getRequestHost, getRequestProtocol } from 'h3'
 
 export default defineEventHandler((event) => {
   const config = useRuntimeConfig()
-  const siteUrl = config.public.siteUrl || 'https://portfolio-frontend-pink-mu.vercel.app'
+  const host = getRequestHost(event)
+  const protocol = getRequestProtocol(event)
+  const fallbackUrl = 'https://portfolio-frontend-pink-mu.vercel.app'
+  const siteUrl = (config.public.siteUrl && !config.public.siteUrl.includes('render.com') && !config.public.siteUrl.includes('example.com'))
+    ? config.public.siteUrl
+    : (host ? `${protocol}://${host}` : fallbackUrl)
 
   setResponseHeader(event, 'Content-Type', 'text/plain; charset=utf-8')
   setResponseHeader(event, 'Cache-Control', 'public, max-age=86400')
