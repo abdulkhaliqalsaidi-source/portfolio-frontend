@@ -27,6 +27,14 @@ export default defineNuxtConfig({
         { name: 'format-detection', content: 'telephone=no' },
         { name: 'theme-color', content: '#0B0F19' },
         { name: 'google-site-verification', content: '7nXhc3IexdOX9noZEXPCk39Vucx9g2XI_o3Fd4SvZaU' },
+        { name: 'description', content: 'الموقع الشخصي ومعرض أعمال عبد الخالق علي محمد الصايدي - مطور واجهات ومصمم برمجيات متخصص في بناء واجهات مستخدم تفاعلية وعالية الأداء بـ Vue.js و Vuetify والربط مع Django REST APIs وإدارة قواعد البيانات Oracle و MySQL.' },
+        { name: 'keywords', content: 'عبد الخالق علي محمد الصايدي, عبد الخالق الصايدي, مطور واجهات أمامية, مطور برمجيات, مطور واجهات أمامية وبرمجيات, مطور Vue.js في اليمن, مبرمج واجهات صنعاء, مهندس واجهات, Frontend Developer Yemen, Abdulkhaliq Alsaidi, Vue.js Developer, Vuetify Specialist, Django REST Framework, Oracle Database, MySQL, MCSA, CCNA, تطوير واجهات المستخدم, تصميم مواقع ويب صنعاء' },
+        { name: 'author', content: 'عبد الخالق علي محمد الصايدي' },
+        { name: 'robots', content: 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1' },
+        { name: 'geo.region', content: 'YE-SN' },
+        { name: 'geo.placename', content: 'صنعاء، اليمن' },
+        { name: 'geo.position', content: '15.3694;44.1910' },
+        { name: 'ICBM', content: '15.3694, 44.1910' }
       ],
       link: [
         { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },

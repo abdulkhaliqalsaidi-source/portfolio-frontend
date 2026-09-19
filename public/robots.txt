@@ -1,3 +1,35 @@
+# AI Web Crawlers & LLM Engines
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: CCBot
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+# Standard Search Engines
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
 User-agent: *
 Allow: /
 Allow: /projects/
@@ -8,4 +40,4 @@ Disallow: /admin/
 Disallow: /api/admin/
 Disallow: /api/auth/
 
-Sitemap: https://abdulkhaliq.dev/sitemap.xml
+Sitemap: https://portfolio-frontend-pink-mu.vercel.app/sitemap.xml

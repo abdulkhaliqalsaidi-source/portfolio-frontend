@@ -14,21 +14,110 @@ export function useJsonLd() {
   }
 
   function setPersonSchema(profile: any = {}) {
+    const fullName = profile.full_name || profile.name || 'عبد الخالق علي محمد الصايدي'
+    const jobTitle = profile.title || 'مطور واجهات أمامية وبرمجيات | Frontend & Software Developer'
+    const bioText = profile.bio || profile.tagline || 'مطور واجهات ومصمم برمجيات متخصص في بناء واجهات مستخدم تفاعلية وعالية الأداء باستخدام Vue.js و Vuetify والربط مع RESTful APIs وإدارة قواعد البيانات.'
+
     addSchema({
       '@context': 'https://schema.org',
-      '@type': 'Person',
-      name: profile.full_name || profile.name || 'عبد الخالق الصايدي',
-      jobTitle: profile.title || 'Senior Full-Stack Engineer',
-      description: profile.bio || profile.tagline || '',
+      '@type': ['Person', 'ProfilePage'],
+      '@id': `${siteUrl}/#person`,
+      name: fullName,
+      alternateName: [
+        'عبد الخالق الصايدي',
+        'عبد الخالق علي محمد الصايدي',
+        'Abdulkhaliq Al-Saidi',
+        'Abdulkhaliq Ali Mohammed Al-Saidi',
+        'Abdulkhaliq Alsaidi'
+      ],
+      jobTitle: jobTitle,
+      description: bioText,
       url: siteUrl,
       image: profile.avatar || `${siteUrl}/avatar.jpg`,
-      email: profile.email ? `mailto:${profile.email}` : undefined,
+      email: profile.email ? `mailto:${profile.email}` : 'mailto:abdulkhaliq.al.saidi@gmail.com',
+      telephone: profile.phone || '+967 771523243',
+      address: {
+        '@type': 'PostalAddress',
+        addressLocality: 'صنعاء',
+        addressRegion: 'صنعاء',
+        addressCountry: 'اليمن'
+      },
+      worksFor: {
+        '@type': 'Organization',
+        name: 'شركة أوبن سوفت (OpenSoft)',
+        address: {
+          '@type': 'PostalAddress',
+          addressLocality: 'صنعاء',
+          addressCountry: 'اليمن'
+        }
+      },
+      alumniOf: {
+        '@type': 'CollegeOrUniversity',
+        name: 'جامعة آزال للتنمية البشرية (Azal University for Human Development)'
+      },
+      hasOccupation: {
+        '@type': 'Occupation',
+        name: 'مطور واجهات أمامية وبرمجيات (Frontend & Software Developer)',
+        occupationLocation: {
+          '@type': 'City',
+          name: 'صنعاء، اليمن'
+        },
+        skills: 'Vue.js, Vuetify, JavaScript ES6+, HTML5, CSS3, Django REST Framework, Oracle Database, MySQL, MCSA, CCNA'
+      },
+      knowsAbout: [
+        'تطوير الواجهات الأمامية (Frontend Development)',
+        'Vue.js (Vue 3 / Vue 2)',
+        'Vuetify Framework',
+        'JavaScript (ES6+)',
+        'TypeScript',
+        'HTML5 & CSS3',
+        'RESTful APIs Integration',
+        'Django REST Framework',
+        'Oracle Database',
+        'MySQL',
+        'MCSA (Server Administration)',
+        'CCNA (Networking)',
+        'الدعم الفني وصيانة الأنظمة البرمجية',
+        'Flutter',
+        'WordPress',
+        'Git & GitHub'
+      ],
       sameAs: [
         profile.github,
         profile.linkedin,
         profile.twitter,
-        profile.website
+        profile.website,
+        'https://github.com/abdulkhaliqalsaidi-source'
       ].filter(Boolean)
+    })
+
+    // Add ProfessionalService schema for local & remote search discovery
+    addSchema({
+      '@context': 'https://schema.org',
+      '@type': 'ProfessionalService',
+      '@id': `${siteUrl}/#service`,
+      name: `خدمات ${fullName} لتطوير البرمجيات والواجهات`,
+      url: siteUrl,
+      image: profile.avatar || `${siteUrl}/avatar.jpg`,
+      telephone: profile.phone || '+967 771523243',
+      priceRange: '$$',
+      address: {
+        '@type': 'PostalAddress',
+        addressLocality: 'صنعاء',
+        addressCountry: 'اليمن'
+      },
+      areaServed: [
+        'اليمن',
+        'المملكة العربية السعودية',
+        'الخليج العربي',
+        'عالمياً (عن بُعد / Remote)'
+      ],
+      serviceType: [
+        'تطوير واجهات المستخدم التفاعلية (Frontend Web Development)',
+        'الربط مع واجهات برمجة التطبيقات (RESTful APIs Integration)',
+        'تطوير وإدارة قواعد البيانات (Oracle Database & MySQL)',
+        'إدارة السيرفرات والشبكات والدعم الفني (Server Admin & IT Support)'
+      ]
     })
   }
 
