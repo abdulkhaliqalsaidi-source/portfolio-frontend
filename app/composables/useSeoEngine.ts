@@ -11,6 +11,9 @@ export interface SeoOptions {
   tags?: string[]
   devName?: string
   devTitle?: string
+  keywords?: string
+  geoPlacename?: string
+  googleVerification?: string
 }
 
 export function useSeoEngine(options: SeoOptions = {}) {
@@ -18,13 +21,13 @@ export function useSeoEngine(options: SeoOptions = {}) {
   const siteUrl = config.public.siteUrl || 'https://portfolio-frontend-pink-mu.vercel.app'
   
   // Dynamic identity resolution
-  const devName = options.devName || options.author || 'عبد الخالق علي محمد الصايدي'
-  const devTitle = options.devTitle || 'مطور واجهات أمامية وبرمجيات'
+  const devName = options.devName || options.author || 'الملف المهني الشخصي'
+  const devTitle = options.devTitle || 'خبير وممارس مهني'
   
   const defaultTitle = `${devName} | ${devTitle}`
-  const defaultDesc = `الموقع الشخصي ومعرض أعمال ${devName} - ${devTitle} متخصص في بناء واجهات مستخدم تفاعلية وتطبيقات ويب حديثة وعالية الأداء.`
+  const defaultDesc = `الموقع التعريفي ومعرض الأعمال لـ ${devName} - ${devTitle}.`
   const defaultImage = `${siteUrl}/avatar.jpg`
-  const defaultKeywords = `${devName}, مطور واجهات أمامية, مطور برمجيات, برمجة ويب, Vue.js Developer, Frontend Developer, هندسة البرمجيات`
+  const defaultKeywords = options.keywords || `${devName}, ${devTitle}, أعمال, خدمات, استشارات, معرض أعمال, Portfolio`
 
   const pageTitle = options.title
     ? (options.title.includes(devName) ? options.title : `${options.title} | ${devName}`)
@@ -60,6 +63,23 @@ export function useSeoEngine(options: SeoOptions = {}) {
     articleTag: options.tags
   })
 
+  const authorName = options.author || devName
+  const geoPlace = options.geoPlacename || 'صنعاء، اليمن'
+  const metaList: any[] = [
+    { name: 'keywords', content: options.keywords || (options.tags?.length ? options.tags.join(', ') + ', ' + defaultKeywords : defaultKeywords) },
+    { name: 'author', content: authorName },
+    { name: 'geo.region', content: 'YE-SN' },
+    { name: 'geo.placename', content: geoPlace },
+    { name: 'geo.position', content: '15.3694;44.1910' },
+    { name: 'ICBM', content: '15.3694, 44.1910' },
+    { name: 'googlebot', content: 'index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1' },
+    { name: 'bingbot', content: 'index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1' }
+  ]
+
+  if (options.googleVerification) {
+    metaList.push({ name: 'google-site-verification', content: options.googleVerification })
+  }
+
   // Canonical link tag & Geo / Search Engine meta
   useHead({
     link: [
@@ -78,16 +98,7 @@ export function useSeoEngine(options: SeoOptions = {}) {
         href: canonicalUrl
       }
     ],
-    meta: [
-      { name: 'keywords', content: options.tags?.length ? options.tags.join(', ') + ', ' + defaultKeywords : defaultKeywords },
-      { name: 'author', content: devName },
-      { name: 'geo.region', content: 'YE-SN' },
-      { name: 'geo.placename', content: 'صنعاء، اليمن' },
-      { name: 'geo.position', content: '15.3694;44.1910' },
-      { name: 'ICBM', content: '15.3694, 44.1910' },
-      { name: 'googlebot', content: 'index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1' },
-      { name: 'bingbot', content: 'index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1' }
-    ]
+    meta: metaList
   })
 
   return {

@@ -48,11 +48,15 @@ const devTitle = dev?.title || dev?.role || 'خبير وممارس مهني'
 const seo = useSeoEngine({
   title: settings?.site_title || `${devName} | ${devTitle}`,
   description: settings?.site_description || dev?.tagline || dev?.bio || `الموقع الرسمي والملف المهني لـ ${devName} - ${devTitle}.`,
-  image: dev?.avatar || '/avatar.jpg',
+  image: settings?.og_image || dev?.avatar || '/avatar.jpg',
   slug: '',
   type: 'website',
   devName: devName,
-  devTitle: devTitle
+  devTitle: devTitle,
+  keywords: settings?.meta_keywords,
+  author: settings?.site_author || devName,
+  geoPlacename: settings?.geo_placename,
+  googleVerification: settings?.google_site_verification
 })
 
 // Structured JSON-LD Schema

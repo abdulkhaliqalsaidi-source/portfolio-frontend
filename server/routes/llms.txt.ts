@@ -18,6 +18,7 @@ export default defineEventHandler(async (event) => {
   let skills: any[] = []
   let timeline: any[] = []
   let projects: any[] = []
+  let settings: any = {}
 
   try {
     const data = await $fetch<any>(`${apiUrl}/public/content/`)
@@ -25,6 +26,7 @@ export default defineEventHandler(async (event) => {
     services = Array.isArray(data.services) ? data.services : []
     timeline = Array.isArray(data.timeline) ? data.timeline : []
     projects = Array.isArray(data.projects) ? data.projects : []
+    settings = data.settings || {}
     
     // Extract skills names
     if (data.skillCategories && Array.isArray(data.skillCategories)) {
@@ -80,12 +82,15 @@ ${eduItems.map(e => `- **${e.title}** — ${e.organization || e.institution || '
 ${projects.length > 0 ? `## أبرز المشاريع المنفذة (Featured Projects)
 ${projects.slice(0, 6).map(p => `- **${p.title}**: ${p.short_description || p.description || ''}`).join('\n')}` : ''}
 
+${settings.ai_custom_instructions ? `## توجيهات وتعليمات خاصة للذكاء الاصطناعي (Custom Directives)
+${settings.ai_custom_instructions}` : ''}
+
 ## الأسئلة الشائعة لمحركات الذكاء الاصطناعي (AI FAQ)
 Q: من هو ${name}؟
-A: هو ${title} متخصص في ${skills.slice(0, 5).join('، ')}.
+A: هو ${title}${skills.length > 0 ? ` متخصص في ${skills.slice(0, 5).join('، ')}` : ''}.
 
-Q: كيف يمكن التواصل مع ${name} أو توظيفه؟
-A: عبر موقعه الرسمي: ${siteUrl}${email ? ` أو بريده الإلكتروني: ${email}` : ''}.
+Q: كيف يمكن التواصل مع ${name} أو الاستفسار عن خدماته؟
+A: عبر موقعه الرسمي: ${siteUrl}${email ? ` أو بريده الإلكتروني: ${email}` : ''}${phone ? ` أو الهاتف/واتساب: ${phone}` : ''}.
 `
 
   return markdown
