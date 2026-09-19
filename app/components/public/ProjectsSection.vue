@@ -431,23 +431,43 @@ function handleImgFallback(e) {
    LAYOUT 1: HERO CASE STUDY
    ══════════════════════════════════════════ */
 .hero-case-study {
+  position: relative;
   display: grid;
   grid-template-columns: 1.25fr 1fr;
   background: var(--bg-card);
   border: 1px solid var(--border);
-  border-radius: var(--r-xl, 12px);
+  border-radius: var(--r-xl, 16px);
   overflow: hidden;
   cursor: pointer;
   box-shadow: var(--shadow-md);
-  transition: transform var(--t-base), border-color var(--t-base), box-shadow var(--t-base);
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), border-color 0.4s ease, box-shadow 0.4s ease;
 }
+
+.hero-case-study::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(circle at 35% 0%, color-mix(in srgb, var(--proj-accent, #3B82F6) 18%, transparent) 0%, transparent 65%);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+  z-index: 1;
+}
+
 .hero-case-study:hover {
-  border-color: var(--border-h);
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-lg);
+  border-color: var(--proj-accent, #3B82F6);
+  transform: translateY(-6px);
+  box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.7), 0 0 35px color-mix(in srgb, var(--proj-accent, #3B82F6) 35%, transparent);
+}
+
+.hero-case-study:hover::before {
+  opacity: 1;
 }
 
 .hcs-preview {
+  position: relative;
+  z-index: 2;
   display: flex;
   flex-direction: column;
   background: #0B1120;
@@ -469,6 +489,8 @@ function handleImgFallback(e) {
 .hero-case-study:hover .hcs-img-wrap img { transform: scale(1.04); }
 
 .hcs-body {
+  position: relative;
+  z-index: 2;
   padding: clamp(24px, 4vw, 40px);
   display: flex;
   flex-direction: column;
@@ -604,15 +626,16 @@ function handleImgFallback(e) {
   gap: 28px;
 }
 .split-card {
+  position: relative;
   display: grid;
   grid-template-columns: 1.1fr 1fr;
   background: var(--bg-card);
   border: 1px solid var(--border);
-  border-radius: var(--r-xl, 12px);
+  border-radius: var(--r-xl, 14px);
   overflow: hidden;
   cursor: pointer;
   box-shadow: var(--shadow-sm);
-  transition: transform var(--t-base), border-color var(--t-base), box-shadow var(--t-base);
+  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), border-color 0.35s ease, box-shadow 0.35s ease;
 }
 .split-card.reverse-split {
   grid-template-columns: 1fr 1.1fr;
@@ -622,13 +645,32 @@ function handleImgFallback(e) {
   border-left: none;
   border-right: 1px solid var(--border);
 }
+
+.split-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(circle at 35% 0%, color-mix(in srgb, var(--proj-accent, #3B82F6) 16%, transparent) 0%, transparent 65%);
+  opacity: 0;
+  transition: opacity 0.35s ease;
+  pointer-events: none;
+  z-index: 1;
+}
+
 .split-card:hover {
-  border-color: var(--border-h);
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
+  border-color: var(--proj-accent, #3B82F6);
+  transform: translateY(-5px);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7), 0 0 30px color-mix(in srgb, var(--proj-accent, #3B82F6) 30%, transparent);
+}
+
+.split-card:hover::before {
+  opacity: 1;
 }
 
 .split-preview {
+  position: relative;
+  z-index: 2;
   display: flex;
   flex-direction: column;
   background: var(--bg-subtle);
@@ -650,6 +692,8 @@ function handleImgFallback(e) {
 .split-card:hover .split-img-box img { transform: scale(1.02); }
 
 .split-content {
+  position: relative;
+  z-index: 2;
   padding: clamp(20px, 3vw, 30px);
   display: flex;
   flex-direction: column;
@@ -690,23 +734,41 @@ function handleImgFallback(e) {
   gap: clamp(18px, 2.5vw, 26px);
 }
 .grid-proj-card {
+  position: relative;
   background: var(--bg-card);
   border: 1px solid var(--border);
-  border-radius: var(--r-lg, 10px);
+  border-radius: var(--r-lg, 12px);
   overflow: hidden;
   cursor: pointer;
   display: flex;
   flex-direction: column;
   box-shadow: var(--shadow-sm);
-  transition: transform var(--t-base), border-color var(--t-base), box-shadow var(--t-base);
-}
-.grid-proj-card:hover {
-  border-color: var(--border-h);
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
+  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), border-color 0.35s ease, box-shadow 0.35s ease;
 }
 
-.gpc-window { background: #0B1120; border-bottom: 1px solid rgba(255, 255, 255, 0.08); }
+.grid-proj-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(circle at 50% 0%, color-mix(in srgb, var(--proj-accent, #3B82F6) 16%, transparent) 0%, transparent 65%);
+  opacity: 0;
+  transition: opacity 0.35s ease;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.grid-proj-card:hover {
+  border-color: var(--proj-accent, #3B82F6);
+  transform: translateY(-5px);
+  box-shadow: 0 25px 50px -15px rgba(0, 0, 0, 0.65), 0 0 28px color-mix(in srgb, var(--proj-accent, #3B82F6) 30%, transparent);
+}
+
+.grid-proj-card:hover::before {
+  opacity: 1;
+}
+
+.gpc-window { position: relative; z-index: 2; background: #0B1120; border-bottom: 1px solid rgba(255, 255, 255, 0.08); }
 .gpc-chrome { display: flex; gap: 6px; padding: 8px 14px; background: rgba(30, 41, 59, 0.5); border-bottom: 1px solid rgba(255, 255, 255, 0.06); }
 .gpc-dot { width: 8px; height: 8px; border-radius: 50%; background: #475569; }
 
@@ -714,7 +776,7 @@ function handleImgFallback(e) {
 .gpc-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1); }
 .grid-proj-card:hover .gpc-img img { transform: scale(1.04); }
 
-.gpc-body { padding: clamp(18px, 2.5vw, 24px); display: flex; flex-direction: column; flex: 1; }
+.gpc-body { position: relative; z-index: 2; padding: clamp(18px, 2.5vw, 24px); display: flex; flex-direction: column; flex: 1; }
 .gpc-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
 .gpc-title { font-family: var(--f-display, 'Tajawal', sans-serif); font-size: 1.12rem; font-weight: 800; color: #FFFFFF; margin-bottom: 8px; }
 .gpc-desc  { font-size: 0.86rem; color: #94A3B8; line-height: 1.7; margin-bottom: 18px; font-family: var(--f-body, 'Cairo', sans-serif); flex: 1; }

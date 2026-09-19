@@ -86,42 +86,62 @@ const displayServices = computed(() => {
   position: relative;
   background: var(--bg-card);
   border: 1px solid var(--border);
-  border-radius: var(--r-lg, 10px);
-  padding: clamp(20px, 2.5vw, 26px);
+  border-radius: var(--r-lg, 12px);
+  padding: clamp(22px, 2.8vw, 28px);
   display: flex;
   flex-direction: column;
   overflow: hidden;
   box-shadow: var(--shadow-sm);
-  transition: transform var(--t-base), border-color var(--t-base), box-shadow var(--t-base);
+  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), border-color 0.35s ease, box-shadow 0.35s ease;
+}
+
+.service-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(circle at 50% 0%, color-mix(in srgb, var(--sc, #3B82F6) 18%, transparent) 0%, transparent 70%);
+  opacity: 0;
+  transition: opacity 0.35s ease;
+  pointer-events: none;
+  z-index: 1;
 }
 
 .service-card:hover {
-  transform: translateY(-2px);
-  border-color: var(--border-h);
-  box-shadow: var(--shadow-md);
+  transform: translateY(-6px);
+  border-color: var(--sc, #3B82F6);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7), 0 0 35px color-mix(in srgb, var(--sc, #3B82F6) 35%, transparent);
+}
+
+.service-card:hover::before {
+  opacity: 1;
 }
 
 .s-top {
+  position: relative;
+  z-index: 2;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 18px;
+  margin-bottom: 20px;
 }
 
 .s-icon-box {
-  width: 42px;
-  height: 42px;
-  border-radius: var(--r-sm, 6px);
+  width: 46px;
+  height: 46px;
+  border-radius: var(--r-sm, 10px);
   background: var(--bg-subtle);
   border: 1px solid var(--border);
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: border-color var(--t-fast);
+  transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .service-card:hover .s-icon-box {
-  border-color: var(--border-h);
+  transform: scale(1.1) rotate(6deg);
+  border-color: var(--sc, #3B82F6);
+  box-shadow: 0 0 22px color-mix(in srgb, var(--sc, #3B82F6) 45%, transparent);
 }
 
 .s-num {
@@ -136,15 +156,19 @@ const displayServices = computed(() => {
 }
 
 .s-card-title {
+  position: relative;
+  z-index: 2;
   font-family: var(--f-display, 'Tajawal', sans-serif);
-  font-size: clamp(1.05rem, 1.3vw, 1.2rem);
-  font-weight: 700;
+  font-size: clamp(1.05rem, 1.3vw, 1.25rem);
+  font-weight: 800;
   color: var(--t1);
   margin-bottom: 8px;
   line-height: 1.35;
 }
 
 .s-card-desc {
+  position: relative;
+  z-index: 2;
   font-size: 0.88rem;
   color: var(--t2);
   line-height: 1.75;
@@ -153,6 +177,8 @@ const displayServices = computed(() => {
 }
 
 .s-features {
+  position: relative;
+  z-index: 2;
   display: flex;
   flex-direction: column;
   gap: 8px;

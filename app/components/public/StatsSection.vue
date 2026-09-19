@@ -240,9 +240,15 @@ onMounted(async () => {
 }
 
 .bento-card:hover {
-  transform: translateY(-2px);
+  transform: translateY(-4px);
   border-color: var(--border-h);
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--shadow-lg);
+}
+
+.bento-bio:hover,
+.bento-skills:hover {
+  border-color: var(--primary);
+  box-shadow: 0 20px 45px -12px rgba(0, 0, 0, 0.65), 0 0 30px color-mix(in srgb, var(--primary) 28%, transparent);
 }
 
 /* Bio Card */
@@ -250,6 +256,7 @@ onMounted(async () => {
   grid-column: span 2;
   display: flex;
   flex-direction: column;
+  transition: transform 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease;
 }
 
 .bio-inner {
@@ -384,6 +391,29 @@ onMounted(async () => {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), border-color 0.35s ease, box-shadow 0.35s ease;
+}
+
+.bento-stat::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(circle at 50% 0%, color-mix(in srgb, var(--card-accent, #3B82F6) 20%, transparent) 0%, transparent 70%);
+  opacity: 0;
+  transition: opacity 0.35s ease;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.bento-stat:hover {
+  transform: translateY(-6px);
+  border-color: var(--card-accent, #3B82F6);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7), 0 0 32px color-mix(in srgb, var(--card-accent, #3B82F6) 35%, transparent);
+}
+
+.bento-stat:hover::before {
+  opacity: 1;
 }
 
 .stat-inner {
@@ -403,15 +433,22 @@ onMounted(async () => {
 }
 
 .stat-icon-wrap {
-  width: 40px;
-  height: 40px;
-  border-radius: var(--r-sm, 6px);
+  width: 44px;
+  height: 44px;
+  border-radius: var(--r-sm, 10px);
   background: var(--bg-subtle);
   border: 1px solid var(--border);
   color: var(--card-accent, var(--primary));
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.bento-stat:hover .stat-icon-wrap {
+  transform: scale(1.1) rotate(6deg);
+  border-color: var(--card-accent, #3B82F6);
+  box-shadow: 0 0 20px color-mix(in srgb, var(--card-accent, #3B82F6) 45%, transparent);
 }
 
 .stat-badge {
