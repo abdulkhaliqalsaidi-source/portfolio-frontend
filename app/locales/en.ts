@@ -28,76 +28,76 @@ export default {
 
   // Hero Section
   hero: {
-    badge: 'Frontend & Software Developer • Vue.js & Vuetify Specialist',
+    badge: 'Professional Portfolio & Career Showcase',
     greeting: "Hello, I'm",
-    tagline: 'Designing and developing interactive, high-performance web user interfaces using Vue.js and Vuetify, with seamless RESTful APIs and Django integration.',
-    exploreProjects: 'Explore Projects',
+    tagline: 'Delivering specialized, high-impact services and solutions built on rigorous experience, dedication, and the highest quality standards.',
+    exploreProjects: 'Explore Portfolio',
     contactMe: 'Contact Me',
-    liveBadgeText: 'Available for New Projects'
+    liveBadgeText: 'Available for Engagements'
   },
 
   // Stats & About Section
   stats: {
-    eyebrow: 'Vision & Engineering Philosophy • About',
-    title: 'Delivering Robust Digital Products',
-    titleHighlight: 'with High Performance & Precision',
-    sub: 'An engineering approach centered on clean architecture, strict code quality, scalable system design, and outstanding user satisfaction.',
-    role: 'Frontend & Software Developer',
+    eyebrow: 'Vision & Professional Philosophy • About',
+    title: 'Delivering Comprehensive Solutions',
+    titleHighlight: 'with Excellence & Precision',
+    sub: 'A dedicated approach centered on excellence, continuous development, ethical practice, and outstanding client satisfaction.',
+    role: 'Specialist & Consultant',
     downloadCv: 'Download Resume (CV)',
     requestConsultation: 'Request Consultation',
     verifiedAchievement: 'Verified Milestone',
-    coreCompetencies: 'Core Competencies & Tech Stack',
-    competenciesDesc: 'Professional proficiency benchmarks across frontend, backend, databases, and DevOps tools.',
+    coreCompetencies: 'Core Competencies & Expertise',
+    competenciesDesc: 'Professional proficiency benchmarks across core disciplines, specialized competencies, and practical tools.',
     verifiedSkills: 'Verified Skills'
   },
 
   // Services Section
   services: {
-    eyebrow: 'Engineering Services • What I Do',
-    title: 'End-to-End Technical Solutions',
-    titleHighlight: 'from Concept to Production',
-    sub: 'Comprehensive engineering services covering the complete digital product lifecycle using modern stacks and cloud best practices.'
+    eyebrow: 'Services & Practice Areas • What I Offer',
+    title: 'Comprehensive Solutions',
+    titleHighlight: 'from Strategy to Execution',
+    sub: 'Comprehensive specialized services designed to meet your specific goals with the highest standards of reliability.'
   },
 
   // Projects Section
   projects: {
     eyebrow: 'Featured Work • Portfolio & Case Studies',
-    title: 'Battle-Tested Software Solutions',
-    titleHighlight: 'Built & Shipped to Production',
-    sub: 'Selected enterprise platforms, GIS spatial tools, and web applications built with uncompromising performance, reliability, and security standards.',
+    title: 'Real-World Achievements & Case Studies',
+    titleHighlight: 'with Measurable Impact',
+    sub: 'Selected case studies, projects, and practical milestones executed with uncompromising quality, precision, and standards.',
     allFilter: 'All',
-    readCaseStudy: 'Read Interactive Case Study',
-    liveDemo: 'Live Demo',
-    repository: 'Source Code',
-    viewAllProjects: 'View All Projects',
+    readCaseStudy: 'Read Detailed Case Study',
+    liveDemo: 'View Work',
+    repository: 'Documentation / Assets',
+    viewAllProjects: 'View All Works',
     beforeAfter: 'Before & After Transformation',
-    beforeLabel: 'Initial Draft & Prototype',
-    afterLabel: 'Final Production Solution',
+    beforeLabel: 'Baseline State / Challenge',
+    afterLabel: 'Final Outcome & Resolution',
     dragHint: 'Drag to Compare'
   },
 
   // Testimonials Section
   testimonials: {
-    eyebrow: 'Client Endorsements • Testimonials',
-    title: 'What Collaborators & Clients Say',
+    eyebrow: 'Client & Partner Endorsements • Testimonials',
+    title: 'What Clients & Partners Say',
     titleHighlight: 'About Working Together',
-    sub: 'Direct feedback and reviews from project managers, founders, and technical partners.'
+    sub: 'Direct feedback and reviews from partners and clients regarding delivered service quality and professional collaboration.'
   },
 
   // Timeline / Experience Section
   timeline: {
     eyebrow: 'Career Journey • Milestones & Growth',
-    title: 'Engineering Experience',
-    titleHighlight: '& Professional Timeline',
-    sub: 'Chronological timeline of leadership roles, enterprise deliveries, and accredited certifications.'
+    title: 'Professional Milestones',
+    titleHighlight: '& Career Progression',
+    sub: 'Chronological timeline of accredited education, leadership roles, and recognized professional achievements.'
   },
 
   // Contact Section
   contact: {
-    eyebrow: "Let's Connect • Start a Project",
-    title: "Let's Turn Your Vision Into a",
-    titleHighlight: 'Remarkable Digital Product',
-    sub: 'Open to contract engagements, freelance projects, and technical consulting. Reach out and let’s discuss your objectives.',
+    eyebrow: "Let's Connect • Get in Touch",
+    title: "Let's Collaborate to Achieve",
+    titleHighlight: 'Exceptional Results',
+    sub: 'Open to new opportunities, consultations, and professional collaborations. Reach out and let’s discuss what we can achieve.',
     quickBadge: 'Quick Contact Form',
     directMessage: 'Send a Direct Message',
     responseTime: 'Your message will be received and replied to within 24 hours max.',

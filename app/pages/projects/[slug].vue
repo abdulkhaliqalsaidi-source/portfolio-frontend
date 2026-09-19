@@ -211,18 +211,22 @@ if (error.value || !data.value?.project) {
 const project = computed(() => data.value?.project)
 const otherProjects = computed(() => data.value?.other_projects || [])
 
+const dev = portfolioStore.developer
+
 // SEO Setup
 useSeoEngine({
   title: project.value.title,
   description: project.value.short_description || project.value.problem,
   image: project.value.image,
   slug: `projects/${project.value.slug}`,
-  type: 'website'
+  type: 'website',
+  devName: dev?.name || dev?.full_name,
+  devTitle: dev?.title || dev?.role
 })
 
 // Schema.org Structured Data
 const { setProjectSchema, setBreadcrumbsSchema } = useJsonLd()
-setProjectSchema(project.value)
+setProjectSchema(project.value, dev?.name || dev?.full_name)
 setBreadcrumbsSchema([
   { name: 'الرئيسية', path: '/' },
   { name: 'المشاريع', path: '/projects' },

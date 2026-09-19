@@ -41,24 +41,29 @@ onMounted(() => {
 const dev = portfolioStore.developer
 const settings = portfolioStore.settings
 
-// Professional SEO setup
+const devName = dev?.name || dev?.full_name || 'الملف المهني الشخصي'
+const devTitle = dev?.title || dev?.role || 'خبير وممارس مهني'
+
+// Professional Dynamic SEO setup
 const seo = useSeoEngine({
-  title: settings?.site_title || (dev.name ? `${dev.name} | مطور واجهات أمامية وبرمجيات` : 'عبد الخالق علي محمد الصايدي | مطور واجهات أمامية وبرمجيات'),
-  description: settings?.site_description || dev.tagline || dev.bio || 'الموقع الشخصي ومعرض أعمال عبد الخالق علي محمد الصايدي - مطور واجهات ومصمم برمجيات متخصص في بناء واجهات مستخدم تفاعلية وعالية الأداء بـ Vue.js و Vuetify والربط مع Django REST APIs.',
-  image: dev.avatar || '/avatar.jpg',
+  title: settings?.site_title || `${devName} | ${devTitle}`,
+  description: settings?.site_description || dev?.tagline || dev?.bio || `الموقع الرسمي والملف المهني لـ ${devName} - ${devTitle}.`,
+  image: dev?.avatar || '/avatar.jpg',
   slug: '',
-  type: 'website'
+  type: 'website',
+  devName: devName,
+  devTitle: devTitle
 })
 
 // Structured JSON-LD Schema
 const { setPersonSchema, addSchema } = useJsonLd()
-setPersonSchema(dev)
+setPersonSchema(dev, [], portfolioStore.services)
 addSchema({
   '@context': 'https://schema.org',
   '@type': 'WebSite',
   '@id': `${seo.canonicalUrl}/#website`,
-  name: dev.name || 'عبد الخالق علي محمد الصايدي',
-  alternateName: 'موقع عبد الخالق الصايدي الشخصي | Frontend & Software Developer',
+  name: devName,
+  alternateName: `موقع ${devName} الشخصي | Portfolio`,
   url: seo.canonicalUrl,
   description: seo.pageDesc,
   inLanguage: ['ar', 'en'],

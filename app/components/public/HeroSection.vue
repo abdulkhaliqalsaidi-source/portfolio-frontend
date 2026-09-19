@@ -36,7 +36,8 @@
             <button class="btn btn-primary btn-lg" @click="go('#projects')">
               <span>{{ t('hero.exploreProjects') }}</span>
               <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                  stroke-linejoin="round" />
               </svg>
             </button>
             <button class="btn btn-ghost btn-lg" @click="go('#contact')">
@@ -70,13 +71,8 @@
 
             <!-- Main Portrait Frame -->
             <div class="avatar-frame">
-              <img
-                v-if="dev.avatar && !avatarLoadError"
-                :src="dev.avatar"
-                :alt="dev.name || dev.full_name"
-                class="avatar-img"
-                @error="avatarLoadError = true"
-              />
+              <img v-if="dev.avatar && !avatarLoadError" :src="dev.avatar" :alt="dev.name || dev.full_name"
+                class="avatar-img" @error="avatarLoadError = true" />
               <div v-else class="d-flex align-center justify-center h-100 w-100 fallback-avatar">
                 <v-icon icon="mdi-account-tie" size="110" color="var(--primary)" />
               </div>
@@ -213,8 +209,16 @@ onUnmounted(() => clearTimeout(timer))
   background: var(--bg);
   padding-top: 40px;
 }
-.hero-inner { position: relative; z-index: 2; width: 100%; }
-.hero-row { padding: clamp(80px, 10vw, 120px) 0 clamp(44px, 6vw, 68px); }
+
+.hero-inner {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+}
+
+.hero-row {
+  padding: clamp(80px, 10vw, 120px) 0 clamp(44px, 6vw, 68px);
+}
 
 /* Availability Badge */
 .hero-badge {
@@ -231,6 +235,7 @@ onUnmounted(() => clearTimeout(timer))
   margin-bottom: var(--sp-4);
   font-family: var(--f-body);
 }
+
 .badge-dot {
   width: 7px;
   height: 7px;
@@ -252,8 +257,19 @@ onUnmounted(() => clearTimeout(timer))
   flex-direction: column;
   gap: 6px;
 }
-.hero-greeting { font-size: 0.42em; font-weight: 500; color: var(--t3); }
-.hero-name { font-size: 1em; font-weight: 800; color: var(--t1); }
+
+.hero-greeting {
+  font-size: 0.42em;
+  font-weight: 500;
+  color: var(--t3);
+}
+
+.hero-name {
+  font-size: 1em;
+  font-weight: 800;
+  color: var(--t1);
+}
+
 .hero-role {
   display: block;
   font-size: 0.52em;
@@ -263,7 +279,9 @@ onUnmounted(() => clearTimeout(timer))
   margin-bottom: 12px;
   line-height: 1.6;
   min-height: 2em;
+  height: 3px;
 }
+
 .typed-wrap {
   display: inline-block;
   color: var(--primary);
@@ -272,6 +290,7 @@ onUnmounted(() => clearTimeout(timer))
   line-height: 1.6;
   word-break: break-word;
 }
+
 .typed-cur {
   display: inline-block;
   animation: cursor-blink 1s infinite;
@@ -290,7 +309,12 @@ onUnmounted(() => clearTimeout(timer))
 }
 
 /* CTAs */
-.hero-ctas { display: flex; gap: var(--sp-3); flex-wrap: wrap; margin-bottom: var(--sp-5); }
+.hero-ctas {
+  display: flex;
+  gap: var(--sp-3);
+  flex-wrap: wrap;
+  margin-bottom: var(--sp-5);
+}
 
 /* Quick Spec Row */
 .hero-spec-row {
@@ -300,6 +324,7 @@ onUnmounted(() => clearTimeout(timer))
   flex-wrap: wrap;
   margin-bottom: var(--sp-6);
 }
+
 .spec-pill {
   display: inline-flex;
   align-items: center;
@@ -321,7 +346,13 @@ onUnmounted(() => clearTimeout(timer))
   border-top: 1px solid var(--border);
   flex-wrap: wrap;
 }
-.hstat { display: flex; flex-direction: column; min-width: 90px; }
+
+.hstat {
+  display: flex;
+  flex-direction: column;
+  min-width: 90px;
+}
+
 .hstat-val {
   font-family: var(--f-mono);
   font-size: clamp(1.4rem, 2.2vw, 1.8rem);
@@ -329,7 +360,13 @@ onUnmounted(() => clearTimeout(timer))
   line-height: 1.1;
   color: var(--t1);
 }
-.hstat-label { font-size: 0.8rem; color: var(--t3); font-family: var(--f-body); margin-top: 4px; }
+
+.hstat-label {
+  font-size: 0.8rem;
+  color: var(--t3);
+  font-family: var(--f-body);
+  margin-top: 4px;
+}
 
 .hero-avatar-col {
   display: flex;
@@ -356,9 +393,18 @@ onUnmounted(() => clearTimeout(timer))
   pointer-events: none;
   animation: aura-pulse 8s ease-in-out infinite alternate;
 }
+
 @keyframes aura-pulse {
-  0% { transform: scale(0.95); opacity: 0.7; }
-  100% { transform: scale(1.05); opacity: 1; filter: blur(48px); }
+  0% {
+    transform: scale(0.95);
+    opacity: 0.7;
+  }
+
+  100% {
+    transform: scale(1.05);
+    opacity: 1;
+    filter: blur(48px);
+  }
 }
 
 .avatar-glow-ring {
@@ -468,15 +514,31 @@ onUnmounted(() => clearTimeout(timer))
 }
 
 @keyframes float-badge-1 {
-  0% { transform: translateY(0px) rotate(0deg); }
-  50% { transform: translateY(-8px) rotate(1deg); }
-  100% { transform: translateY(-3px) rotate(-1deg); }
+  0% {
+    transform: translateY(0px) rotate(0deg);
+  }
+
+  50% {
+    transform: translateY(-8px) rotate(1deg);
+  }
+
+  100% {
+    transform: translateY(-3px) rotate(-1deg);
+  }
 }
 
 @keyframes float-badge-2 {
-  0% { transform: translateY(0px) rotate(0deg); }
-  50% { transform: translateY(8px) rotate(-1deg); }
-  100% { transform: translateY(3px) rotate(1deg); }
+  0% {
+    transform: translateY(0px) rotate(0deg);
+  }
+
+  50% {
+    transform: translateY(8px) rotate(-1deg);
+  }
+
+  100% {
+    transform: translateY(3px) rotate(1deg);
+  }
 }
 
 .fc-icon-wrap {
@@ -589,7 +651,12 @@ onUnmounted(() => clearTimeout(timer))
 }
 
 @media (max-width: 600px) {
-  .hero-ctas { flex-direction: column; }
-  .hero-ctas .btn { width: 100%; }
+  .hero-ctas {
+    flex-direction: column;
+  }
+
+  .hero-ctas .btn {
+    width: 100%;
+  }
 }
 </style>

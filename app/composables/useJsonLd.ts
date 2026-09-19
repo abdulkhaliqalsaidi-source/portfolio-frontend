@@ -1,6 +1,6 @@
 export function useJsonLd() {
   const config = useRuntimeConfig()
-  const siteUrl = config.public.siteUrl || 'https://example.com'
+  const siteUrl = config.public.siteUrl || 'https://portfolio-frontend-pink-mu.vercel.app'
 
   function addSchema(schemaObj: Record<string, any>) {
     useHead({
@@ -13,120 +13,95 @@ export function useJsonLd() {
     })
   }
 
-  function setPersonSchema(profile: any = {}) {
-    const fullName = profile.full_name || profile.name || 'عبد الخالق علي محمد الصايدي'
-    const jobTitle = profile.title || 'مطور واجهات أمامية وبرمجيات | Frontend & Software Developer'
-    const bioText = profile.bio || profile.tagline || 'مطور واجهات ومصمم برمجيات متخصص في بناء واجهات مستخدم تفاعلية وعالية الأداء باستخدام Vue.js و Vuetify والربط مع RESTful APIs وإدارة قواعد البيانات.'
+  function setPersonSchema(profile: any = {}, extraSkills: string[] = [], servicesList: any[] = []) {
+    const fullName = profile.full_name || profile.name || 'الملف المهني الشخصي'
+    const jobTitle = profile.title || profile.role || 'خبير وممارس مهني'
+    const bioText = profile.bio || profile.tagline || `الموقع الرسمي والملف المهني لـ ${fullName} - ${jobTitle}.`
+    const location = profile.location || 'صنعاء، اليمن'
+    const locality = location.includes('،') ? location.split('،')[0].trim() : (location.includes(',') ? location.split(',')[0].trim() : location)
+    const country = location.includes('اليمن') || location.toLowerCase().includes('yemen') ? 'اليمن' : 'اليمن'
 
-    addSchema({
+    const schema: Record<string, any> = {
       '@context': 'https://schema.org',
       '@type': ['Person', 'ProfilePage'],
       '@id': `${siteUrl}/#person`,
       name: fullName,
-      alternateName: [
-        'عبد الخالق الصايدي',
-        'عبد الخالق علي محمد الصايدي',
-        'Abdulkhaliq Al-Saidi',
-        'Abdulkhaliq Ali Mohammed Al-Saidi',
-        'Abdulkhaliq Alsaidi'
-      ],
+      alternateName: [fullName].filter(Boolean),
       jobTitle: jobTitle,
       description: bioText,
       url: siteUrl,
-      image: profile.avatar || `${siteUrl}/avatar.jpg`,
-      email: profile.email ? `mailto:${profile.email}` : 'mailto:abdulkhaliq.al.saidi@gmail.com',
-      telephone: profile.phone || '+967 771523243',
+      image: profile.avatar ? (profile.avatar.startsWith('http') ? profile.avatar : `${siteUrl}${profile.avatar.startsWith('/') ? '' : '/'}${profile.avatar}`) : `${siteUrl}/avatar.jpg`,
       address: {
         '@type': 'PostalAddress',
-        addressLocality: 'صنعاء',
-        addressRegion: 'صنعاء',
-        addressCountry: 'اليمن'
-      },
-      worksFor: {
-        '@type': 'Organization',
-        name: 'شركة أوبن سوفت (OpenSoft)',
-        address: {
-          '@type': 'PostalAddress',
-          addressLocality: 'صنعاء',
-          addressCountry: 'اليمن'
-        }
-      },
-      alumniOf: {
-        '@type': 'CollegeOrUniversity',
-        name: 'جامعة آزال للتنمية البشرية (Azal University for Human Development)'
+        addressLocality: locality,
+        addressCountry: country
       },
       hasOccupation: {
         '@type': 'Occupation',
-        name: 'مطور واجهات أمامية وبرمجيات (Frontend & Software Developer)',
+        name: jobTitle,
         occupationLocation: {
           '@type': 'City',
-          name: 'صنعاء، اليمن'
-        },
-        skills: 'Vue.js, Vuetify, JavaScript ES6+, HTML5, CSS3, Django REST Framework, Oracle Database, MySQL, MCSA, CCNA'
+          name: location
+        }
       },
-      knowsAbout: [
-        'تطوير الواجهات الأمامية (Frontend Development)',
-        'Vue.js (Vue 3 / Vue 2)',
-        'Vuetify Framework',
-        'JavaScript (ES6+)',
-        'TypeScript',
-        'HTML5 & CSS3',
-        'RESTful APIs Integration',
-        'Django REST Framework',
-        'Oracle Database',
-        'MySQL',
-        'MCSA (Server Administration)',
-        'CCNA (Networking)',
-        'الدعم الفني وصيانة الأنظمة البرمجية',
-        'Flutter',
-        'WordPress',
-        'Git & GitHub'
-      ],
       sameAs: [
         profile.github,
         profile.linkedin,
         profile.twitter,
         profile.website,
-        'https://github.com/abdulkhaliqalsaidi-source'
+        profile.instagram
       ].filter(Boolean)
-    })
+    }
 
-    // Add ProfessionalService schema for local & remote search discovery
+    if (profile.email) {
+      schema.email = `mailto:${profile.email}`
+    }
+    if (profile.phone || profile.whatsapp) {
+      schema.telephone = profile.phone || profile.whatsapp
+    }
+
+    if (extraSkills.length > 0) {
+      schema.knowsAbout = extraSkills
+      schema.hasOccupation.skills = extraSkills.join(', ')
+    }
+
+    addSchema(schema)
+
+    // Dynamic services definition based on user's actual profession and offerings
+    const serviceNames = servicesList && servicesList.length > 0
+      ? servicesList.map(s => typeof s === 'string' ? s : s.title)
+      : ['استشارات تخصصية', 'خدمات مهنية احترافية', 'تنفيذ ومتابعة الأعمال']
+
     addSchema({
       '@context': 'https://schema.org',
       '@type': 'ProfessionalService',
       '@id': `${siteUrl}/#service`,
-      name: `خدمات ${fullName} لتطوير البرمجيات والواجهات`,
+      name: `خدمات ${fullName}`,
       url: siteUrl,
-      image: profile.avatar || `${siteUrl}/avatar.jpg`,
-      telephone: profile.phone || '+967 771523243',
+      image: schema.image,
+      telephone: schema.telephone || undefined,
       priceRange: '$$',
       address: {
         '@type': 'PostalAddress',
-        addressLocality: 'صنعاء',
-        addressCountry: 'اليمن'
+        addressLocality: locality,
+        addressCountry: country
       },
       areaServed: [
-        'اليمن',
-        'المملكة العربية السعودية',
-        'الخليج العربي',
-        'عالمياً (عن بُعد / Remote)'
+        'محلياً',
+        'إقليمياً',
+        'دولياً وعن بُعد'
       ],
-      serviceType: [
-        'تطوير واجهات المستخدم التفاعلية (Frontend Web Development)',
-        'الربط مع واجهات برمجة التطبيقات (RESTful APIs Integration)',
-        'تطوير وإدارة قواعد البيانات (Oracle Database & MySQL)',
-        'إدارة السيرفرات والشبكات والدعم الفني (Server Admin & IT Support)'
-      ]
+      serviceType: serviceNames
     })
   }
 
-  function setArticleSchema(post: any) {
+  function setArticleSchema(post: any, authorName?: string) {
     if (!post) return
     const postUrl = `${siteUrl}/blog/${post.slug}`
+    const author = authorName || post.author_name || 'الكاتب'
     addSchema({
       '@context': 'https://schema.org',
-      '@type': 'TechArticle',
+      '@type': 'Article',
       headline: post.title,
       description: post.excerpt || post.meta_description || post.title,
       image: post.cover_image || `${siteUrl}/avatar.jpg`,
@@ -134,12 +109,12 @@ export function useJsonLd() {
       dateModified: post.updated_at || post.published_at || new Date().toISOString(),
       author: {
         '@type': 'Person',
-        name: 'عبد الخالق الصايدي',
+        name: author,
         url: siteUrl
       },
       publisher: {
         '@type': 'Person',
-        name: 'عبد الخالق الصايدي',
+        name: author,
         url: siteUrl
       },
       mainEntityOfPage: {
@@ -162,20 +137,19 @@ export function useJsonLd() {
     })
   }
 
-  function setProjectSchema(project: any) {
+  function setProjectSchema(project: any, authorName?: string) {
     if (!project) return
+    const author = authorName || 'صاحب العمل'
     addSchema({
       '@context': 'https://schema.org',
-      '@type': 'SoftwareApplication',
+      '@type': 'CreativeWork',
       name: project.title,
       description: project.short_description || project.title,
-      applicationCategory: 'WebApplication',
-      operatingSystem: 'All',
       url: `${siteUrl}/projects/${project.slug}`,
       image: project.image || `${siteUrl}/avatar.jpg`,
       author: {
         '@type': 'Person',
-        name: 'عبد الخالق الصايدي'
+        name: author
       }
     })
   }

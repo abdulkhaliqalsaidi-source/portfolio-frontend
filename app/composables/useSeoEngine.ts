@@ -9,18 +9,25 @@ export interface SeoOptions {
   modifiedTime?: string
   author?: string
   tags?: string[]
+  devName?: string
+  devTitle?: string
 }
 
 export function useSeoEngine(options: SeoOptions = {}) {
   const config = useRuntimeConfig()
   const siteUrl = config.public.siteUrl || 'https://portfolio-frontend-pink-mu.vercel.app'
-  const defaultTitle = 'عبد الخالق علي محمد الصايدي | مطور واجهات أمامية وبرمجيات'
-  const defaultDesc = 'الموقع الشخصي ومعرض أعمال عبد الخالق علي محمد الصايدي - مطور واجهات ومصمم برمجيات متخصص في بناء واجهات مستخدم تفاعلية وعالية الأداء بـ Vue.js و Vuetify والربط مع Django REST APIs وإدارة قواعد البيانات Oracle و MySQL.'
+  
+  // Dynamic identity resolution
+  const devName = options.devName || options.author || 'عبد الخالق علي محمد الصايدي'
+  const devTitle = options.devTitle || 'مطور واجهات أمامية وبرمجيات'
+  
+  const defaultTitle = `${devName} | ${devTitle}`
+  const defaultDesc = `الموقع الشخصي ومعرض أعمال ${devName} - ${devTitle} متخصص في بناء واجهات مستخدم تفاعلية وتطبيقات ويب حديثة وعالية الأداء.`
   const defaultImage = `${siteUrl}/avatar.jpg`
-  const defaultKeywords = 'عبد الخالق علي محمد الصايدي, عبد الخالق الصايدي, مطور واجهات أمامية, مطور برمجيات, مطور واجهات أمامية وبرمجيات, مطور Vue.js في اليمن, مبرمج واجهات صنعاء, مهندس واجهات, Frontend Developer Yemen, Abdulkhaliq Alsaidi, Vue.js Developer, Vuetify Specialist, Django REST Framework, Oracle Database, MySQL, MCSA, CCNA, تطوير واجهات المستخدم, تصميم مواقع ويب صنعاء'
+  const defaultKeywords = `${devName}, مطور واجهات أمامية, مطور برمجيات, برمجة ويب, Vue.js Developer, Frontend Developer, هندسة البرمجيات`
 
   const pageTitle = options.title
-    ? (options.title.includes('عبد الخالق') ? options.title : `${options.title} | عبد الخالق علي محمد الصايدي`)
+    ? (options.title.includes(devName) ? options.title : `${options.title} | ${devName}`)
     : defaultTitle
   const pageDesc = options.description?.trim() || defaultDesc
   const pageImage = options.image?.startsWith('http')
@@ -40,7 +47,7 @@ export function useSeoEngine(options: SeoOptions = {}) {
     ogImage: pageImage,
     ogUrl: canonicalUrl,
     ogType: options.type || 'website',
-    ogSiteName: 'عبد الخالق علي محمد الصايدي | Frontend & Software Developer',
+    ogSiteName: `${devName} | Portfolio`,
     ogLocale: 'ar_SA',
     twitterCard: 'summary_large_image',
     twitterTitle: options.title || pageTitle,
@@ -49,7 +56,7 @@ export function useSeoEngine(options: SeoOptions = {}) {
     robots: options.noindex ? 'noindex, nofollow' : 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1',
     articlePublishedTime: options.publishedTime,
     articleModifiedTime: options.modifiedTime,
-    articleAuthor: options.author ? [options.author] : ['عبد الخالق علي محمد الصايدي'],
+    articleAuthor: [options.author || devName],
     articleTag: options.tags
   })
 
@@ -73,7 +80,7 @@ export function useSeoEngine(options: SeoOptions = {}) {
     ],
     meta: [
       { name: 'keywords', content: options.tags?.length ? options.tags.join(', ') + ', ' + defaultKeywords : defaultKeywords },
-      { name: 'author', content: 'عبد الخالق علي محمد الصايدي' },
+      { name: 'author', content: devName },
       { name: 'geo.region', content: 'YE-SN' },
       { name: 'geo.placename', content: 'صنعاء، اليمن' },
       { name: 'geo.position', content: '15.3694;44.1910' },
