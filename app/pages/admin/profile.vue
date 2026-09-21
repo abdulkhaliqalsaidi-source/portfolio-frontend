@@ -322,6 +322,7 @@
               clearable
               hide-details
               class="mb-3"
+              @click:clear="profile.resume = ''"
             />
 
             <div v-if="profile.resume" class="d-flex align-center gap-2">
@@ -409,6 +410,20 @@ async function fetchProfile() {
   }
 }
 
+function getCleanProfilePayload() {
+  const p = { ...profile.value }
+  // Ensure string fields are never null/undefined
+  const stringKeys = [
+    'full_name', 'title', 'tagline', 'bio', 'email', 'phone', 'whatsapp',
+    'github', 'linkedin', 'twitter', 'instagram', 'behance', 'dribbble',
+    'youtube', 'website', 'location', 'avatar', 'resume'
+  ]
+  stringKeys.forEach(k => {
+    p[k] = p[k] ? String(p[k]).trim() : ''
+  })
+  return p
+}
+
 async function handleAvatarUpload(e) {
   const file = e.target.files?.[0]
   if (!file) return
@@ -419,8 +434,9 @@ async function handleAvatarUpload(e) {
     const uploadedUrl = res?.file_url || res?.file
     if (uploadedUrl) {
       profile.value.avatar = uploadedUrl
-      // Instantly save to Django database so it persists permanently on refresh!
-      const updated = await adminService.updateProfile(profile.value)
+      const payload = getCleanProfilePayload()
+      payload.avatar = uploadedUrl
+      const updated = await adminService.updateProfile(payload)
       if (updated) {
         profile.value = { ...profile.value, ...updated }
       }
@@ -445,8 +461,9 @@ async function handleResumeUpload(e) {
     const uploadedUrl = res?.file_url || res?.file
     if (uploadedUrl) {
       profile.value.resume = uploadedUrl
-      // Instantly save to Django database so it persists permanently on refresh!
-      const updated = await adminService.updateProfile(profile.value)
+      const payload = getCleanProfilePayload()
+      payload.resume = uploadedUrl
+      const updated = await adminService.updateProfile(payload)
       if (updated) {
         profile.value = { ...profile.value, ...updated }
       }
@@ -468,9 +485,13 @@ async function deleteResume() {
   deletingResume.value = true
   try {
     profile.value.resume = ''
-    const updated = await adminService.updateProfile(profile.value)
+    const payload = getCleanProfilePayload()
+    payload.resume = ''
+    const updated = await adminService.updateProfile(payload)
     if (updated) {
-      profile.value = { ...profile.value, ...updated }
+      profile.value = { ...profile.value, ...updated, resume: '' }
+    } else {
+      profile.value.resume = ''
     }
     await portfolioStore.fetchPublicContent()
     adminStore.notify('تم حذف السيرة الذاتية بنجاح وإخفاء أزرار التحميل من الموقع!', 'success')
@@ -488,8 +509,11 @@ async function saveProfile() {
 
   saving.value = true
   try {
-    const updated = await adminService.updateProfile(profile.value)
-    profile.value = { ...profile.value, ...updated }
+    const payload = getCleanProfilePayload()
+    const updated = await adminService.updateProfile(payload)
+    if (updated) {
+      profile.value = { ...profile.value, ...updated }
+    }
     adminStore.notify('تم حفظ وتحديث كافة بيانات الملف الشخصي بنجاح!', 'success')
     // Refresh public store
     await portfolioStore.fetchPublicContent()
