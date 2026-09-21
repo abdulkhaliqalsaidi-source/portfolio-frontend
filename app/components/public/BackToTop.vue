@@ -13,18 +13,18 @@
         :title="locale === 'en' ? 'Back to top' : 'العودة للأعلى'"
       >
         <!-- Circular Progress Ring SVG -->
-        <svg class="progress-ring" width="46" height="46" viewBox="0 0 46 46">
+        <svg class="progress-ring" viewBox="0 0 44 44">
           <circle
             class="progress-ring-bg"
-            cx="23"
-            cy="23"
-            r="19"
+            cx="22"
+            cy="22"
+            r="20"
           />
           <circle
             class="progress-ring-circle"
-            cx="23"
-            cy="23"
-            r="19"
+            cx="22"
+            cy="22"
+            r="20"
             :stroke-dasharray="circumference"
             :stroke-dashoffset="strokeDashoffset"
           />
@@ -48,7 +48,7 @@ import { useLocale } from '~/composables/useLocale'
 const { locale } = useLocale()
 const show = ref(false)
 const progress = ref(0)
-const radius = 19
+const radius = 20
 const circumference = 2 * Math.PI * radius
 
 const strokeDashoffset = computed(() => {
@@ -91,21 +91,22 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
   height: 44px;
   border-radius: 50%;
   background: var(--bg-card);
-  border: 1px solid var(--border);
+  border: none;
   color: var(--t1);
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 8999;
-  box-shadow: var(--shadow-sm);
-  transition: transform var(--t-base), border-color var(--t-base), box-shadow var(--t-base), color var(--t-base);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+  transition: transform var(--t-base), box-shadow var(--t-base), color var(--t-base);
 }
 
 .progress-ring {
   position: absolute;
-  top: -1px;
-  left: -1px;
+  inset: 0;
+  width: 100%;
+  height: 100%;
   transform: rotate(-90deg);
   pointer-events: none;
 }
@@ -113,13 +114,13 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
 .progress-ring-bg {
   fill: transparent;
   stroke: var(--border);
-  stroke-width: 2;
+  stroke-width: 2.5;
 }
 
 .progress-ring-circle {
   fill: transparent;
   stroke: var(--primary);
-  stroke-width: 2;
+  stroke-width: 2.5;
   stroke-linecap: round;
   transition: stroke-dashoffset 0.15s linear;
 }
@@ -133,9 +134,8 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
 
 .back-to-top-btn:hover {
   transform: translateY(-2px);
-  border-color: var(--border-h);
   color: var(--primary);
-  box-shadow: var(--shadow-md);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
 }
 
 .back-to-top-btn:hover .arrow-wrap {
@@ -182,9 +182,9 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
 /* Light Theme */
 :global([data-theme="light"] .back-to-top-btn) {
   background: #FFFFFF !important;
-  border-color: #E2E8F0 !important;
+  border: none !important;
   color: #0F172A !important;
-  box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.12), 0 0 0 1px rgba(0, 0, 0, 0.03) !important;
+  box-shadow: 0 6px 20px -4px rgba(15, 23, 42, 0.15) !important;
 }
 
 :global([data-theme="light"] .progress-ring-bg) {
@@ -197,9 +197,8 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
 
 :global([data-theme="light"] .back-to-top-btn:hover) {
   background: #F8FAFC !important;
-  border-color: #BFDBFE !important;
   color: #2563EB !important;
-  box-shadow: 0 12px 30px -5px rgba(37, 99, 235, 0.18) !important;
+  box-shadow: 0 8px 25px -4px rgba(37, 99, 235, 0.25) !important;
 }
 
 :global([data-theme="light"] .top-tooltip) {
@@ -209,10 +208,10 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
 
 @media (max-width: 600px) {
   .back-to-top-btn {
-    bottom: 80px;
-    left: 20px;
-    width: 42px;
-    height: 42px;
+    bottom: 84px;
+    left: 28px;
+    width: 44px;
+    height: 44px;
   }
 }
 </style>
