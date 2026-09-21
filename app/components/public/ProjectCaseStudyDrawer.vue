@@ -1025,6 +1025,137 @@ watch(() => props.project, (newP) => {
 }
 
 /* ═════════════════════════════════════════════════════════════════════════
+   MOBILE RESPONSIVE — Tabs + Topbar + Body
+   ═════════════════════════════════════════════════════════════════════════ */
+
+/* Tablet (≤768px) */
+@media (max-width: 768px) {
+  .case-study-drawer {
+    height: 95vh;
+    max-height: 95vh;
+    border-radius: 16px;
+  }
+
+  /* Topbar: shrink padding, hide badge text on very small */
+  .cs-topbar {
+    padding: 12px 16px;
+    gap: 10px;
+  }
+
+  .cs-topbar-left {
+    gap: 8px;
+    overflow: hidden;
+  }
+
+  .cs-top-title {
+    font-size: 0.95rem;
+    max-width: 160px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .cs-top-year {
+    display: none;
+  }
+
+  .cs-badge-pill {
+    font-size: 0.7rem;
+    padding: 2px 8px;
+    white-space: nowrap;
+  }
+
+  .cs-topbar-actions {
+    gap: 6px;
+  }
+
+  .cs-tool-btn {
+    height: 30px;
+    padding: 0 10px;
+    font-size: 0.78rem;
+  }
+
+  .cs-close-btn {
+    width: 30px;
+    height: 30px;
+  }
+
+  /* Tabs: scrollable, compact */
+  .cs-tabs-header {
+    padding: 0 12px;
+    /* Smooth horizontal scroll on mobile */
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE */
+  }
+
+  .cs-tabs-header::-webkit-scrollbar {
+    display: none;
+  }
+
+  .cs-tabs-track {
+    gap: 2px;
+    padding-bottom: 1px;
+  }
+
+  .cs-tab-btn {
+    padding: 10px 12px;
+    font-size: 0.8rem;
+    gap: 4px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .cs-content-body {
+    padding: 16px 14px;
+  }
+}
+
+/* Mobile (≤480px) — تابات بأيقونات فقط */
+@media (max-width: 480px) {
+  .case-study-drawer {
+    height: 100vh;
+    max-height: 100vh;
+    border-radius: 0;
+  }
+
+  .cs-topbar {
+    padding: 10px 12px;
+    gap: 8px;
+  }
+
+  .cs-top-title {
+    font-size: 0.88rem;
+    max-width: 120px;
+  }
+
+  .cs-badge-pill {
+    display: none; /* إخفاء التصنيف لتوفير المساحة */
+  }
+
+  /* تابات: أيقونات فقط على الشاشات الصغيرة جداً */
+  .cs-tab-btn span:not(.tab-count) {
+    display: none;
+  }
+
+  .cs-tab-btn {
+    padding: 10px 14px;
+    min-width: 44px;
+    justify-content: center;
+  }
+
+  .cs-content-body {
+    padding: 12px 10px;
+  }
+
+  /* topbar: إخفاء زر fullscreen */
+  .cs-tool-btn.icon-only:not(.cs-close-btn) {
+    display: none;
+  }
+}
+
+/* ═════════════════════════════════════════════════════════════════════════
    SCROLLABLE BODY
    ═════════════════════════════════════════════════════════════════════════ */
 .cs-content-body {
