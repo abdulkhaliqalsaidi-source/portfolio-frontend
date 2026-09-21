@@ -29,8 +29,8 @@ const whatsappNumber = computed(() => {
 <style scoped>
 .wa-btn {
   position: fixed;
-  bottom: 26px;
-  left: 26px;
+  bottom: 24px;
+  left: 24px;
   z-index: 9000;
   width: 48px;
   height: 48px;
@@ -41,16 +41,16 @@ const whatsappNumber = computed(() => {
   align-items: center;
   justify-content: center;
   text-decoration: none;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 4px 14px rgba(37, 211, 102, 0.4), 0 4px 12px rgba(0, 0, 0, 0.25);
   transition: transform var(--t-fast), box-shadow var(--t-fast);
 }
 .wa-btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 6px 18px rgba(37, 211, 102, 0.5), 0 6px 16px rgba(0, 0, 0, 0.3);
 }
 .wa-btn:hover .wa-tooltip { opacity: 1; transform: translateY(-50%) translateX(0); pointer-events: auto; }
 
-.wa-icon { width: 24px; height: 24px; position: relative; z-index: 1; }
+.wa-icon { width: 25px; height: 25px; position: relative; z-index: 2; }
 
 .wa-tooltip {
   position: absolute;
@@ -70,6 +70,7 @@ const whatsappNumber = computed(() => {
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.2s, transform 0.2s;
+  z-index: 3;
 }
 
 :global([data-theme="light"] .wa-tooltip) {
@@ -78,12 +79,59 @@ const whatsappNumber = computed(() => {
   border-color: var(--border) !important;
 }
 
+/* Pulsing effect around the WhatsApp button */
 .wa-pulse {
-  display: none;
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: rgba(37, 211, 102, 0.35);
+  z-index: -1;
+  pointer-events: none;
+  animation: wa-pulse-ring 2.4s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+}
+
+.wa-pulse::after {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: 50%;
+  border: 2px solid #25D366;
+  opacity: 0.8;
+  animation: wa-pulse-border 2.4s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+}
+
+@keyframes wa-pulse-ring {
+  0% {
+    transform: scale(0.95);
+    opacity: 0.75;
+  }
+  60%, 100% {
+    transform: scale(1.55);
+    opacity: 0;
+  }
+}
+
+@keyframes wa-pulse-border {
+  0% {
+    transform: scale(0.95);
+    opacity: 0.85;
+  }
+  60%, 100% {
+    transform: scale(1.7);
+    opacity: 0;
+  }
 }
 
 @media (max-width: 600px) {
-  .wa-btn { bottom: 20px; left: 20px; width: 42px; height: 42px; }
-  .wa-icon { width: 20px; height: 20px; }
+  .wa-btn {
+    bottom: 20px;
+    left: 20px;
+    width: 44px;
+    height: 44px;
+  }
+  .wa-icon {
+    width: 22px;
+    height: 22px;
+  }
 }
 </style>

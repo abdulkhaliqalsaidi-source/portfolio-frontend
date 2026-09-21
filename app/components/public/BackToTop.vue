@@ -13,18 +13,18 @@
         :title="locale === 'en' ? 'Back to top' : 'العودة للأعلى'"
       >
         <!-- Circular Progress Ring SVG -->
-        <svg class="progress-ring" viewBox="0 0 44 44">
+        <svg class="progress-ring" viewBox="0 0 48 48">
           <circle
             class="progress-ring-bg"
-            cx="22"
-            cy="22"
-            r="20"
+            cx="24"
+            cy="24"
+            r="21.5"
           />
           <circle
             class="progress-ring-circle"
-            cx="22"
-            cy="22"
-            r="20"
+            cx="24"
+            cy="24"
+            r="21.5"
             :stroke-dasharray="circumference"
             :stroke-dashoffset="strokeDashoffset"
           />
@@ -32,7 +32,7 @@
 
         <!-- Arrow Icon -->
         <div class="arrow-wrap">
-          <v-icon icon="mdi-arrow-up" size="18" />
+          <v-icon icon="mdi-arrow-up" size="20" />
         </div>
 
         <span class="top-tooltip">{{ locale === 'en' ? 'Top' : 'للأعلى' }}</span>
@@ -48,7 +48,7 @@ import { useLocale } from '~/composables/useLocale'
 const { locale } = useLocale()
 const show = ref(false)
 const progress = ref(0)
-const radius = 20
+const radius = 21.5
 const circumference = 2 * Math.PI * radius
 
 const strokeDashoffset = computed(() => {
@@ -85,10 +85,10 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
 
 .back-to-top-btn {
   position: fixed;
-  bottom: 88px;
-  left: 28px;
-  width: 44px;
-  height: 44px;
+  bottom: 84px;
+  left: 24px;
+  width: 48px;
+  height: 48px;
   border-radius: 50%;
   background: var(--bg-card);
   border: none;
@@ -208,8 +208,8 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
 
 @media (max-width: 600px) {
   .back-to-top-btn {
-    bottom: 84px;
-    left: 28px;
+    bottom: 74px;
+    left: 20px;
     width: 44px;
     height: 44px;
   }
