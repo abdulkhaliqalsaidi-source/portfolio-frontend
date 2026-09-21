@@ -650,6 +650,19 @@ onUnmounted(() => clearTimeout(timer))
   color: #059669;
 }
 
+@media (max-width: 880px) {
+  /* إخفاء البطاقات العائمة فوق الصورة في الموبايل لمنع حجب صورة المطور */
+  .float-card {
+    display: none !important;
+  }
+
+  .avatar-wrap {
+    width: clamp(260px, 72vw, 340px);
+    height: clamp(330px, 88vw, 430px);
+    margin: 0 auto;
+  }
+}
+
 @media (max-width: 600px) {
   .hero-ctas {
     flex-direction: column;
@@ -657,6 +670,15 @@ onUnmounted(() => clearTimeout(timer))
 
   .hero-ctas .btn {
     width: 100%;
+  }
+
+  .avail-badge {
+    padding: 6px 14px;
+    bottom: -14px;
+  }
+
+  .avail-text {
+    font-size: 0.76rem;
   }
 }
 </style>
