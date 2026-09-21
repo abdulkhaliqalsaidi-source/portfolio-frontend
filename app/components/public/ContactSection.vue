@@ -164,12 +164,14 @@
     </div>
 
     <!-- Success Snackbar -->
-    <v-snackbar v-model="snack" color="#10B981" location="bottom left" :timeout="4000">
-      <div class="d-flex align-center gap-2">
-        <v-icon icon="mdi-check-circle" size="20" color="#fff" />
-        <span>{{ successMessage }}</span>
-      </div>
-    </v-snackbar>
+    <ClientOnly>
+      <v-snackbar v-model="snack" color="#10B981" location="bottom left" :timeout="4000">
+        <div class="d-flex align-center gap-2">
+          <v-icon icon="mdi-check-circle" size="20" color="#fff" />
+          <span>{{ successMessage }}</span>
+        </div>
+      </v-snackbar>
+    </ClientOnly>
   </section>
 </template>
 

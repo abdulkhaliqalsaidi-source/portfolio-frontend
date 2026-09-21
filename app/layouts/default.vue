@@ -24,11 +24,8 @@ import BackToTop from '~/components/public/BackToTop.vue'
 const { isDark, init: initTheme } = useTheme()
 const portfolioStore = usePortfolioStore()
 
-onMounted(async () => {
+onMounted(() => {
   initTheme()
-  if (!portfolioStore.isInitialized) {
-    await portfolioStore.fetchPublicContent()
-  }
 })
 </script>
 

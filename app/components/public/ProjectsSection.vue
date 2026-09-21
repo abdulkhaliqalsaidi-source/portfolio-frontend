@@ -230,11 +230,13 @@
     <!-- ══════════════════════════════════════════════════════════════════
          INTERACTIVE CASE STUDY DRAWER MODAL
          ══════════════════════════════════════════════════════════════════ -->
-    <ProjectCaseStudyDrawer
-      v-model="caseStudyOpen"
-      :project="selectedProject"
-      @contact="handleContactFromProject"
-    />
+    <ClientOnly>
+      <ProjectCaseStudyDrawer
+        v-model="caseStudyOpen"
+        :project="selectedProject"
+        @contact="handleContactFromProject"
+      />
+    </ClientOnly>
   </section>
 </template>
 

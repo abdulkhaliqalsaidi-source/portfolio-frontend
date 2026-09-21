@@ -27,16 +27,12 @@ import ContactSection from '~/components/public/ContactSection.vue'
 
 const portfolioStore = usePortfolioStore()
 
-// Server-side data pre-fetch for instant SSR HTML rendering
-await useAsyncData('home-content', async () => {
-  await portfolioStore.fetchPublicContent()
-  return true
-})
-
-// Ensure client-side always receives newest live content
-onMounted(() => {
-  portfolioStore.fetchPublicContent()
-})
+if (!portfolioStore.isInitialized) {
+  await useAsyncData('home-content', async () => {
+    await portfolioStore.fetchPublicContent()
+    return true
+  })
+}
 
 const dev = portfolioStore.developer
 const settings = portfolioStore.settings
