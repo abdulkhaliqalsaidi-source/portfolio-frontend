@@ -8,6 +8,7 @@ export default defineNuxtConfig({
   },
 
   devtools: { enabled: false },
+  telemetry: false,
 
   modules: [
     '@pinia/nuxt',
