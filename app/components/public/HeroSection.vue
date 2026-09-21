@@ -651,15 +651,57 @@ onUnmounted(() => clearTimeout(timer))
 }
 
 @media (max-width: 880px) {
-  /* إخفاء البطاقات العائمة فوق الصورة في الموبايل لمنع حجب صورة المطور */
-  .float-card {
+  /* إظهار بطاقة سنوات الخبرة في أعلى الصورة بشكل عائم ومتناسق */
+  .float-card.fc-top {
+    display: flex !important;
+    top: -24px;
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%);
+    animation: float-badge-mobile-top 4s ease-in-out infinite alternate;
+    padding: 8px 16px;
+    border-radius: 14px;
+    gap: 10px;
+    z-index: 10;
+    white-space: nowrap;
+    box-shadow: 0 12px 28px -5px rgba(0, 0, 0, 0.65), 0 0 18px var(--badge-color, rgba(59, 130, 246, 0.25));
+  }
+
+  .float-card.fc-top .fc-icon-wrap {
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+  }
+
+  .float-card.fc-top .fc-val {
+    font-size: 1.05rem;
+  }
+
+  .float-card.fc-top .fc-lbl {
+    font-size: 0.72rem;
+  }
+
+  /* إخفاء البطاقة السفلية فقط حتى لا تتداخل مع شارة التوفر وصورة المطور */
+  .float-card.fc-bottom {
     display: none !important;
   }
 
   .avatar-wrap {
     width: clamp(260px, 72vw, 340px);
     height: clamp(330px, 88vw, 430px);
-    margin: 0 auto;
+    margin: 32px auto 0 auto; /* مساحة علوية لإبراز البطاقة في أعلى الصورة */
+  }
+}
+
+@keyframes float-badge-mobile-top {
+  0% {
+    transform: translateX(-50%) translateY(0px);
+  }
+  50% {
+    transform: translateX(-50%) translateY(-5px);
+  }
+  100% {
+    transform: translateX(-50%) translateY(-2px);
   }
 }
 
@@ -670,6 +712,26 @@ onUnmounted(() => clearTimeout(timer))
 
   .hero-ctas .btn {
     width: 100%;
+  }
+
+  .float-card.fc-top {
+    top: -22px;
+    padding: 6px 12px;
+    gap: 8px;
+  }
+
+  .float-card.fc-top .fc-icon-wrap {
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+  }
+
+  .float-card.fc-top .fc-val {
+    font-size: 0.96rem;
+  }
+
+  .float-card.fc-top .fc-lbl {
+    font-size: 0.68rem;
   }
 
   .avail-badge {
