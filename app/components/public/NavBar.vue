@@ -89,8 +89,9 @@
 
         <!-- PDF Resume Direct Download Action Button -->
         <a
+          v-if="store.resumeUrl"
           :href="store.resumeUrl"
-          download="Abdulkhaliq_Alsaidi_CV.pdf"
+          :download="cvFileName"
           target="_blank"
           class="btn btn-primary btn-sm nav-btn cv-download-btn"
           :title="t('nav.downloadCv')"
@@ -183,8 +184,9 @@
 
           <div class="mobile-sheet-footer">
             <a
+              v-if="store.resumeUrl"
               :href="store.resumeUrl"
-              download="Abdulkhaliq_Alsaidi_CV.pdf"
+              :download="cvFileName"
               target="_blank"
               class="btn btn-primary w-100 mb-2 cv-mobile-download-btn"
               :title="t('nav.downloadCv')"
@@ -222,6 +224,11 @@ const router = useRouter()
 const dev = computed(() => store.developer)
 const { isDark, toggle: toggleTheme } = useTheme()
 const { locale, isRtl, toggleLocale, t } = useLocale()
+
+const cvFileName = computed(() => {
+  const name = dev.value?.name || dev.value?.full_name || 'Resume'
+  return `${name.replace(/\s+/g, '_')}_CV.pdf`
+})
 
 const scrolled = ref(false)
 const open = ref(false)

@@ -271,9 +271,22 @@
 
           <!-- Resume PDF Upload Box -->
           <div class="admin-card">
-            <h3 class="card-section-title">السيرة الذاتية (CV / Resume)</h3>
+            <div class="d-flex align-center justify-space-between mb-2">
+              <h3 class="card-section-title mb-0">السيرة الذاتية (CV / Resume)</h3>
+              <v-btn
+                v-if="profile.resume"
+                color="error"
+                variant="tonal"
+                size="x-small"
+                prepend-icon="mdi-trash-can-outline"
+                :loading="deletingResume"
+                @click="deleteResume"
+              >
+                حذف السيرة الذاتية
+              </v-btn>
+            </div>
             <p class="text-caption mb-3 text-secondary">
-              ملف الـ PDF الذي سيتم تحميله عند ضغط الزوار على زر "السيرة الذاتية".
+              ملف الـ PDF الذي سيتم تحميله عند ضغط الزوار على زر "السيرة الذاتية". في حال عدم وجود ملف، لن تظهر أزرار تحميل السيرة في الموقع نهائياً.
             </p>
 
             <div class="resume-upload-area mb-3">
@@ -287,32 +300,51 @@
 
               <div
                 class="resume-drop-box text-center p-3"
+                :class="{ 'has-file': !!profile.resume }"
                 @click="$refs.resumeFileInput.click()"
               >
                 <v-progress-circular v-if="uploadingResume" indeterminate color="primary" size="28" class="mb-2" />
-                <v-icon v-else icon="mdi-file-pdf-box" size="36" color="#EF4444" class="mb-1" />
+                <v-icon v-else icon="mdi-file-pdf-box" size="36" :color="profile.resume ? '#10B981' : '#EF4444'" class="mb-1" />
                 <div class="text-caption font-weight-bold">
-                  {{ uploadingResume ? 'جاري رفع وحفظ الملف...' : 'اضغط لاختيار ملف PDF من جهازك' }}
+                  {{ uploadingResume ? 'جاري رفع وحفظ الملف...' : (profile.resume ? 'تم رفع ملف السيرة (اضغط لاستبداله)' : 'اضغط لاختيار ملف PDF من جهازك') }}
                 </div>
-                <div class="text-caption text-secondary">حتى 10 ميغابايت</div>
+                <div class="text-caption text-secondary">حتى 10 ميغابايت (ملفات PDF فقط)</div>
               </div>
             </div>
 
             <label class="field-label">مسار أو رابط ملف السيرة الذاتية</label>
             <v-text-field
               v-model="profile.resume"
-              placeholder="/resume.pdf"
+              placeholder="لا توجد سيرة ذاتية مرفوعة حالياً"
               variant="outlined"
               density="compact"
               prepend-inner-icon="mdi-link"
+              clearable
               hide-details
               class="mb-3"
             />
 
-            <a :href="profile.resume || '/resume.pdf'" target="_blank" class="btn-preview-resume">
-              <v-icon icon="mdi-open-in-new" size="15" />
-              معاينة الملف الحالي
-            </a>
+            <div v-if="profile.resume" class="d-flex align-center gap-2">
+              <a :href="profile.resume" target="_blank" class="btn-preview-resume flex-1">
+                <v-icon icon="mdi-open-in-new" size="15" />
+                معاينة الملف الحالي
+              </a>
+              <v-btn
+                color="error"
+                variant="outlined"
+                density="compact"
+                height="34"
+                prepend-icon="mdi-trash-can-outline"
+                :loading="deletingResume"
+                @click="deleteResume"
+              >
+                حذف
+              </v-btn>
+            </div>
+            <div v-else class="text-caption text-secondary py-1">
+              <v-icon icon="mdi-information-outline" size="14" class="ml-1" />
+              لا توجد سيرة ذاتية مرفوعة حالياً (أزرار التحميل مخفية تلقائياً في الموقع).
+            </div>
           </div>
         </v-col>
       </v-row>
@@ -338,6 +370,7 @@ const form = ref(null)
 const saving = ref(false)
 const uploadingAvatar = ref(false)
 const uploadingResume = ref(false)
+const deletingResume = ref(false)
 const avatarFileInput = ref(null)
 const resumeFileInput = ref(null)
 
@@ -424,6 +457,27 @@ async function handleResumeUpload(e) {
     adminStore.notify(err.message || 'فشل رفع السيرة الذاتية', 'error')
   } finally {
     uploadingResume.value = false
+    if (resumeFileInput.value) resumeFileInput.value.value = ''
+  }
+}
+
+async function deleteResume() {
+  if (!confirm('هل أنت متأكد من رغبتك في حذف ملف السيرة الذاتية؟ لن يظهر زر تحميل السيرة في الموقع للزوار.')) {
+    return
+  }
+  deletingResume.value = true
+  try {
+    profile.value.resume = ''
+    const updated = await adminService.updateProfile(profile.value)
+    if (updated) {
+      profile.value = { ...profile.value, ...updated }
+    }
+    await portfolioStore.fetchPublicContent()
+    adminStore.notify('تم حذف السيرة الذاتية بنجاح وإخفاء أزرار التحميل من الموقع!', 'success')
+  } catch (err) {
+    adminStore.notify(err.message || 'فشل حذف السيرة الذاتية', 'error')
+  } finally {
+    deletingResume.value = false
     if (resumeFileInput.value) resumeFileInput.value.value = ''
   }
 }

@@ -91,14 +91,20 @@ const siteLinks = computed(() => {
   return list
 })
 
-const cols = computed(() => [
-  { title: isRtl.value ? 'أقسام الموقع' : 'Navigation', links: siteLinks.value },
-  { title: isRtl.value ? 'روابط وتواصل' : 'Connect', links: [
+const cols = computed(() => {
+  const connectLinks = [
     { label: t('nav.contactMe'), href: '#contact' },
-    { label: t('nav.downloadCv'), href: store.resumeUrl },
-    { label: t('nav.adminPanel'), href: '/admin' },
-  ]},
-])
+  ]
+  if (store.resumeUrl) {
+    connectLinks.push({ label: t('nav.downloadCv'), href: store.resumeUrl })
+  }
+  connectLinks.push({ label: t('nav.adminPanel'), href: '/admin' })
+
+  return [
+    { title: isRtl.value ? 'أقسام الموقع' : 'Navigation', links: siteLinks.value },
+    { title: isRtl.value ? 'روابط وتواصل' : 'Connect', links: connectLinks },
+  ]
+})
 
 function nav(href) {
   if (href.startsWith('#')) {

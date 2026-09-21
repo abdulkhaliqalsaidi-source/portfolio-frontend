@@ -53,11 +53,9 @@ export const usePortfolioStore = defineStore('portfolio', () => {
   })
 
   const resumeUrl = computed(() => {
-    const r = developer.value.resume
-    if (r && (r.startsWith('http://') || r.startsWith('https://') || r.startsWith('/media/'))) {
-      return sanitizeMediaUrl(r)
-    }
-    return '/Abdulkhaliq_Alsaidi_CV.pdf'
+    const r = (developer.value.resume || '').trim()
+    if (!r) return ''
+    return sanitizeMediaUrl(r)
   })
 
   function sanitizeMediaUrl(url: any): string {
