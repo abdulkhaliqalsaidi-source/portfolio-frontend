@@ -211,6 +211,17 @@ body, html, #app, .v-application {
   transition-delay: 0s !important;
 }
 
+/* طبقة التموج الدائري الفوري (تنطلق من الأيقونة وتنتشر للشاشة كاملة) */
+.theme-ripple-overlay {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 99999999;
+  pointer-events: none;
+  will-change: clip-path;
+}
+
 /* ══════════════════════════════════════════════════════════
    LTR & ENGLISH TYPOGRAPHY OVERRIDES
    ══════════════════════════════════════════════════════════ */
