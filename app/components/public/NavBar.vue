@@ -533,8 +533,17 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
   animation: rotate-sun 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
+.theme-icon-animated.icon-moon {
+  animation: rotate-moon 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
 @keyframes rotate-sun {
   from { transform: rotate(-90deg) scale(0.6); opacity: 0; }
+  to { transform: rotate(0) scale(1); opacity: 1; }
+}
+
+@keyframes rotate-moon {
+  from { transform: rotate(90deg) scale(0.6); opacity: 0; }
   to { transform: rotate(0) scale(1); opacity: 1; }
 }
 

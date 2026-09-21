@@ -180,6 +180,38 @@ body, html, #app, .v-application {
 }
 
 /* ══════════════════════════════════════════════════════════
+   ELITE THEME TRANSITIONS (View Transitions & CSS Fallback)
+   ══════════════════════════════════════════════════════════ */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+::view-transition-old(root) {
+  z-index: 1;
+}
+
+::view-transition-new(root) {
+  z-index: 999999;
+}
+
+/* Fallback smooth transition for browsers without View Transitions */
+.theme-transition,
+.theme-transition *,
+.theme-transition *::before,
+.theme-transition *::after {
+  transition: background-color 0.45s cubic-bezier(0.4, 0, 0.2, 1) !important,
+              background 0.45s cubic-bezier(0.4, 0, 0.2, 1) !important,
+              border-color 0.45s cubic-bezier(0.4, 0, 0.2, 1) !important,
+              color 0.45s cubic-bezier(0.4, 0, 0.2, 1) !important,
+              box-shadow 0.45s cubic-bezier(0.4, 0, 0.2, 1) !important,
+              fill 0.45s cubic-bezier(0.4, 0, 0.2, 1) !important,
+              stroke 0.45s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  transition-delay: 0s !important;
+}
+
+/* ══════════════════════════════════════════════════════════
    LTR & ENGLISH TYPOGRAPHY OVERRIDES
    ══════════════════════════════════════════════════════════ */
 html[dir="ltr"],
