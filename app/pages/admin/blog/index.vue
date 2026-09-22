@@ -11,10 +11,10 @@
           <v-icon icon="mdi-open-in-new" size="16" class="ml-1" />
           <span>معاينة المدونة</span>
         </router-link>
-        <button class="btn btn-primary" @click="openCreateModal">
-          <v-icon icon="mdi-plus" size="18" class="ml-1" />
+        <router-link to="/admin/blog/editor" class="btn btn-primary">
+          <v-icon icon="mdi-creation" size="18" class="ml-1" />
           <span>كتابة مقال جديد</span>
-        </button>
+        </router-link>
       </div>
     </div>
 
@@ -148,7 +148,9 @@
                 </div>
               </td>
               <td>
-                <div class="table-title">{{ post.title }}</div>
+                <router-link :to="`/admin/blog/editor?id=${post.id}`" class="table-title text-decoration-none font-weight-bold" style="color:var(--t1)">
+                  {{ post.title }}
+                </router-link>
                 <div class="table-slug font-mono text-caption text-secondary">/blog/{{ post.slug }}</div>
               </td>
               <td>
@@ -178,9 +180,9 @@
                   <router-link :to="`/blog/${post.slug || post.id}`" target="_blank" class="table-action-icon" title="معاينة">
                     <v-icon icon="mdi-eye-outline" size="16" />
                   </router-link>
-                  <button class="table-action-icon edit" @click="openEditModal(post)" title="تعديل">
+                  <router-link :to="`/admin/blog/editor?id=${post.id}`" class="table-action-icon edit" title="تعديل في المحرر المتطور">
                     <v-icon icon="mdi-pencil-outline" size="16" />
-                  </button>
+                  </router-link>
                   <button class="table-action-icon delete" @click="confirmDelete(post)" title="حذف">
                     <v-icon icon="mdi-delete-outline" size="16" />
                   </button>
@@ -197,7 +199,7 @@
          ══════════════════════════════════════════ -->
     <v-dialog
       v-model="modalOpen"
-      max-width="1150"
+      :max-width="aiAssistantOpen ? 1480 : 1150"
       scrollable
       transition="dialog-bottom-transition"
     >
@@ -208,9 +210,22 @@
             <v-icon :icon="isEditing ? 'mdi-file-edit-outline' : 'mdi-plus-box-outline'" color="primary" size="24" />
             <span class="font-weight-bold text-h6">{{ isEditing ? 'تعديل المقال' : 'كتابة مقال جديد' }}</span>
           </div>
-          <button class="close-btn" @click="modalOpen = false">
-            <v-icon icon="mdi-close" size="20" />
-          </button>
+          <div class="d-flex align-center gap-2">
+            <button
+              type="button"
+              class="btn-header-ai"
+              :class="{ active: aiAssistantOpen }"
+              @click="aiAssistantOpen = !aiAssistantOpen"
+              title="فتح مساعد الذكاء الاصطناعي للمدونة"
+            >
+              <v-icon icon="mdi-creation" size="16" class="ml-1 text-purple" />
+              <span>مساعد AI الذكي</span>
+              <span class="ai-sparkle-dot" v-if="!aiAssistantOpen"></span>
+            </button>
+            <button class="close-btn" @click="modalOpen = false">
+              <v-icon icon="mdi-close" size="20" />
+            </button>
+          </div>
         </v-card-title>
 
         <!-- Modal Tabs Bar -->
@@ -317,7 +332,7 @@
             <div class="smart-editor-container mt-4">
               <!-- Mode Switch Header -->
               <div class="editor-mode-switcher-bar">
-                <div class="d-flex align-center gap-2">
+                <div class="d-flex align-center gap-2 flex-wrap">
                   <button
                     type="button"
                     class="mode-pill-btn"
@@ -336,6 +351,19 @@
                   >
                     <v-icon icon="mdi-code-braces" size="16" class="ml-1" />
                     <span>💻 نمط Markdown (للمطورين والرموز)</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    class="mode-pill-btn ai-trigger-pill"
+                    :class="{ active: aiAssistantOpen }"
+                    @click="aiAssistantOpen = !aiAssistantOpen"
+                    title="مساعد الذكاء الاصطناعي لكتابة وتنسيق المقالات"
+                  >
+                    <span class="ai-sparkle-emoji">✨</span>
+                    <v-icon icon="mdi-robot-excited-outline" size="16" class="ml-1" />
+                    <span>مساعد الذكاء الاصطناعي (AI)</span>
+                    <span class="ai-live-badge">جديد</span>
                   </button>
                 </div>
 
@@ -739,6 +767,16 @@
       :loading="deleting"
       @confirm="executeDelete"
     />
+
+    <!-- AI Blog Assistant Drawer -->
+    <AiBlogAssistant
+      v-model:is-open="aiAssistantOpen"
+      :post="form"
+      @apply-content="handleAiApplyContent"
+      @apply-excerpt="handleAiApplyExcerpt"
+      @apply-seo="handleAiApplySeo"
+      @apply-title="handleAiApplyTitle"
+    />
   </div>
 </template>
 
@@ -749,12 +787,15 @@ definePageMeta({
 })
 
 import { ref, computed, onMounted, nextTick, watch } from 'vue'
+import { useRouter } from 'vue-router'
 import { useAdminStore } from '~/stores/admin'
 import adminService from '~/services/adminService'
 import ConfirmDeleteModal from '~/components/admin/ConfirmDeleteModal.vue'
+import AiBlogAssistant from '~/components/admin/AiBlogAssistant.vue'
 import { marked } from 'marked'
 import TurndownService from 'turndown'
 
+const router = useRouter()
 const adminStore = useAdminStore()
 
 // Turndown for HTML -> Markdown conversion
@@ -794,6 +835,7 @@ const editorMode = ref('visual') // 'visual' | 'markdown'
 const previewSplit = ref(true)
 const deleteModalOpen = ref(false)
 const postToDelete = ref(null)
+const aiAssistantOpen = ref(false)
 
 const visualEditorRef = ref(null)
 const textareaRef = ref(null)
@@ -1050,40 +1092,14 @@ function insertMdTable() {
 }
 
 // ══════════════════════════════════════════
-// MODAL OPEN / EDIT
+// MODAL OPEN / EDIT -> NAVIGATE TO WORLD-CLASS EDITOR
 // ══════════════════════════════════════════
 function openCreateModal() {
-  form.value = defaultForm()
-  isEditing.value = false
-  activeTab.value = 'content'
-  editorMode.value = 'visual'
-  modalOpen.value = true
-  nextTick(() => {
-    if (visualEditorRef.value) {
-      visualEditorRef.value.innerHTML = form.value.content
-    }
-  })
+  router.push('/admin/blog/editor')
 }
 
 function openEditModal(post) {
-  form.value = {
-    ...post,
-    tags: Array.isArray(post.tags) ? [...post.tags] : []}
-  isEditing.value = true
-  activeTab.value = 'content'
-  editorMode.value = 'visual'
-  modalOpen.value = true
-  nextTick(() => {
-    if (visualEditorRef.value) {
-      // If content is Markdown, convert to HTML for visual editor
-      let html = form.value.content || ''
-      if (!html.startsWith('<') || html.includes('## ')) {
-        html = marked.parse(html)
-      }
-      visualEditorRef.value.innerHTML = html
-      form.value.content = html
-    }
-  })
+  router.push(`/admin/blog/editor?id=${post.id}`)
 }
 
 
@@ -1123,6 +1139,65 @@ function addTag() {
 
 function removeTag(idx) {
   form.value.tags.splice(idx, 1)
+}
+
+// ══════════════════════════════════════════
+// AI BLOG ASSISTANT HANDLERS
+// ══════════════════════════════════════════
+function handleAiApplyContent({ content, mode }) {
+  if (editorMode.value === 'visual') {
+    let html = content
+    if (!html.startsWith('<') || html.includes('## ') || html.includes('**')) {
+      html = marked.parse(content)
+    }
+    if (mode === 'replace') {
+      form.value.content = html
+      if (visualEditorRef.value) {
+        visualEditorRef.value.innerHTML = html
+      }
+      adminStore.notify('تم استبدال محتوى المقال بنجاح!')
+    } else {
+      form.value.content = (form.value.content || '') + '<br>' + html
+      if (visualEditorRef.value) {
+        visualEditorRef.value.innerHTML = form.value.content
+      }
+      adminStore.notify('تم إدراج المحتوى في نهاية المقال!')
+    }
+  } else {
+    if (mode === 'replace') {
+      form.value.content = content
+      adminStore.notify('تم استبدال محتوى المقال بنجاح!')
+    } else {
+      form.value.content = (form.value.content ? form.value.content + '\n\n' : '') + content
+      adminStore.notify('تم إدراج المحتوى في نهاية المقال!')
+    }
+  }
+}
+
+function handleAiApplyExcerpt(excerpt) {
+  form.value.excerpt = excerpt
+  adminStore.notify('تم تطبيق المقتطف بنجاح!')
+}
+
+function handleAiApplyTitle(newTitle) {
+  form.value.title = newTitle
+  autoGenerateSlug()
+  adminStore.notify('تم تطبيق العنوان بنجاح!')
+}
+
+function handleAiApplySeo(seoData) {
+  if (seoData.meta_title) form.value.meta_title = seoData.meta_title
+  if (seoData.meta_description) form.value.meta_description = seoData.meta_description
+  if (seoData.meta_keywords) form.value.meta_keywords = seoData.meta_keywords
+  if (seoData.suggested_slug && (!form.value.slug || form.value.slug === 'post-url')) {
+    form.value.slug = seoData.suggested_slug
+  }
+  if (Array.isArray(seoData.suggested_tags)) {
+    const existing = new Set(form.value.tags || [])
+    seoData.suggested_tags.forEach(t => existing.add(t))
+    form.value.tags = Array.from(existing)
+  }
+  adminStore.notify('تم تطبيق بيانات الـ SEO والوسوم المقترحة بنجاح!')
 }
 
 async function savePost() {
@@ -1611,5 +1686,81 @@ function formatDate(dateStr) {
   border: 1px solid rgba(59, 130, 246, 0.25);
   color: var(--primary, #2563EB);
   font-weight: 700;
+}
+
+/* AI Assistant Trigger Button in Modal Header */
+.btn-header-ai {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, rgba(168, 85, 247, 0.15), rgba(99, 102, 241, 0.15));
+  border: 1px solid rgba(168, 85, 247, 0.4);
+  color: #c084fc;
+  font-size: 0.8rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 2px 10px rgba(168, 85, 247, 0.15);
+}
+
+.btn-header-ai:hover,
+.btn-header-ai.active {
+  background: linear-gradient(135deg, rgba(168, 85, 247, 0.3), rgba(99, 102, 241, 0.3));
+  border-color: rgba(168, 85, 247, 0.7);
+  color: #f3e8ff;
+  box-shadow: 0 4px 18px rgba(168, 85, 247, 0.35);
+  transform: translateY(-1px);
+}
+
+.ai-sparkle-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #a855f7;
+  box-shadow: 0 0 8px #c084fc;
+  animation: pulse-ai 1.8s infinite;
+}
+
+@keyframes pulse-ai {
+  0% { transform: scale(0.9); opacity: 0.7; }
+  50% { transform: scale(1.3); opacity: 1; }
+  100% { transform: scale(0.9); opacity: 0.7; }
+}
+
+/* AI Trigger Pill in Editor Toolbar */
+.mode-pill-btn.ai-trigger-pill {
+  background: linear-gradient(135deg, rgba(168, 85, 247, 0.12), rgba(99, 102, 241, 0.12));
+  border: 1px solid rgba(168, 85, 247, 0.35);
+  color: #c084fc;
+}
+
+.mode-pill-btn.ai-trigger-pill:hover,
+.mode-pill-btn.ai-trigger-pill.active {
+  background: linear-gradient(135deg, rgba(168, 85, 247, 0.25), rgba(99, 102, 241, 0.25));
+  border-color: #a855f7;
+  color: #f3e8ff;
+  box-shadow: 0 0 16px rgba(168, 85, 247, 0.3);
+}
+
+.ai-live-badge {
+  font-size: 0.62rem;
+  font-weight: 900;
+  padding: 1px 6px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #a855f7, #6366f1);
+  color: #fff;
+  margin-right: 4px;
+}
+
+.ai-sparkle-emoji {
+  display: inline-block;
+  animation: sparkle-rot 3s ease-in-out infinite;
+}
+
+@keyframes sparkle-rot {
+  0%, 100% { transform: scale(1) rotate(0deg); }
+  50% { transform: scale(1.2) rotate(15deg); }
 }
 </style>

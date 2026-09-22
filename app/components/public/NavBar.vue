@@ -2,33 +2,36 @@
   <header class="nav" :class="{ scrolled }">
     <div class="nav-inner">
 
-      <!-- Brand Logo -->
-      <router-link to="/" class="nav-logo">
-        <div class="logo-mark">
-          <v-icon icon="mdi-star-four-points" size="18" color="var(--primary)" />
-        </div>
-        <div class="logo-text">
-          <span class="logo-name" v-if="dev.name || dev.full_name">{{ dev.name || dev.full_name }}</span>
-          <span class="logo-name" v-else>Portfolio</span>
-          <span class="logo-role d-none d-sm-block" v-if="dev.title">{{ dev.title }}</span>
-        </div>
-      </router-link>
+      <!-- Brand & Status Group -->
+      <div class="nav-brand-group">
+        <router-link to="/" class="nav-logo">
+          <div class="logo-mark">
+            <img v-if="isImageLogo(dev.logo) && !imageLoadError" :src="dev.logo" class="brand-logo-img" alt="Logo" @error="imageLoadError = true" />
+            <v-icon v-else :icon="dev.logo || 'mdi-star-four-points'" size="18" color="var(--primary)" />
+          </div>
+          <div class="logo-text">
+            <span class="logo-name" v-if="dev.name || dev.full_name">{{ dev.name || dev.full_name }}</span>
+            <span class="logo-name" v-else>Portfolio</span>
+            <span class="logo-role d-none d-sm-block" v-if="dev.title">{{ dev.title }}</span>
+          </div>
+        </router-link>
 
-      <!-- Live Availability Badge (Interactive WOW) -->
-      <div
-        class="nav-availability-badge"
-        :class="{ 'is-busy': dev.available_for_work === false }"
-        :title="dev.available_for_work !== false ? t('nav.availableTooltip') : t('nav.busyTooltip')"
-      >
-        <span class="radar-pulse">
-          <span class="radar-ring" />
-          <span class="radar-dot" />
-        </span>
-        <span class="badge-label d-none d-md-inline">{{ dev.available_for_work !== false ? t('nav.availableForWork') : t('nav.currentlyBusy') }}</span>
+        <!-- Live Availability Badge (Interactive WOW) -->
+        <div
+          class="nav-availability-badge"
+          :class="{ 'is-busy': dev.available_for_work === false }"
+          :title="dev.available_for_work !== false ? t('nav.availableTooltip') : t('nav.busyTooltip')"
+        >
+          <span class="radar-pulse">
+            <span class="radar-ring" />
+            <span class="radar-dot" />
+          </span>
+          <span class="badge-label d-none d-md-inline">{{ dev.available_for_work !== false ? t('nav.availableForWork') : t('nav.currentlyBusy') }}</span>
+        </div>
       </div>
 
       <!-- Desktop Nav Links -->
-      <nav class="nav-links" aria-label="التنقل الرئيسي">
+      <nav class="nav-links" v-show="!isMobileMenu" aria-label="التنقل الرئيسي">
         <a
           v-for="item in links" :key="item.label"
           class="nav-link" :href="item.href"
@@ -40,7 +43,7 @@
       </nav>
 
       <!-- Desktop Actions -->
-      <div class="nav-actions">
+      <div class="nav-actions" v-show="!isMobileMenu">
 
         <!-- Language Switcher Button (AR / EN) -->
         <button
@@ -72,7 +75,7 @@
         </button>
 
         <button
-          class="nav-icon-btn"
+          class="nav-icon-btn email-copy-btn"
           @click="copyEmail"
           :class="{ copied }"
           :title="copied ? t('nav.copied') : t('nav.copyEmail')"
@@ -83,7 +86,7 @@
           <span v-if="copied" class="copy-tooltip">{{ t('nav.copied') }}</span>
         </button>
 
-        <a v-if="dev.email" :href="`mailto:${dev.email}`" class="btn btn-ghost btn-sm nav-btn">
+        <a v-if="dev.email" :href="`mailto:${dev.email}`" class="btn btn-ghost btn-sm nav-btn nav-contact-btn">
           {{ t('nav.contactMe') }}
         </a>
 
@@ -107,7 +110,7 @@
       </div>
 
       <!-- Mobile Right Controls (Lang + Theme + Hamburger) -->
-      <div class="mobile-controls">
+      <div class="mobile-controls" v-show="isMobileMenu">
         <button
           class="lang-toggle-btn mobile-lang-toggle"
           @click="toggleLocale"
@@ -150,7 +153,8 @@
           <div class="mobile-sheet-head">
             <div class="d-flex align-center gap-2">
               <div class="logo-mark">
-                <v-icon icon="mdi-star-four-points" color="#3B82F6" size="18" />
+                <img v-if="isImageLogo(dev.logo) && !imageLoadError" :src="dev.logo" class="brand-logo-img" alt="Logo" @error="imageLoadError = true" />
+                <v-icon v-else :icon="dev.logo || 'mdi-star-four-points'" color="#3B82F6" size="18" />
               </div>
               <span class="font-weight-bold" style="color:var(--t1)">{{ dev.name || dev.full_name }}</span>
             </div>
@@ -213,7 +217,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
 import { usePortfolioStore } from '~/stores/portfolio'
 import { useTheme } from '~/composables/useTheme'
 import { useLocale } from '~/composables/useLocale'
@@ -234,6 +238,22 @@ const scrolled = ref(false)
 const open = ref(false)
 const activeSection = ref('hero')
 const copied = ref(false)
+const isMobileMenu = ref(false)
+const imageLoadError = ref(false)
+
+watch(() => dev.value?.logo, () => {
+  imageLoadError.value = false
+})
+
+function checkMobile() {
+  isMobileMenu.value = window.innerWidth <= 1080
+}
+
+function isImageLogo(val) {
+  if (!val || typeof val !== 'string') return false
+  const v = val.trim()
+  return v.startsWith('http://') || v.startsWith('https://') || v.startsWith('/') || v.startsWith('data:image/') || /\.(png|jpg|jpeg|svg|webp|gif|ico)$/i.test(v)
+}
 
 async function copyEmail() {
   const email = dev.value.email
@@ -343,8 +363,15 @@ const go = (href) => {
   }
 }
 
-onMounted(() => window.addEventListener('scroll', onScroll, { passive: true }))
-onUnmounted(() => window.removeEventListener('scroll', onScroll))
+onMounted(() => {
+  window.addEventListener('scroll', onScroll, { passive: true })
+  checkMobile()
+  window.addEventListener('resize', checkMobile, { passive: true })
+})
+onUnmounted(() => {
+  window.removeEventListener('scroll', onScroll)
+  window.removeEventListener('resize', checkMobile)
+})
 </script>
 
 <style scoped>
@@ -365,6 +392,7 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
 }
 
 .nav-inner {
+  width: 100%;
   max-width: var(--container);
   margin: 0 auto;
   padding: 0 var(--container-px);
@@ -373,13 +401,27 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
   align-items: center;
   justify-content: space-between;
   gap: var(--sp-4);
+  flex-wrap: nowrap;
 }
 
-@media (max-width: 880px) {
+.nav-brand-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+@media (max-width: 1080px) {
   .nav-inner {
-    height: 60px;
-    padding: 0 16px;
+    height: 62px;
+    padding: 0 clamp(16px, 3vw, 24px);
     gap: 0;
+  }
+}
+@media (max-width: 640px) {
+  .nav-inner {
+    height: 58px;
+    padding: 0 12px;
   }
 }
 
@@ -403,6 +445,14 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
   justify-content: center;
   flex-shrink: 0;
   transition: all var(--t-fast);
+  overflow: hidden;
+}
+.brand-logo-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: 4px;
+  border-radius: inherit;
 }
 .nav-logo:hover .logo-mark {
   background: var(--primary);
@@ -443,7 +493,7 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
   white-space: nowrap;
 }
 
-@media (max-width: 880px) {
+@media (max-width: 1080px) {
   .nav-availability-badge {
     display: none !important;
   }
@@ -559,6 +609,7 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
   display: flex;
   align-items: center;
   gap: 2px;
+  flex-shrink: 0;
 }
 
 /* Nav Actions (Desktop) */
@@ -566,28 +617,104 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
   display: flex;
   align-items: center;
   gap: 8px;
+  flex-shrink: 0;
 }
 
-/* Mobile Controls (Theme + Burger) */
+/* Mobile Controls (Theme + Burger) - Strictly hidden on desktop */
 .mobile-controls {
-  display: none;
+  display: none !important;
 }
 
-@media (max-width: 880px) {
+@media (min-width: 1081px) {
+  .mobile-controls {
+    display: none !important;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   RESPONSIVE TIERS: LAPTOPS, TABLETS & MOBILE
+   ═══════════════════════════════════════════════════════════ */
+
+/* Tier 1: Small Laptops & Large Tablets in Landscape (1081px - 1280px) */
+@media (max-width: 1280px) and (min-width: 1081px) {
+  .nav-inner {
+    padding: 0 16px;
+    gap: 6px;
+  }
+  .nav-links {
+    gap: 1px;
+  }
+  .nav-link {
+    padding: 5px 8px !important;
+    font-size: 0.81rem !important;
+  }
+  .logo-role {
+    display: none !important;
+  }
+  .logo-name {
+    max-width: 170px !important;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .nav-availability-badge .badge-label {
+    display: none !important;
+  }
+  .nav-availability-badge {
+    padding: 5px 8px;
+  }
+  .nav-contact-btn {
+    display: none !important;
+  }
+  .cv-download-btn {
+    padding: 5px 10px !important;
+    font-size: 0.8rem !important;
+    gap: 4px !important;
+  }
+  .cv-download-btn .pdf-pill {
+    display: none !important;
+  }
+  .nav-actions {
+    gap: 6px;
+  }
+}
+
+/* Tier 2: Narrow Small Desktop Viewports (1081px - 1180px) */
+@media (max-width: 1180px) and (min-width: 1081px) {
+  .nav-availability-badge {
+    display: none !important;
+  }
+  .email-copy-btn {
+    display: none !important;
+  }
+  .nav-link {
+    padding: 5px 6px !important;
+    font-size: 0.78rem !important;
+  }
+  .lang-toggle-btn {
+    padding: 0 8px;
+    font-size: 0.78rem;
+  }
+}
+
+/* Tier 3: Tablets in Portrait & Standard Landscape, and Small Screens (<= 1080px) */
+@media (max-width: 1080px) {
   .nav-links {
     display: none !important;
   }
   .nav-actions {
     display: none !important;
   }
+  .nav-availability-badge {
+    display: none !important;
+  }
   .mobile-controls {
     display: flex !important;
     align-items: center;
-    gap: 6px;
+    gap: 8px;
     flex-shrink: 0;
   }
 
-  /* Mobile lang toggle compact */
+  /* Mobile lang toggle */
   .mobile-lang-toggle {
     height: 36px;
     min-width: 52px;
@@ -611,7 +738,7 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
     color: var(--primary);
   }
 
-  /* Mobile theme toggle compact */
+  /* Mobile theme toggle */
   .mobile-theme-toggle {
     width: 36px;
     height: 36px;
@@ -619,7 +746,7 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
     flex-shrink: 0;
   }
 
-  /* Hamburger button compact */
+  /* Hamburger button */
   .nav-toggle {
     width: 38px;
     height: 38px;
@@ -627,12 +754,40 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
     flex-shrink: 0;
   }
 
-  /* Logo name truncate on very small screens */
+  /* Logo name truncate on tablets */
   .logo-name {
-    max-width: 120px;
+    max-width: 200px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+  }
+  .logo-role {
+    display: none !important;
+  }
+}
+
+/* Tier 4: Compact Mobile Phones (<= 640px) */
+@media (max-width: 640px) {
+  .logo-name {
+    max-width: 130px !important;
+    font-size: 0.88rem;
+  }
+  .mobile-controls {
+    gap: 6px;
+  }
+  .mobile-lang-toggle {
+    height: 34px;
+    min-width: 46px;
+    padding: 0 8px;
+    font-size: 0.76rem;
+  }
+  .mobile-theme-toggle {
+    width: 34px;
+    height: 34px;
+  }
+  .nav-toggle {
+    width: 36px;
+    height: 36px;
   }
 }
 
@@ -646,6 +801,7 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
   transition: all var(--t-fast);
   font-family: var(--f-body);
   position: relative;
+  white-space: nowrap !important; /* CRITICAL: Ensures Arabic links like المسار المهني NEVER wrap! */
 }
 .nav-link:hover {
   color: var(--t1);

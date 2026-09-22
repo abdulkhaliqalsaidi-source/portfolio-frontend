@@ -8,7 +8,8 @@
         <div class="footer-brand">
           <div class="brand-row">
             <div class="brand-mark">
-              <v-icon icon="mdi-star-four-points" size="18" color="var(--primary)" />
+              <img v-if="isImageLogo(dev.logo)" :src="dev.logo" class="brand-logo-img" alt="Logo" />
+              <v-icon v-else :icon="dev.logo || 'mdi-star-four-points'" size="18" color="var(--primary)" />
             </div>
             <span class="brand-name">{{ dev.name || dev.full_name }}</span>
           </div>
@@ -52,6 +53,12 @@ const store = usePortfolioStore()
 const { t, isRtl } = useLocale()
 const dev = computed(() => store.developer || {})
 const year = new Date().getFullYear()
+
+function isImageLogo(val) {
+  if (!val || typeof val !== 'string') return false
+  const v = val.trim()
+  return v.startsWith('http://') || v.startsWith('https://') || v.startsWith('/') || v.startsWith('data:image/') || /\.(png|jpg|jpeg|svg|webp|gif|ico)$/i.test(v)
+}
 
 const socials = computed(() => {
   const list = []
@@ -155,6 +162,14 @@ function nav(href) {
   align-items: center;
   justify-content: center;
   color: var(--primary);
+  overflow: hidden;
+}
+.brand-logo-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: 3px;
+  border-radius: inherit;
 }
 .brand-name {
   font-family: var(--f-display, 'Tajawal', sans-serif);

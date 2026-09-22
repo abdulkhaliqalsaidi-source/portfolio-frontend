@@ -224,6 +224,142 @@
             </p>
           </div>
 
+          <!-- Site Brand Logo / Icon Card -->
+          <div class="admin-card mb-6">
+            <div class="d-flex align-center justify-space-between mb-2">
+              <h3 class="card-section-title mb-0">أيقونة وشعار الموقع (Brand Logo)</h3>
+              <v-btn
+                v-if="profile.logo && profile.logo !== 'mdi-star-four-points'"
+                variant="text"
+                size="x-small"
+                color="primary"
+                prepend-icon="mdi-restore"
+                :loading="savingLogo"
+                @click="resetLogoToDefault"
+              >
+                استعادة الافتراضي
+              </v-btn>
+            </div>
+            <p class="text-caption mb-3 text-secondary">
+              الشعار أو الأيقونة التي تظهر بجانب اسمك في شريط الموقع وتذييل الصفحات. يمكنك اختيار أيقونة جاهزة أو كتابة اسم أيقونة MDI أو رفع صورة شعار مخصصة.
+            </p>
+
+            <!-- Live Preview of Header Brand Badge -->
+            <div class="logo-live-preview-box mb-4">
+              <div class="preview-badge-header">
+                <span class="preview-badge-label">معاينة مباشرة في شريط الموقع:</span>
+              </div>
+              <div class="preview-brand-item">
+                <div class="preview-logo-mark">
+                  <img v-if="isImageLogo(profile.logo)" :src="profile.logo" class="preview-logo-img" alt="Logo" />
+                  <v-icon v-else :icon="profile.logo || 'mdi-star-four-points'" size="20" color="#3B82F6" />
+                </div>
+                <div class="preview-logo-text">
+                  <span class="preview-logo-name">{{ profile.full_name || 'م/ عبد الخالق الصايدي' }}</span>
+                  <span class="preview-logo-role">{{ profile.title || 'مطور برمجيات' }}</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Preset Icons Grid -->
+            <div class="d-flex align-center justify-space-between mb-2">
+              <label class="field-label mb-0">اختر أيقونة سريعة:</label>
+              <span class="text-caption text-secondary">تُحفظ تلقائياً فور النقر</span>
+            </div>
+            <div class="preset-icons-grid mb-4">
+              <button
+                v-for="item in presetIcons"
+                :key="item.icon"
+                type="button"
+                class="preset-icon-btn"
+                :class="{ active: profile.logo === item.icon }"
+                :title="item.label"
+                :disabled="savingLogo"
+                @click="selectPresetIcon(item.icon)"
+              >
+                <v-icon :icon="item.icon" size="20" />
+              </button>
+            </div>
+
+            <!-- Custom Icon Name Input -->
+            <label class="field-label">اسم أيقونة MDI مخصصة</label>
+            <v-text-field
+              v-model="profile.logo"
+              placeholder="mdi-star-four-points"
+              variant="outlined"
+              density="compact"
+              class="mb-3"
+              hint="يمكنك كتابة أي أيقونة من مكتبة Material Design Icons (مثل: mdi-code-tags)"
+              persistent-hint
+            >
+              <template #prepend-inner>
+                <v-icon
+                  v-if="!isImageLogo(profile.logo)"
+                  :icon="profile.logo || 'mdi-star-four-points'"
+                  size="18"
+                  color="primary"
+                />
+                <v-icon v-else icon="mdi-image-outline" size="18" color="primary" />
+              </template>
+            </v-text-field>
+
+            <!-- Dedicated Save Logo Button -->
+            <div class="mt-3 mb-4">
+              <button
+                type="button"
+                class="btn-save-logo"
+                :disabled="savingLogo"
+                @click="saveLogoDirectly()"
+              >
+                <v-progress-circular v-if="savingLogo" indeterminate size="16" width="2" color="white" />
+                <v-icon v-else icon="mdi-content-save-check-outline" size="18" />
+                <span>{{ savingLogo ? 'جاري حفظ الأيقونة وتحديث الموقع...' : 'حفظ الأيقونة والشعار الآن' }}</span>
+              </button>
+            </div>
+
+            <!-- Custom Image / SVG Logo Upload -->
+            <div class="logo-upload-section mt-4 pt-3 border-t">
+              <div class="d-flex align-center justify-space-between mb-2">
+                <span class="text-caption font-weight-bold" style="color: var(--t1)">أو ارفع صورة / SVG للشعار:</span>
+                <span v-if="isImageLogo(profile.logo)" class="badge-custom-img">صورة مفعلة</span>
+              </div>
+
+              <input
+                type="file"
+                ref="logoFileInput"
+                class="d-none"
+                accept="image/png,image/jpeg,image/svg+xml,image/webp,image/gif"
+                @change="handleLogoUpload"
+              />
+
+              <div class="d-flex gap-2">
+                <button
+                  type="button"
+                  class="btn-upload-logo flex-1"
+                  :disabled="uploadingLogo || savingLogo"
+                  @click="$refs.logoFileInput.click()"
+                >
+                  <v-progress-circular v-if="uploadingLogo" indeterminate size="16" width="2" />
+                  <v-icon v-else icon="mdi-cloud-upload-outline" size="16" />
+                  <span>{{ uploadingLogo ? 'جاري رفع الشعار...' : 'رفع صورة شعار (PNG / SVG)' }}</span>
+                </button>
+
+                <v-btn
+                  v-if="isImageLogo(profile.logo)"
+                  color="error"
+                  variant="outlined"
+                  density="compact"
+                  height="38"
+                  :loading="savingLogo"
+                  @click="resetLogoToDefault"
+                  title="إلغاء الصورة والعودة للأيقونة"
+                >
+                  <v-icon icon="mdi-close" size="16" />
+                </v-btn>
+              </div>
+            </div>
+          </div>
+
           <!-- Avatar Upload Box -->
           <div class="admin-card mb-6">
             <h3 class="card-section-title">صورة الملف الشخصي</h3>
@@ -349,6 +485,19 @@
           </div>
         </v-col>
       </v-row>
+
+      <!-- Bottom Save Action Bar -->
+      <div class="bottom-save-bar mt-6 d-flex align-center justify-space-between admin-card">
+        <div class="d-flex align-center gap-2">
+          <v-icon icon="mdi-shield-check-outline" color="success" size="22" />
+          <span class="text-body-2 font-weight-medium" style="color: var(--t1)">تأكد من حفظ التعديلات بعد إتمام البيانات</span>
+        </div>
+        <button type="submit" class="btn btn-primary px-6" :disabled="saving">
+          <v-progress-circular v-if="saving" indeterminate size="18" width="2" />
+          <v-icon v-else icon="mdi-content-save-outline" size="18" />
+          <span>حفظ كافة التعديلات</span>
+        </button>
+      </div>
     </v-form>
   </div>
 </template>
@@ -369,11 +518,67 @@ const adminStore = useAdminStore()
 
 const form = ref(null)
 const saving = ref(false)
+const savingLogo = ref(false)
 const uploadingAvatar = ref(false)
 const uploadingResume = ref(false)
+const uploadingLogo = ref(false)
 const deletingResume = ref(false)
 const avatarFileInput = ref(null)
 const resumeFileInput = ref(null)
+const logoFileInput = ref(null)
+
+const presetIcons = [
+  { icon: 'mdi-star-four-points', label: 'نجمة التميز (الافتراضي)' },
+  { icon: 'mdi-code-tags', label: 'كود وبرمجة' },
+  { icon: 'mdi-laptop-code', label: 'مطور برمجيات' },
+  { icon: 'mdi-rocket-launch-outline', label: 'صاروخ وإطلاق' },
+  { icon: 'mdi-lightning-bolt', label: 'طاقة وسرعة' },
+  { icon: 'mdi-xml', label: 'وسوم برمجية' },
+  { icon: 'mdi-source-branch', label: 'تفرع Git' },
+  { icon: 'mdi-terminal', label: 'تيرمينال' },
+  { icon: 'mdi-database', label: 'قواعد بيانات' },
+  { icon: 'mdi-cube-outline', label: 'مكعب تقني' },
+  { icon: 'mdi-shield-check-outline', label: 'أمان وجودة' },
+  { icon: 'mdi-crown-outline', label: 'تاج احترافي' }
+]
+
+function isImageLogo(val) {
+  if (!val || typeof val !== 'string') return false
+  const v = val.trim()
+  return v.startsWith('http://') || v.startsWith('https://') || v.startsWith('/') || v.startsWith('data:image/') || /\.(png|jpg|jpeg|svg|webp|gif|ico)$/i.test(v)
+}
+
+async function saveLogoDirectly(customLogoVal = null) {
+  const logoValue = (typeof customLogoVal === 'string' ? customLogoVal : profile.value.logo) || 'mdi-star-four-points'
+  profile.value.logo = logoValue
+  savingLogo.value = true
+  try {
+    const updated = await adminService.updateProfile({ logo: logoValue })
+    if (updated) {
+      profile.value.logo = updated.logo || logoValue
+      portfolioStore.developer.logo = updated.logo || logoValue
+    } else {
+      portfolioStore.developer.logo = logoValue
+    }
+    await portfolioStore.fetchPublicContent()
+    await refreshNuxtData('portfolio-public-content')
+    adminStore.notify('تم حفظ الأيقونة وتحديث الموقع بنجاح!', 'success')
+  } catch (err) {
+    adminStore.notify(err.message || 'فشل حفظ الأيقونة', 'error')
+  } finally {
+    savingLogo.value = false
+  }
+}
+
+function selectPresetIcon(iconName) {
+  profile.value.logo = iconName
+  saveLogoDirectly(iconName)
+}
+
+function resetLogoToDefault() {
+  profile.value.logo = 'mdi-star-four-points'
+  saveLogoDirectly('mdi-star-four-points')
+}
 
 const profile = ref({
   full_name: '',
@@ -394,6 +599,7 @@ const profile = ref({
   location: '',
   avatar: '',
   resume: '',
+  logo: 'mdi-star-four-points',
   available_for_work: true,
   years_of_experience: 0,
 })
@@ -416,7 +622,7 @@ function getCleanProfilePayload() {
   const stringKeys = [
     'full_name', 'title', 'tagline', 'bio', 'email', 'phone', 'whatsapp',
     'github', 'linkedin', 'twitter', 'instagram', 'behance', 'dribbble',
-    'youtube', 'website', 'location', 'avatar', 'resume'
+    'youtube', 'website', 'location', 'avatar', 'resume', 'logo'
   ]
   stringKeys.forEach(k => {
     p[k] = p[k] ? String(p[k]).trim() : ''
@@ -478,6 +684,36 @@ async function handleResumeUpload(e) {
   }
 }
 
+async function handleLogoUpload(e) {
+  const file = e.target.files?.[0]
+  if (!file) return
+
+  uploadingLogo.value = true
+  try {
+    const res = await adminService.uploadMedia(file, `logo_${file.name}`)
+    const uploadedUrl = res?.file_url || res?.file
+    if (uploadedUrl) {
+      profile.value.logo = uploadedUrl
+      const updated = await adminService.updateProfile({ logo: uploadedUrl })
+      if (updated) {
+        profile.value.logo = updated.logo || uploadedUrl
+        portfolioStore.developer.logo = updated.logo || uploadedUrl
+      } else {
+        portfolioStore.developer.logo = uploadedUrl
+      }
+      // Immediately update logo in public store for instant navbar update
+      await portfolioStore.fetchPublicContent()
+      await refreshNuxtData('portfolio-public-content')
+      adminStore.notify('تم رفع وحفظ شعار الموقع بنجاح وتحديث الموقع!', 'success')
+    }
+  } catch (err) {
+    adminStore.notify(err.message || 'فشل رفع الشعار', 'error')
+  } finally {
+    uploadingLogo.value = false
+    if (logoFileInput.value) logoFileInput.value.value = ''
+  }
+}
+
 async function deleteResume() {
   if (!confirm('هل أنت متأكد من رغبتك في حذف ملف السيرة الذاتية؟ لن يظهر زر تحميل السيرة في الموقع للزوار.')) {
     return
@@ -504,19 +740,35 @@ async function deleteResume() {
 }
 
 async function saveProfile() {
-  const { valid } = await form.value.validate()
-  if (!valid) return
+  if (form.value) {
+    try {
+      const res = await form.value.validate()
+      if (res && res.valid === false) {
+        adminStore.notify('يرجى التحقق من الحقول الإلزامية أولاً (الاسم، المسمى، والعبارة التعريفية)', 'error')
+        return
+      }
+    } catch (valErr) {
+      console.warn('Validation error bypassed:', valErr)
+    }
+  }
 
   saving.value = true
   try {
     const payload = getCleanProfilePayload()
+    payload.logo = profile.value.logo || 'mdi-star-four-points'
     const updated = await adminService.updateProfile(payload)
     if (updated) {
       profile.value = { ...profile.value, ...updated }
+      // Immediately sync logo (and other fields) to public store for instant navbar update
+      portfolioStore.developer.logo = updated.logo || profile.value.logo || 'mdi-star-four-points'
+      portfolioStore.developer.name = updated.full_name || updated.name || profile.value.full_name || ''
+      portfolioStore.developer.full_name = updated.full_name || profile.value.full_name || ''
+      portfolioStore.developer.title = updated.title || profile.value.title || ''
     }
     adminStore.notify('تم حفظ وتحديث كافة بيانات الملف الشخصي بنجاح!', 'success')
-    // Refresh public store
+    // Refresh public store from backend + invalidate Nuxt cache
     await portfolioStore.fetchPublicContent()
+    await refreshNuxtData('portfolio-public-content')
   } catch (err) {
     adminStore.notify(err.message || 'فشل حفظ الملف الشخصي', 'error')
   } finally {
@@ -621,5 +873,152 @@ onMounted(() => {
   background: rgba(59, 130, 246, 0.06);
   border-color: var(--primary);
   transform: translateY(-1px);
+}
+
+/* Site Brand Logo Card Styles */
+.logo-live-preview-box {
+  background: var(--bg-subtle, rgba(255,255,255,0.03));
+  border: 1px solid var(--border, rgba(255,255,255,0.08));
+  border-radius: 12px;
+  padding: 12px 14px;
+}
+.preview-badge-header {
+  margin-bottom: 8px;
+}
+.preview-badge-label {
+  font-size: 0.75rem;
+  color: var(--t3, rgba(255,255,255,0.45));
+  font-weight: 600;
+}
+.preview-brand-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--bg-card, #111827);
+  padding: 8px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--border, rgba(255,255,255,0.1));
+}
+.preview-logo-mark {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: rgba(59, 130, 246, 0.12);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+.preview-logo-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: 4px;
+}
+.preview-logo-text {
+  display: flex;
+  flex-direction: column;
+}
+.preview-logo-name {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--t1, #ffffff);
+  line-height: 1.2;
+}
+.preview-logo-role {
+  font-size: 0.72rem;
+  color: var(--t3, rgba(255,255,255,0.5));
+  line-height: 1.2;
+  margin-top: 2px;
+}
+.preset-icons-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 8px;
+}
+.preset-icon-btn {
+  height: 40px;
+  border-radius: 8px;
+  background: var(--bg-subtle, rgba(255,255,255,0.03));
+  border: 1px solid var(--border, rgba(255,255,255,0.08));
+  color: var(--t2, rgba(255,255,255,0.7));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.preset-icon-btn:hover {
+  background: rgba(59, 130, 246, 0.1);
+  color: var(--primary, #3B82F6);
+  border-color: rgba(59, 130, 246, 0.3);
+  transform: translateY(-2px);
+}
+.preset-icon-btn.active {
+  background: rgba(59, 130, 246, 0.18);
+  color: var(--primary, #3B82F6);
+  border-color: var(--primary, #3B82F6);
+  box-shadow: 0 0 12px rgba(59, 130, 246, 0.25);
+}
+.btn-upload-logo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 38px;
+  border-radius: 8px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  background: rgba(59, 130, 246, 0.08);
+  color: var(--primary, #3B82F6);
+  border: 1px solid rgba(59, 130, 246, 0.25);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.btn-upload-logo:hover:not(:disabled) {
+  background: rgba(59, 130, 246, 0.16);
+  border-color: var(--primary, #3B82F6);
+}
+.badge-custom-img {
+  font-size: 0.7rem;
+  background: rgba(16, 185, 129, 0.15);
+  color: #10B981;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-weight: 600;
+}
+.btn-save-logo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  height: 40px;
+  border-radius: 10px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, #3B82F6, #2563EB);
+  color: #ffffff;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3);
+  transition: all 0.2s ease;
+}
+.btn-save-logo:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(37, 99, 235, 0.45);
+}
+.btn-save-logo:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+.bottom-save-bar {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 16px 24px;
 }
 </style>

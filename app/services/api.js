@@ -5,6 +5,12 @@
 const DEFAULT_TIMEOUT_MS = 25000
 
 function getBaseUrl() {
+  if (typeof window !== 'undefined') {
+    const host = window.location.hostname
+    if (host === 'localhost' || host === '127.0.0.1') {
+      return 'http://127.0.0.1:8000/api'
+    }
+  }
   if (typeof useRuntimeConfig === 'function') {
     try {
       const config = useRuntimeConfig()
@@ -12,7 +18,7 @@ function getBaseUrl() {
       if (config.public?.apiBaseUrl) return config.public.apiBaseUrl
     } catch (e) {}
   }
-  return 'http://localhost:8000/api'
+  return 'http://127.0.0.1:8000/api'
 }
 
 class ApiClient {

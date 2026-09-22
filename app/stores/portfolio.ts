@@ -26,6 +26,7 @@ export const usePortfolioStore = defineStore('portfolio', () => {
     location: '',
     avatar: '',
     resume: '',
+    logo: 'mdi-star-four-points',
     available_for_work: true,
     years_of_experience: 0,
   })
@@ -60,7 +61,26 @@ export const usePortfolioStore = defineStore('portfolio', () => {
 
   function sanitizeMediaUrl(url: any): string {
     if (!url || typeof url !== 'string') return ''
+    const isDev = process.env.NODE_ENV !== 'production'
+    if (isDev) {
+      return url.replace(/^http:\/\/localhost:8000/i, 'http://127.0.0.1:8000')
+    }
+    if (typeof window !== 'undefined') {
+      const host = window.location.hostname
+      if (host === 'localhost' || host === '127.0.0.1') {
+        return url.replace(/^http:\/\/localhost:8000/i, 'http://127.0.0.1:8000')
+      }
+    }
     return url.replace(/^http:\/\/localhost:8000/i, 'https://portfolio-backend-1kar.onrender.com')
+              .replace(/^http:\/\/127\.0\.0\.1:8000/i, 'https://portfolio-backend-1kar.onrender.com')
+  }
+
+  function sanitizeLogo(logo: any): string {
+    if (!logo || typeof logo !== 'string') return 'mdi-star-four-points'
+    const trimmed = logo.trim()
+    if (!trimmed) return 'mdi-star-four-points'
+    if (trimmed.startsWith('mdi-')) return trimmed
+    return sanitizeMediaUrl(trimmed)
   }
 
   function setPublicContent(data: any) {
@@ -71,7 +91,8 @@ export const usePortfolioStore = defineStore('portfolio', () => {
         ...prof,
         name: prof.full_name || prof.name || '',
         avatar: sanitizeMediaUrl(prof.avatar),
-        resume: sanitizeMediaUrl(prof.resume)
+        resume: sanitizeMediaUrl(prof.resume),
+        logo: sanitizeLogo(prof.logo)
       }
     }
     stats.value = Array.isArray(data.stats) ? data.stats : []
@@ -97,22 +118,38 @@ export const usePortfolioStore = defineStore('portfolio', () => {
     isInitialized.value = true
   }
 
+  function getApiBaseUrl(): string {
+    if (typeof window !== 'undefined') {
+      const host = window.location.hostname
+      if (host === 'localhost' || host === '127.0.0.1') {
+        return 'http://127.0.0.1:8000/api'
+      }
+    }
+    const config = useRuntimeConfig()
+    if (import.meta.server && config.apiServerUrl) {
+      return config.apiServerUrl
+    }
+    return config.public?.apiBaseUrl || 'http://127.0.0.1:8000/api'
+  }
+
   async function fetchPublicContent() {
     isLoading.value = true
     error.value = null
     try {
-      const config = useRuntimeConfig()
-      const baseURL = import.meta.server
-        ? (config.apiServerUrl || config.public.apiBaseUrl)
-        : config.public.apiBaseUrl
-
-      const data = await $fetch<any>(`${baseURL}/public/content/`)
+      const baseURL = getApiBaseUrl()
+      const data = await $fetch<any>(`${baseURL}/public/content/`, { timeout: 4000 })
       setPublicContent(data)
       return data
     } catch (err: any) {
-      console.warn('[PortfolioStore] Backend connection warning:', err)
-      error.value = err.message
-      isInitialized.value = true
+      console.warn('[PortfolioStore] Primary API warning, attempting fallback:', err)
+      try {
+        const fallbackData = await $fetch<any>('http://127.0.0.1:8000/api/public/content/', { timeout: 3000 })
+        setPublicContent(fallbackData)
+        return fallbackData
+      } catch (fallbackErr) {
+        error.value = err.message
+        isInitialized.value = true
+      }
     } finally {
       isLoading.value = false
     }
@@ -121,11 +158,7 @@ export const usePortfolioStore = defineStore('portfolio', () => {
   async function getProjectByIdOrSlug(idOrSlug: string | number) {
     const existing = projects.value.find(p => p.id === idOrSlug || p.slug === idOrSlug || String(p.id) === String(idOrSlug))
     try {
-      const config = useRuntimeConfig()
-      const baseURL = import.meta.server
-        ? (config.apiServerUrl || config.public.apiBaseUrl)
-        : config.public.apiBaseUrl
-
+      const baseURL = getApiBaseUrl()
       const data = await $fetch<any>(`${baseURL}/public/project/${idOrSlug}/`)
       return data
     } catch (err) {
@@ -137,11 +170,7 @@ export const usePortfolioStore = defineStore('portfolio', () => {
   async function getBlogPostBySlug(slug: string) {
     const existing = blogPosts.value.find(p => p.slug === slug || String(p.id) === String(slug))
     try {
-      const config = useRuntimeConfig()
-      const baseURL = import.meta.server
-        ? (config.apiServerUrl || config.public.apiBaseUrl)
-        : config.public.apiBaseUrl
-
+      const baseURL = getApiBaseUrl()
       const data = await $fetch<any>(`${baseURL}/public/posts/by-slug/${encodeURIComponent(slug)}/`)
       return data
     } catch (err) {
@@ -152,8 +181,8 @@ export const usePortfolioStore = defineStore('portfolio', () => {
 
   async function recordPostView(id: number) {
     try {
-      const config = useRuntimeConfig()
-      return await $fetch(`${config.public.apiBaseUrl}/public/posts/${id}/increment_view/`, { method: 'POST' })
+      const baseURL = getApiBaseUrl()
+      return await $fetch(`${baseURL}/public/posts/${id}/increment_view/`, { method: 'POST' })
     } catch (e) {
       console.warn('Could not record view:', e)
     }
@@ -161,8 +190,8 @@ export const usePortfolioStore = defineStore('portfolio', () => {
 
   async function likePost(id: number) {
     try {
-      const config = useRuntimeConfig()
-      const res: any = await $fetch(`${config.public.apiBaseUrl}/public/posts/${id}/toggle_like/`, { method: 'POST' })
+      const baseURL = getApiBaseUrl()
+      const res: any = await $fetch(`${baseURL}/public/posts/${id}/toggle_like/`, { method: 'POST' })
       const target = blogPosts.value.find(p => p.id === id)
       if (target && res?.likes_count !== undefined) {
         target.likes_count = res.likes_count
@@ -174,8 +203,8 @@ export const usePortfolioStore = defineStore('portfolio', () => {
   }
 
   async function submitContact(payload: any) {
-    const config = useRuntimeConfig()
-    return await $fetch(`${config.public.apiBaseUrl}/public/contact/`, {
+    const baseURL = getApiBaseUrl()
+    return await $fetch(`${baseURL}/public/contact/`, {
       method: 'POST',
       body: payload
     })

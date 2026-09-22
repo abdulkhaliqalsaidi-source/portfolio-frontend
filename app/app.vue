@@ -7,6 +7,7 @@
 </template>
 
 <script setup>
+import { onMounted } from 'vue'
 import { useLocale } from '~/composables/useLocale'
 import { usePortfolioStore } from '~/stores/portfolio'
 
@@ -16,6 +17,10 @@ const portfolioStore = usePortfolioStore()
 await useAsyncData('portfolio-public-content', async () => {
   await portfolioStore.fetchPublicContent()
   return true
+}, { getCachedData: () => undefined })
+
+onMounted(() => {
+  portfolioStore.fetchPublicContent()
 })
 
 const theme = useCookie('theme', { default: () => 'dark' })
