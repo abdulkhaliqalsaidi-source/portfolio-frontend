@@ -46,8 +46,13 @@
         <v-icon icon="mdi-email-check-outline" size="56" color="rgba(255,255,255,0.2)" class="mb-3" />
         <h3 style="color:var(--t2)">لا توجد رسائل في هذا القسم حالياً</h3>
       </div>
-      <div v-else class="table-responsive">
-        <table class="admin-table">
+      <div v-else>
+        <div class="table-scroll-hint">
+          <v-icon icon="mdi-gesture-swipe-horizontal" size="16" />
+          <span>اسحب أفقياً لعرض كافة تفاصيل الرسالة والرد</span>
+        </div>
+        <div class="table-responsive">
+          <table class="admin-table">
           <thead>
             <tr>
               <th>المرسل</th>
@@ -101,6 +106,7 @@
             </tr>
           </tbody>
         </table>
+      </div>
       </div>
     </div>
 
@@ -346,4 +352,9 @@ onMounted(() => {
 
 .close-btn { background: transparent; border: none; color: var(--t3); cursor: pointer; padding: 4px; border-radius: 6px; }
 .close-btn:hover { color: var(--t1); background: var(--bg-subtle); }
+
+@media (max-width: 600px) {
+  .msg-info-box { padding: 12px; }
+  .msg-full-text { padding: 14px; }
+}
 </style>

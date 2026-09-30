@@ -407,4 +407,36 @@ function handleCancel() {
   background: #F1F5F9;
   color: #0F172A;
 }
+
+@media (max-width: 480px) {
+  .enterprise-modal {
+    border-radius: 16px;
+  }
+  .modal-body-wrap {
+    padding: 20px 16px 16px;
+  }
+  .modal-header-row {
+    padding-left: 0;
+    margin-bottom: 14px;
+    gap: 12px;
+  }
+  .danger-badge-icon {
+    width: 38px;
+    height: 38px;
+  }
+  .modal-main-title {
+    font-size: 1.05rem;
+  }
+  .modal-footer-bar {
+    flex-direction: column-reverse;
+    gap: 8px;
+    padding: 12px 16px;
+  }
+  .btn-action-cancel,
+  .btn-action-danger {
+    width: 100%;
+    justify-content: center;
+    height: 42px;
+  }
+}
 </style>

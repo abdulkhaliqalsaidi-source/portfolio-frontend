@@ -53,8 +53,13 @@
         <v-icon icon="mdi-folder-open-outline" size="48" color="primary" class="mb-2 opacity-50" />
         <p class="text-secondary">لم يتم العثور على مشاريع تطابق البحث</p>
       </div>
-      <div v-else class="table-responsive">
-        <table class="admin-table">
+      <div v-else>
+        <div class="table-scroll-hint">
+          <v-icon icon="mdi-gesture-swipe-horizontal" size="16" />
+          <span>اسحب أفقياً لعرض كافة بيانات المشروع والإجراءات</span>
+        </div>
+        <div class="table-responsive">
+          <table class="admin-table">
           <thead>
             <tr>
               <th>المشروع</th>
@@ -119,6 +124,7 @@
             </tr>
           </tbody>
         </table>
+      </div>
       </div>
     </div>
 
@@ -1232,5 +1238,36 @@ onMounted(() => {
   border: 1px dashed var(--border);
   border-radius: 12px;
   background: var(--bg-subtle);
+}
+
+@media (max-width: 768px) {
+  .dialog-tabs-bar {
+    padding: 6px 10px;
+    gap: 6px;
+  }
+  .d-tab-btn {
+    padding: 6px 10px;
+    font-size: 0.78rem;
+  }
+  .project-image-box {
+    padding: 12px !important;
+  }
+  .proj-img-preview {
+    width: 80px;
+    height: 60px;
+  }
+}
+
+@media (max-width: 480px) {
+  .metric-builder-card, .stage-builder-card {
+    padding: 12px;
+  }
+  .table-thumb {
+    width: 44px;
+    height: 34px;
+  }
+  .table-title {
+    font-size: 0.84rem;
+  }
 }
 </style>

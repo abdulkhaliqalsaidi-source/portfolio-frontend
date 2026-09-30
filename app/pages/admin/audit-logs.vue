@@ -23,8 +23,13 @@
         <v-icon icon="mdi-shield-check" size="56" color="rgba(255,255,255,0.2)" class="mb-3" />
         <h3 style="color:var(--t2)">لا توجد سجلات أمنية مسجلة بعد</h3>
       </div>
-      <div v-else class="table-responsive">
-        <table class="admin-table">
+      <div v-else>
+        <div class="table-scroll-hint">
+          <v-icon icon="mdi-gesture-swipe-horizontal" size="16" />
+          <span>اسحب أفقياً لعرض كافة سجلات الرقابة وتفاصيل العمليات</span>
+        </div>
+        <div class="table-responsive">
+          <table class="admin-table">
           <thead>
             <tr>
               <th>العملية / الإجراء</th>
@@ -52,6 +57,7 @@
             </tr>
           </tbody>
         </table>
+      </div>
       </div>
     </div>
   </div>

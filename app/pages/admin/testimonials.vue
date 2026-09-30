@@ -22,8 +22,13 @@
         <v-icon icon="mdi-comment-quote-outline" size="48" color="primary" class="mb-2 opacity-50" />
         <p class="text-secondary">لا توجد آراء عملاء مضافة حالياً</p>
       </div>
-      <div v-else class="table-responsive">
-        <table class="admin-table">
+      <div v-else>
+        <div class="table-scroll-hint">
+          <v-icon icon="mdi-gesture-swipe-horizontal" size="16" />
+          <span>اسحب أفقياً لعرض كافة آراء العملاء والتقييمات</span>
+        </div>
+        <div class="table-responsive">
+          <table class="admin-table">
           <thead>
             <tr>
               <th>العميل</th>
@@ -71,6 +76,7 @@
             </tr>
           </tbody>
         </table>
+      </div>
       </div>
     </div>
 

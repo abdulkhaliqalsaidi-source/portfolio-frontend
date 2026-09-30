@@ -22,8 +22,13 @@
         <v-icon icon="mdi-timeline-clock-outline" size="48" color="primary" class="mb-2 opacity-50" />
         <p class="text-secondary">لا توجد محطات زمنية مضافة حالياً</p>
       </div>
-      <div v-else class="table-responsive">
-        <table class="admin-table">
+      <div v-else>
+        <div class="table-scroll-hint">
+          <v-icon icon="mdi-gesture-swipe-horizontal" size="16" />
+          <span>اسحب أفقياً لعرض كافة محطات الخط الزمني والإجراءات</span>
+        </div>
+        <div class="table-responsive">
+          <table class="admin-table">
           <thead>
             <tr>
               <th>السنة / الفترة</th>
@@ -67,6 +72,7 @@
             </tr>
           </tbody>
         </table>
+      </div>
       </div>
     </div>
 

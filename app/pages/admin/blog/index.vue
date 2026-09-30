@@ -126,8 +126,13 @@
         <p class="text-caption text-secondary mt-1">اضغط على "كتابة مقال جديد" للبدء في نشر أول تدوينة.</p>
       </div>
 
-      <div v-else class="table-responsive">
-        <table class="admin-table">
+      <div v-else>
+        <div class="table-scroll-hint">
+          <v-icon icon="mdi-gesture-swipe-horizontal" size="16" />
+          <span>اسحب أفقياً لعرض كافة تفاصيل المقالات والإجراءات</span>
+        </div>
+        <div class="table-responsive">
+          <table class="admin-table">
           <thead>
             <tr>
               <th style="width:70px">الغلاف</th>
@@ -191,6 +196,7 @@
             </tr>
           </tbody>
         </table>
+      </div>
       </div>
     </div>
 

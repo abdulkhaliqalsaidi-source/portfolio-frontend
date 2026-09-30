@@ -18,8 +18,13 @@
       <div v-if="loading" class="text-center py-10">
         <v-progress-circular indeterminate color="primary" />
       </div>
-      <div v-else class="table-responsive">
-        <table class="admin-table">
+      <div v-else>
+        <div class="table-scroll-hint">
+          <v-icon icon="mdi-gesture-swipe-horizontal" size="16" />
+          <span>اسحب أفقياً لعرض كافة بيانات المستخدمين والصلاحيات</span>
+        </div>
+        <div class="table-responsive">
+          <table class="admin-table">
           <thead>
             <tr>
               <th>المستخدم</th>
@@ -68,6 +73,7 @@
             </tr>
           </tbody>
         </table>
+      </div>
       </div>
     </div>
 

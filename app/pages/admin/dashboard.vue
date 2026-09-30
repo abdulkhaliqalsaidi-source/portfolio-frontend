@@ -421,8 +421,13 @@ async function openMessageModal(msg) {
 
 /* Modal Content */
 .msg-meta-grid {
-  display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
-  padding: 14px; background: var(--bg-subtle); border-radius: 12px; font-size: 0.86rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 10px;
+  padding: 14px;
+  background: var(--bg-subtle);
+  border-radius: 12px;
+  font-size: 0.86rem;
   border: 1px solid var(--border);
 }
 .msg-modal-subject { font-size: 0.98rem; color: var(--t1); font-weight: 800; }
@@ -433,8 +438,19 @@ async function openMessageModal(msg) {
 }
 
 @media (max-width: 768px) {
-  .dash-welcome-card { padding: 22px 20px; }
+  .dash-welcome-card { padding: 22px 18px; }
   .welcome-actions { width: 100%; flex-direction: column; }
   .welcome-actions .btn { width: 100%; justify-content: center; }
+  .dash-metric-card { padding: 18px 16px; }
+  .metric-value { font-size: 1.95rem; }
+}
+
+@media (max-width: 480px) {
+  .dash-card { padding: 16px 14px; }
+  .msg-item { padding: 12px; gap: 10px; }
+  .msg-avatar { width: 34px; height: 34px; font-size: 0.82rem; }
+  .msg-meta-grid { grid-template-columns: 1fr; }
+  .proj-mini-item { padding: 10px 12px; }
+  .proj-mini-img { width: 50px; height: 40px; }
 }
 </style>

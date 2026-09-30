@@ -1816,5 +1816,18 @@ onMounted(() => {
   .entities-grid { grid-template-columns: 1fr; }
   .input-method-switch { width: 100%; flex-direction: column; }
   .im-btn { width: 100%; justify-content: center; }
+  .template-tabs-bar {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .template-tabs-bar .tab-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .forecast-grid { grid-template-columns: 1fr; }
 }
 </style>

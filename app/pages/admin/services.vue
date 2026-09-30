@@ -22,8 +22,13 @@
         <v-icon icon="mdi-monitor-dashboard" size="48" color="rgba(255,255,255,0.2)" class="mb-2" />
         <p class="text-secondary">لا توجد خدمات مضافة حالياً</p>
       </div>
-      <div v-else class="table-responsive">
-        <table class="admin-table">
+      <div v-else>
+        <div class="table-scroll-hint">
+          <v-icon icon="mdi-gesture-swipe-horizontal" size="16" />
+          <span>اسحب أفقياً لعرض كافة بيانات الخدمات والإجراءات</span>
+        </div>
+        <div class="table-responsive">
+          <table class="admin-table">
           <thead>
             <tr>
               <th>الخدمة</th>
@@ -69,6 +74,7 @@
             </tr>
           </tbody>
         </table>
+      </div>
       </div>
     </div>
 
@@ -360,4 +366,11 @@ onMounted(() => {
 .field-label { font-size: 0.8rem; font-weight: 700; color: var(--t2); margin-bottom: 6px; display: block; }
 .close-btn { background: transparent; border: none; color: var(--t3); cursor: pointer; padding: 4px; border-radius: 6px; }
 .close-btn:hover { color: var(--t1); background: var(--bg-subtle); }
+
+@media (max-width: 600px) {
+  .service-table-icon {
+    width: 32px;
+    height: 32px;
+  }
+}
 </style>

@@ -1924,6 +1924,7 @@ function onAiApplySeo(seoData) {
 @media (max-width: 900px) {
   .editor-canvas-container.with-sidebar {
     margin-left: 0;
+    margin-right: 0;
   }
   .editor-settings-drawer.open {
     left: 0;
@@ -1932,6 +1933,52 @@ function onAiApplySeo(seoData) {
   }
   .seamless-title-input {
     font-size: 1.85rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .editor-header {
+    padding: 0 10px;
+    height: 56px;
+  }
+  .editor-inner-document {
+    padding: 20px 16px;
+  }
+  .seamless-title-input {
+    font-size: 1.5rem;
+  }
+  .floating-tools-panel {
+    overflow-x: auto;
+    max-width: 100%;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+@media (max-width: 600px) {
+  .ai-magic-btn .btn-text {
+    display: none;
+  }
+  .settings-toggle-btn span {
+    display: none;
+  }
+  .save-draft-btn span {
+    display: none;
+  }
+  .post-state-badge {
+    padding: 2px 6px;
+    font-size: 0.7rem;
+  }
+  .header-left, .header-right {
+    gap: 4px;
+  }
+}
+
+@media (max-width: 374px) {
+  .editor-header {
+    padding: 0 6px;
+  }
+  .header-v-divider {
+    display: none;
   }
 }
 </style>

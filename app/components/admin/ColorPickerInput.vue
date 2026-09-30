@@ -284,7 +284,8 @@ function isLightColor(hex) {
   border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 18px;
   padding: 16px;
-  width: 320px;
+  width: min(320px, calc(100vw - 24px));
+  max-width: 100%;
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7), 0 0 25px rgba(59, 130, 246, 0.15);
   font-family: var(--f-body, 'Cairo', sans-serif);
 }

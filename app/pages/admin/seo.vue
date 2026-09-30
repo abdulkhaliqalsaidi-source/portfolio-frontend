@@ -24,7 +24,7 @@
     </div>
 
     <!-- Tabs -->
-    <v-tabs v-model="activeTab" color="primary" class="mb-6">
+    <v-tabs v-model="activeTab" color="primary" show-arrows class="mb-6">
       <v-tab value="global">
         <v-icon icon="mdi-earth" class="ml-2" />
         التهيئة العامة وقوقل (Google SEO)
@@ -776,8 +776,9 @@ onMounted(async () => {
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid var(--border, rgba(255, 255, 255, 0.08));
   border-radius: 12px;
-  padding: 12px 20px;
-  min-width: 150px;
+  padding: 12px 18px;
+  min-width: 120px;
+  flex: 1 1 auto;
   display: flex;
   flex-direction: column;
 }
@@ -794,5 +795,21 @@ onMounted(async () => {
 .audit-table th {
   font-weight: 700 !important;
   color: var(--t2, #94A3B8) !important;
+}
+
+@media (max-width: 600px) {
+  .google-preview-box {
+    padding: 12px 14px;
+  }
+  .serp-title {
+    font-size: 1rem;
+  }
+  .audit-metric-box {
+    min-width: calc(50% - 8px);
+    padding: 10px 14px;
+  }
+  .audit-metric-value {
+    font-size: 1.4rem;
+  }
 }
 </style>

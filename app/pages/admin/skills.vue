@@ -513,8 +513,8 @@ onMounted(() => {
 /* Skills Grid inside Category */
 .skills-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 16px;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 240px), 1fr));
+  gap: 14px;
 }
 .skill-admin-card {
   background: var(--bg-subtle);
@@ -669,5 +669,19 @@ onMounted(() => {
   color: var(--t2);
   margin-bottom: 6px;
   display: block;
+}
+
+@media (max-width: 600px) {
+  .cat-header {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .cat-actions-wrap {
+    width: 100%;
+    justify-content: flex-end;
+  }
+  .skill-admin-card {
+    padding: 14px;
+  }
 }
 </style>

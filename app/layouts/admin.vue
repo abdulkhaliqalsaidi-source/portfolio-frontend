@@ -1,14 +1,21 @@
 <template>
-  <div class="admin-layout" dir="rtl">
+  <div class="admin-layout" :dir="dir">
     <!-- Mobile Backdrop Overlay -->
-    <div
-      v-if="mobileMenuOpen"
-      class="sidebar-backdrop"
-      @click="mobileMenuOpen = false"
-    ></div>
+    <transition name="fade">
+      <div
+        v-if="mobileMenuOpen"
+        class="sidebar-backdrop"
+        @click="mobileMenuOpen = false"
+        aria-label="إغلاق القائمة الجانبية"
+      ></div>
+    </transition>
 
     <!-- Sidebar -->
-    <aside class="admin-sidebar" :class="{ open: mobileMenuOpen }">
+    <aside
+      class="admin-sidebar"
+      :class="{ open: mobileMenuOpen }"
+      tabindex="-1"
+    >
       <div class="sidebar-header">
         <router-link to="/admin" class="sidebar-logo">
           <div class="logo-badge">
@@ -134,22 +141,27 @@
     <!-- Main Content Area -->
     <div class="admin-main-wrap">
       <!-- Admin Topbar -->
-      <header class="admin-topbar" dir="rtl">
-        <!-- Start / Right in RTL -->
+      <header class="admin-topbar">
+        <!-- Start / Inline-Start -->
         <div class="topbar-start">
-          <button class="menu-toggle d-md-none" @click="mobileMenuOpen = true" title="فتح القائمة">
+          <button
+            class="menu-toggle"
+            @click="mobileMenuOpen = true"
+            title="فتح القائمة الرئيسية"
+            aria-label="فتح القائمة الرئيسية"
+          >
             <v-icon icon="mdi-menu" size="20" />
           </button>
           
           <!-- Breadcrumb Trail -->
-          <div class="breadcrumb-trail">
+          <nav class="breadcrumb-trail" aria-label="مسار التنقل">
             <router-link to="/admin/dashboard" class="breadcrumb-item home-link">
               <v-icon icon="mdi-shield-crown-outline" size="17" color="primary" />
               <span class="d-none d-sm-inline">لوحة التحكم</span>
             </router-link>
-            <v-icon icon="mdi-chevron-left" size="14" class="breadcrumb-sep" />
-            <span class="breadcrumb-item current">{{ pageTitle }}</span>
-          </div>
+            <v-icon :icon="isRtl ? 'mdi-chevron-left' : 'mdi-chevron-right'" size="14" class="breadcrumb-sep" />
+            <span class="breadcrumb-item current" :title="pageTitle">{{ pageTitle }}</span>
+          </nav>
 
           <a href="/" target="_blank" class="preview-btn d-none d-lg-inline-flex" title="فتح الموقع في علامة تبويب جديدة">
             <v-icon icon="mdi-open-in-new" size="14" class="ml-1" />
@@ -277,17 +289,19 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useAuthStore } from '~/stores/auth'
 import { useAdminStore } from '~/stores/admin'
 import { useTheme } from '~/composables/useTheme'
+import { useLocale } from '~/composables/useLocale'
 
 const router = useRouter()
 const route = useRoute()
 const authStore = useAuthStore()
 const adminStore = useAdminStore()
 const { isDark, toggle: toggleTheme } = useTheme()
+const { dir, isRtl } = useLocale()
 
 const mobileMenuOpen = ref(false)
 const changePasswordDialog = ref(false)
@@ -302,6 +316,8 @@ const pageTitlesMap = {
   '/admin/dashboard': 'لوحة المعلومات',
   '/admin/profile': 'الملف الشخصي',
   '/admin/projects': 'المشاريع',
+  '/admin/blog': 'المدونة والمقالات',
+  '/admin/blog/editor': 'محرر المقالات',
   '/admin/services': 'الخدمات',
   '/admin/skills': 'المهارات والتصنيفات',
   '/admin/timeline': 'الخط الزمني والخبرة',
@@ -309,6 +325,7 @@ const pageTitlesMap = {
   '/admin/statistics': 'الأرقام والإحصائيات',
   '/admin/messages': 'رسائل التواصل',
   '/admin/media': 'مكتبة الوسائط',
+  '/admin/seo': 'مدير الـ SEO',
   '/admin/settings': 'إعدادات الموقع',
   '/admin/data-templates': 'قوالب واستيراد البيانات',
   '/admin/users': 'المستخدمون والصلاحيات',
@@ -318,6 +335,25 @@ const pageTitlesMap = {
 const pageTitle = computed(() => {
   return pageTitlesMap[route.path] || 'لوحة التحكم'
 })
+
+// Auto-close mobile drawer when route changes
+watch(() => route.path, () => {
+  mobileMenuOpen.value = false
+})
+
+// Prevent background scroll when mobile drawer is open
+watch(mobileMenuOpen, (isOpen) => {
+  if (import.meta.client) {
+    document.body.style.overflow = isOpen ? 'hidden' : ''
+  }
+})
+
+// Escape key to dismiss drawer
+function handleKeydown(e) {
+  if (e.key === 'Escape' && mobileMenuOpen.value) {
+    mobileMenuOpen.value = false
+  }
+}
 
 async function handleLogout() {
   authStore.logout()
@@ -345,34 +381,51 @@ async function submitPasswordChange() {
 }
 
 onMounted(async () => {
+  if (import.meta.client) {
+    window.addEventListener('keydown', handleKeydown)
+  }
   try {
     await adminStore.fetchDashboardSummary()
   } catch (e) {
     // handled in store
   }
 })
+
+onUnmounted(() => {
+  if (import.meta.client) {
+    window.removeEventListener('keydown', handleKeydown)
+    document.body.style.overflow = ''
+  }
+})
 </script>
 
 <style scoped>
 .admin-layout {
+  --sidebar-w: 260px;
+  --sidebar-slide: 100%;
   display: flex;
   min-height: 100vh;
   background: var(--bg);
   color: var(--t1);
   font-family: var(--f-body, 'Cairo', sans-serif);
+  position: relative;
+  overflow-x: clip;
+}
+
+.admin-layout[dir="ltr"] {
+  --sidebar-slide: -100%;
 }
 
 /* Sidebar */
 .admin-sidebar {
-  width: 260px;
+  width: var(--sidebar-w);
   background: var(--bg-card);
-  border-left: 1px solid var(--border);
+  border-inline-end: 1px solid var(--border);
   display: flex;
   flex-direction: column;
   position: fixed;
-  top: 0;
-  bottom: 0;
-  right: 0;
+  inset-block: 0;
+  inset-inline-start: 0;
   z-index: 1100;
   transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -461,7 +514,6 @@ onMounted(async () => {
 .sidebar-link:hover {
   background: var(--bg-subtle);
   color: var(--t1);
-  transform: translateX(-2px);
 }
 .sidebar-link.router-link-active {
   background: rgba(59, 130, 246, 0.1);
@@ -473,11 +525,11 @@ onMounted(async () => {
 .sidebar-link.router-link-active::before {
   content: '';
   position: absolute;
-  right: -12px;
+  inset-inline-start: -12px;
   top: 6px;
   bottom: 6px;
   width: 4px;
-  border-radius: 4px 0 0 4px;
+  border-radius: 4px;
   background: var(--primary);
 }
 .link-icon {
@@ -489,7 +541,7 @@ onMounted(async () => {
 }
 
 .badge {
-  margin-right: auto;
+  margin-inline-start: auto;
   font-size: 0.7rem;
   font-weight: 700;
   padding: 2px 8px;
@@ -499,7 +551,7 @@ onMounted(async () => {
   color: var(--t2);
 }
 .badge-unread {
-  margin-right: auto;
+  margin-inline-start: auto;
   font-size: 0.7rem;
   padding: 2px 7px;
   border-radius: 100px;
@@ -526,47 +578,54 @@ onMounted(async () => {
 /* Main wrap */
 .admin-main-wrap {
   flex: 1;
-  margin-right: 260px;
+  margin-inline-start: var(--sidebar-w);
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  min-width: 0;
+  transition: margin-inline-start 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .admin-topbar {
-  height: 64px;
+  min-height: 60px;
   background: var(--bg-card);
   backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   border-bottom: 1px solid var(--border);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 clamp(14px, 2vw, 24px);
+  padding: clamp(8px, 1.5vw, 12px) clamp(12px, 2.5vw, 24px);
   position: sticky;
   top: 0;
   z-index: 100;
   transition: all 0.25s ease;
-  direction: rtl;
+  padding-top: max(clamp(8px, 1.5vw, 12px), env(safe-area-inset-top, 0px));
 }
 
 .topbar-start {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: clamp(6px, 1.5vw, 12px);
+  min-width: 0;
+  flex: 1;
 }
 
 .topbar-end {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: clamp(4px, 1vw, 8px);
+  flex-shrink: 0;
 }
 
 .menu-toggle {
   width: 36px;
   height: 36px;
+  min-width: 36px;
   border-radius: 9px;
   background: var(--bg-subtle);
   border: 1px solid var(--border);
-  display: inline-flex;
+  display: none;
   align-items: center;
   justify-content: center;
   color: var(--t1);
@@ -847,16 +906,18 @@ onMounted(async () => {
   color: var(--t1);
 }
 
-@media (max-width: 860px) {
+/* Responsive Navigation & Breakpoints */
+@media (max-width: 1023px) {
   .admin-sidebar {
-    transform: translateX(100%);
+    transform: translateX(var(--sidebar-slide));
+    box-shadow: none;
   }
   .admin-sidebar.open {
     transform: translateX(0);
-    box-shadow: -10px 0 35px rgba(0, 0, 0, 0.45);
+    box-shadow: 0 0 50px rgba(0, 0, 0, 0.65);
   }
   .admin-main-wrap {
-    margin-right: 0 !important;
+    margin-inline-start: 0 !important;
   }
   .menu-toggle {
     display: inline-flex !important;
@@ -868,16 +929,41 @@ onMounted(async () => {
     display: block !important;
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.6);
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
+    background: rgba(0, 0, 0, 0.65);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
     z-index: 1050;
   }
 }
 
-@media (max-width: 600px) {
-  .admin-topbar {
-    padding: 0 12px;
+@media (min-width: 1024px) {
+  .menu-toggle {
+    display: none !important;
+  }
+  .close-sidebar {
+    display: none !important;
+  }
+  .sidebar-backdrop {
+    display: none !important;
+  }
+  .admin-sidebar {
+    transform: none !important;
+  }
+}
+
+/* Backdrop Fade Transition */
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.25s ease;
+}
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
+@media (max-width: 767px) {
+  .admin-content-body {
+    padding: clamp(12px, 3.5vw, 20px);
   }
   :deep(.page-header),
   .page-header {
@@ -886,9 +972,53 @@ onMounted(async () => {
     gap: 12px;
   }
   :deep(.page-header .btn-primary),
-  .page-header .btn-primary {
+  .page-header .btn-primary,
+  :deep(.page-header .btn-ghost),
+  .page-header .btn-ghost {
     width: 100%;
     justify-content: center;
+  }
+}
+
+@media (max-width: 479px) {
+  .admin-topbar {
+    padding-inline: 8px;
+    gap: 6px;
+  }
+  .topbar-icon-btn,
+  .menu-toggle {
+    width: 34px;
+    height: 34px;
+    min-width: 34px;
+    border-radius: 8px;
+  }
+  .breadcrumb-trail {
+    gap: 4px;
+  }
+  .breadcrumb-item.current {
+    max-width: 130px;
+  }
+  .admin-sidebar {
+    width: min(285px, 86vw);
+  }
+}
+
+@media (max-width: 374px) {
+  .admin-topbar {
+    padding-inline: 6px;
+  }
+  .breadcrumb-item.current {
+    max-width: 85px;
+    font-size: 0.74rem;
+  }
+  .topbar-icon-btn,
+  .menu-toggle {
+    width: 32px;
+    height: 32px;
+    min-width: 32px;
+  }
+  .logout-btn {
+    padding: 4px 8px;
   }
 }
 </style>

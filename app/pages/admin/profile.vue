@@ -935,7 +935,7 @@ onMounted(() => {
 }
 .preset-icons-grid {
   display: grid;
-  grid-template-columns: repeat(6, 1fr);
+  grid-template-columns: repeat(auto-fill, minmax(44px, 1fr));
   gap: 8px;
 }
 .preset-icon-btn {
@@ -1020,5 +1020,19 @@ onMounted(() => {
   border: 1px solid var(--border);
   border-radius: 16px;
   padding: 16px 24px;
+}
+
+@media (max-width: 768px) {
+  .preview-brand-item {
+    width: 100%;
+  }
+  .bottom-save-bar {
+    padding: 12px 16px;
+  }
+  .bottom-save-bar .btn,
+  .bottom-save-bar button {
+    width: 100%;
+    justify-content: center;
+  }
 }
 </style>

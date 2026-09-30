@@ -250,7 +250,7 @@ onMounted(() => {
   background: rgba(59, 130, 246, 0.04);
   border: 2px dashed rgba(59, 130, 246, 0.3);
   border-radius: 18px;
-  padding: 38px 24px;
+  padding: clamp(24px, 5vw, 38px) clamp(16px, 3vw, 24px);
   cursor: pointer;
   transition: all 0.25s ease;
 }
@@ -265,8 +265,8 @@ onMounted(() => {
 
 .media-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
-  gap: 16px;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 180px), 1fr));
+  gap: 14px;
 }
 .media-card {
   background: var(--bg-subtle);

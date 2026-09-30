@@ -190,4 +190,17 @@ async function handleLogin() {
   transition: color 0.2s;
 }
 .back-link:hover { color: var(--primary); }
+
+@media (max-width: 480px) {
+  .login-page {
+    padding: 12px;
+  }
+  .login-card {
+    padding: 26px 18px;
+    border-radius: 16px;
+  }
+  .login-title {
+    font-size: 1.28rem;
+  }
+}
 </style>
