@@ -589,8 +589,8 @@ onUnmounted(() => {
 .admin-topbar {
   min-height: 60px;
   background: var(--bg-card);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  /* backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px); */
   border-bottom: 1px solid var(--border);
   display: flex;
   align-items: center;
@@ -864,8 +864,8 @@ onUnmounted(() => {
   background: var(--bg-subtle);
   color: var(--t2) !important;
   border: 1px solid var(--border);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  /* backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px); */
   cursor: pointer;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   white-space: nowrap;
@@ -930,8 +930,8 @@ onUnmounted(() => {
     position: fixed;
     inset: 0;
     background: rgba(0, 0, 0, 0.65);
-    backdrop-filter: blur(5px);
-    -webkit-backdrop-filter: blur(5px);
+    /* backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px); */
     z-index: 1050;
   }
 }

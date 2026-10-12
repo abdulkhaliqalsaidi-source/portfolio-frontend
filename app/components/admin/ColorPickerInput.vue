@@ -246,7 +246,7 @@ function isLightColor(hex) {
   inset: -2px;
   border-radius: 10px;
   background: inherit;
-  filter: blur(4px);
+  /* filter: blur(4px); */
   opacity: 0.5;
   z-index: -1;
 }
@@ -279,8 +279,8 @@ function isLightColor(hex) {
 /* Popover Content Container */
 .color-picker-popover {
   background: rgba(15, 23, 42, 0.96);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  /* backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px); */
   border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 18px;
   padding: 16px;

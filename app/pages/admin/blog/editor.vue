@@ -1197,7 +1197,7 @@ function onAiApplySeo(seoData) {
   z-index: 50;
   height: 60px;
   background: rgba(15, 23, 42, 0.85);
-  backdrop-filter: blur(12px);
+  /* backdrop-filter: blur(12px); */
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   display: flex;
   align-items: center;
@@ -1424,7 +1424,7 @@ function onAiApplySeo(seoData) {
   padding: 6px 12px;
   border-radius: 8px;
   background: rgba(15, 23, 42, 0.75);
-  backdrop-filter: blur(8px);
+  /* backdrop-filter: blur(8px); */
   border: 1px solid rgba(255, 255, 255, 0.15);
   color: #FFFFFF;
   font-size: 0.8rem;
@@ -1539,7 +1539,7 @@ function onAiApplySeo(seoData) {
   gap: 4px;
   padding: 6px 12px;
   background: rgba(30, 41, 59, 0.9);
-  backdrop-filter: blur(12px);
+  /* backdrop-filter: blur(12px); */
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 12px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);

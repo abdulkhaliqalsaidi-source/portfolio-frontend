@@ -303,7 +303,7 @@ setBreadcrumbsSchema([
   right: 12px;
   padding: 4px 12px;
   background: rgba(11, 15, 25, 0.85);
-  backdrop-filter: blur(8px);
+  /* backdrop-filter: blur(8px); */
   border-radius: 6px;
   font-size: 0.75rem;
   font-weight: 700;
@@ -370,5 +370,12 @@ setBreadcrumbsSchema([
 
 .details-btn:hover {
   color: var(--primary-hover, #2563EB);
+}
+
+[data-theme="light"] .card-category-badge {
+  background: #FFFFFF !important;
+  color: #0284C7 !important;
+  border-color: rgba(2, 132, 199, 0.25) !important;
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.06) !important;
 }
 </style>

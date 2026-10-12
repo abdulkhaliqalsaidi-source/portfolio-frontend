@@ -9,7 +9,7 @@ export default {
     testimonials: 'آراء العملاء',
     experience: 'المسار المهني',
     blog: 'المدونة',
-    contact: 'تواصل',
+    contact: 'تواصل معي',
     resume: 'السيرة الذاتية',
     downloadCv: 'تحميل السيرة الذاتية (PDF)',
     resumePdf: 'السيرة الذاتية PDF',
@@ -39,8 +39,8 @@ export default {
   // Stats & About Section
   stats: {
     eyebrow: 'الرؤية والمنهجية المهنية • About & Philosophy',
-    title: 'تقديم حلول احترافية متكاملة',
-    titleHighlight: 'تخدم الأهداف بكفاءة',
+    title: 'خبرة تصنع',
+    titleHighlight: 'فَرْقًا.',
     sub: 'منهجية عمل تركز على الدقة، الالتزام بأعلى معايير الجودة، وتحقيق النتائج المرجوة للعملاء والشركاء.',
     role: 'خبير وممارس مهني',
     downloadCv: 'تحميل السيرة الذاتية (CV)',
@@ -54,22 +54,26 @@ export default {
   // Services Section
   services: {
     eyebrow: 'مجالات العمل والخدمات • What I Offer',
-    title: 'خدمات متكاملة وحلول نوعية',
-    titleHighlight: 'من الفكرة حتى الإنجاز',
+    title: 'خدمات تصنع',
+    titleHighlight: 'فَرْقًا.',
     sub: 'تقديم خدمات تخصصية متكاملة مصممة لتلبية احتياجاتكم وتحقيق أهدافكم المنشودة بأعلى مستويات الجودة.'
   },
 
   // Projects Section
   projects: {
     eyebrow: 'معرض الأعمال والإنجازات • Featured Portfolio',
-    title: 'إنجازات عملية ومشاريع واقعية',
-    titleHighlight: 'حققت أثراً ملموساً',
+    title: 'أعمال تصنع',
+    titleHighlight: 'فَرْقًا.',
     sub: 'نماذج من الأعمال والمشاريع ودراسات الحالة التي تم تنفيذها بنجاح واحترافية وبأعلى معايير الاعتمادية.',
     allFilter: 'الكل',
     readCaseStudy: 'قراءة دراسة الحالة والتفاصيل',
     liveDemo: 'معاينة العمل',
     repository: 'المستندات / المستودع',
     viewAllProjects: 'عرض كافة الأعمال',
+    browseByCategory: 'استعراض حسب الفئة',
+    exploreCategory: 'استكشف أعمال الفئة',
+    backToCategories: 'العودة إلى الفئات',
+    emptyCategory: 'لا توجد أعمال مضافة حالياً في هذه الفئة',
     beforeAfter: 'مقارنة قبل وبعد',
     beforeLabel: 'الوضع قبل العمل / التطوير',
     afterLabel: 'النتيجة المنجزة والحل',
@@ -79,24 +83,24 @@ export default {
   // Testimonials Section
   testimonials: {
     eyebrow: 'شهادات الثقة والتقدير • Testimonials',
-    title: 'ماذا يقول العملاء والشركاء',
-    titleHighlight: 'عن جودة العمل والتعاون',
+    title: 'شراكات تصنع',
+    titleHighlight: 'الثِقة.',
     sub: 'آراء وتقييمات من العملاء والشركاء الذين عملت معهم على تحقيق أهدافهم وخدمتهم.'
   },
 
   // Timeline / Experience Section
   timeline: {
     eyebrow: 'المسار المهني • Career & Milestones',
-    title: 'محطات الخبرة والتطور',
-    titleHighlight: 'في مسيرتي العملية والمهنية',
+    title: 'محطات تبني',
+    titleHighlight: 'الخِبرة.',
     sub: 'تسلسل زمني لأبرز الأدوار الوظيفية والمحطات العملية والشهادات المهنية المعتمدة.'
   },
 
   // Contact Section
   contact: {
     eyebrow: 'ابدأ التواصل • Let\'s Connect',
-    title: 'يسعدني التواصل والتعاون معك',
-    titleHighlight: 'لتقديم أفضل الخدمات والحلول',
+    title: 'رؤية تبدأ',
+    titleHighlight: 'بِتواصل.',
     sub: 'متاح للفرص الجديدة، الاستشارات، والتعاقدات المهنية. تواصل معي لنبدأ مناقشة التفاصيل.',
     quickBadge: 'نموذج التواصل السريع',
     directMessage: 'إرسال رسالة مباشرة',

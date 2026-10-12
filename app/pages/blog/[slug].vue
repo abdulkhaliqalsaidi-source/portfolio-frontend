@@ -646,7 +646,7 @@ onUnmounted(() => {
   justify-content: space-between;
   padding: 16px 22px;
   background: rgba(15, 23, 42, 0.6);
-  backdrop-filter: blur(12px);
+  /* backdrop-filter: blur(12px); */
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 18px;
   flex-wrap: wrap;
@@ -1078,7 +1078,7 @@ onUnmounted(() => {
 
 .sidebar-card {
   background: rgba(15, 23, 42, 0.75);
-  backdrop-filter: blur(16px);
+  /* backdrop-filter: blur(16px); */
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 20px;
   padding: 20px;

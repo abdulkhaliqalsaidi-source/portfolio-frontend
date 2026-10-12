@@ -4,7 +4,10 @@
 
       <div class="section-head text-center">
         <div class="eyebrow">{{ eyebrow }}</div>
-        <h2 class="s-title">{{ title }} <span class="g-text">{{ titleHighlight }}</span></h2>
+        <div class="title-with-beam">
+          <h2 class="s-title">{{ title }} <span class="g-text">{{ titleHighlight }}</span></h2>
+          <div class="title-glow-beam" />
+        </div>
         <p class="s-sub">{{ sub }}</p>
       </div>
 

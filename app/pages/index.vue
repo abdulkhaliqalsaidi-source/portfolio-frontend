@@ -1,12 +1,12 @@
 <template>
   <div class="home-view">
     <HeroSection />
+    <ProjectsSection />
     <StatsSection />
     <ServicesSection />
-    <TechStack />
-    <ProjectsSection />
     <TestimonialsSection />
     <TimelineSection />
+    <BlogSection />
     <ContactSection />
   </div>
 </template>
@@ -18,10 +18,10 @@ import { useJsonLd } from '~/composables/useJsonLd'
 import HeroSection from '~/components/public/HeroSection.vue'
 import StatsSection from '~/components/public/StatsSection.vue'
 import ServicesSection from '~/components/public/ServicesSection.vue'
-import TechStack from '~/components/public/TechStack.vue'
 import ProjectsSection from '~/components/public/ProjectsSection.vue'
 import TestimonialsSection from '~/components/public/TestimonialsSection.vue'
 import TimelineSection from '~/components/public/TimelineSection.vue'
+import BlogSection from '~/components/public/BlogSection.vue'
 import { onMounted } from 'vue'
 import ContactSection from '~/components/public/ContactSection.vue'
 

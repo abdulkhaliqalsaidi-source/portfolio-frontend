@@ -26,7 +26,7 @@ export default defineNuxtConfig({
         { charset: 'utf-8' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
         { name: 'format-detection', content: 'telephone=no' },
-        { name: 'theme-color', content: '#0B0F19' },
+        { name: 'theme-color', content: '#0a0a0f' },
         { name: 'google-site-verification', content: '7nXhc3IexdOX9noZEXPCk39Vucx9g2XI_o3Fd4SvZaU' },
         { name: 'description', content: 'الموقع الشخصي ومعرض الأعمال والخدمات المهنية والاستشارية.' },
         { name: 'keywords', content: 'معرض أعمال, سيرة ذاتية, خدمات واستشارات, Portfolio, Professional Services' },
@@ -41,7 +41,7 @@ export default defineNuxtConfig({
         { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
         { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
         { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' },
-        { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap' }
+        { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&family=Tajawal:wght@200;300;400;500;700;800;900&family=Urbanist:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap' }
       ]
     }
   },

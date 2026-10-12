@@ -486,6 +486,141 @@
         </v-col>
       </v-row>
 
+      <section class="admin-card background-settings-card" aria-labelledby="background-settings-title">
+        <div class="background-settings-heading">
+          <div>
+            <h2 id="background-settings-title" class="card-section-title mb-1">الخلفية المتحركة للموقع</h2>
+            <p class="text-caption text-secondary mb-0">اختر الحركة التي تظهر خلف واجهة الصفحة الرئيسية. يمكنك معاينتها قبل حفظها.</p>
+          </div>
+          <button class="btn btn-primary background-save-button" type="button" :disabled="savingBackground || !backgroundDirty" @click="saveBackground">
+            <v-progress-circular v-if="savingBackground" indeterminate size="17" width="2" />
+            <v-icon v-else :icon="backgroundDirty ? 'mdi-content-save-outline' : 'mdi-check-circle-outline'" size="18" />
+            <span>{{ savingBackground ? 'جارٍ الحفظ...' : (backgroundDirty ? 'حفظ الخلفية' : 'تم الحفظ') }}</span>
+          </button>
+        </div>
+
+        <div class="background-options" role="group" aria-label="اختيار الخلفية المتحركة">
+          <button
+            v-for="option in backgroundOptions"
+            :key="option.id"
+            class="background-option"
+            :class="{ selected: selectedBackground === option.id }"
+            type="button"
+            :aria-pressed="selectedBackground === option.id"
+            @click="selectedBackground = option.id"
+          >
+            <span class="background-preview" :class="`preview-${option.id}`" aria-hidden="true">
+              <span class="preview-orb preview-orb-one" />
+              <span class="preview-orb preview-orb-two" />
+              <span class="preview-line" />
+              <span class="preview-dots" />
+            </span>
+            <span class="background-option-copy">
+              <span class="background-option-title">{{ option.title }}</span>
+              <span class="background-option-description">{{ option.description }}</span>
+            </span>
+            <v-icon class="background-selected-icon" :icon="selectedBackground === option.id ? 'mdi-check-circle' : 'mdi-circle-outline'" size="19" />
+          </button>
+        </div>
+      </section>
+
+      <!-- Hero Avatar Frame Style Selector -->
+      <section class="admin-card mb-6 hero-model-settings-card" aria-labelledby="hero-model-settings-title">
+        <div class="hero-model-settings-heading">
+          <div>
+            <div class="d-flex align-center gap-2 mb-1 flex-wrap">
+              <v-icon icon="mdi-card-account-details-outline" color="primary" size="22" />
+              <h2 id="hero-model-settings-title" class="card-section-title mb-0">نماذج وتصاميم إطار الصورة في واجهة الموقع</h2>
+              <span class="badge-models-count">6 نماذج عالمية فاخرة</span>
+            </div>
+            <p class="text-caption text-secondary mb-0">اختر النمط الجمالي الفاخر والمؤثرات البصرية التي تناسبك لعرض صورتك الشخصية في قسم الهيرو بالصفحة الرئيسية.</p>
+          </div>
+          <button class="btn btn-primary hero-model-save-button" type="button" :disabled="savingHeroModel" @click="saveHeroModel">
+            <v-progress-circular v-if="savingHeroModel" indeterminate size="17" width="2" />
+            <v-icon v-else :icon="heroModelDirty ? 'mdi-content-save-outline' : 'mdi-check-circle-outline'" size="18" />
+            <span>{{ savingHeroModel ? 'جارٍ الحفظ والتطبيق...' : (heroModelDirty ? 'تطبيق وحفظ النموذج' : 'النموذج مفعل حالياً') }}</span>
+          </button>
+        </div>
+
+        <div class="hero-models-layout mt-4">
+          <!-- Models Grid (6 Cards) -->
+          <div class="hero-models-grid">
+            <button
+              v-for="model in heroModelOptions"
+              :key="model.id"
+              class="hero-model-card"
+              :class="{ selected: selectedHeroModel === model.id }"
+              type="button"
+              @click="selectHeroModel(model.id)"
+            >
+              <div class="model-card-head">
+                <div class="model-icon-box" :style="{ background: model.color + '18', color: model.color, borderColor: model.color + '40' }">
+                  <v-icon :icon="model.icon" size="20" />
+                </div>
+                <span class="model-tag-pill" :style="{ color: model.color, borderColor: model.color + '30', background: model.color + '10' }">
+                  {{ model.tag }}
+                </span>
+                <v-icon
+                  class="model-selected-check"
+                  :icon="selectedHeroModel === model.id ? 'mdi-check-circle' : 'mdi-circle-outline'"
+                  size="20"
+                  :color="selectedHeroModel === model.id ? 'var(--primary)' : 'rgba(255,255,255,0.2)'"
+                />
+              </div>
+
+              <div class="model-card-body">
+                <div class="model-title">{{ model.title }}</div>
+                <div class="model-desc">{{ model.desc }}</div>
+              </div>
+            </button>
+          </div>
+
+          <!-- Real-Time Live Preview & Options Column -->
+          <div class="hero-model-preview-sidebar">
+            <div class="preview-sidebar-header">
+              <span class="text-caption font-weight-bold" style="color: var(--t1)">معاينة حية ومباشرة لصورتك:</span>
+              <span class="badge-live-pulse">
+                <span class="pulse-dot" />
+                <span>مباشر</span>
+              </span>
+            </div>
+
+            <div class="preview-frame-wrapper my-3">
+              <HeroAvatarFrame
+                :dev="profile"
+                :model="selectedHeroModel"
+                :showGlow="enableHeroGlow"
+                :showBadges="enableHeroBadges"
+                :previewMode="true"
+              />
+            </div>
+
+            <!-- Toggles for Glow and Badges -->
+            <div class="preview-toggles-box">
+              <div class="d-flex align-center justify-space-between py-1">
+                <span class="text-caption font-weight-medium" style="color: var(--t1)">تفعيل الهالة الضوئية (Ambient Glow)</span>
+                <v-switch v-model="enableHeroGlow" color="primary" hide-details density="compact" />
+              </div>
+              <div class="d-flex align-center justify-space-between py-1 border-t">
+                <span class="text-caption font-weight-medium" style="color: var(--t1)">إظهار الشارات التفاعلية (Floating Badges)</span>
+                <v-switch v-model="enableHeroBadges" color="primary" hide-details density="compact" />
+              </div>
+            </div>
+
+            <button
+              class="btn btn-primary w-100 mt-3 btn-apply-model"
+              type="button"
+              :disabled="savingHeroModel"
+              @click="saveHeroModel"
+            >
+              <v-progress-circular v-if="savingHeroModel" indeterminate size="16" width="2" />
+              <v-icon v-else icon="mdi-rocket-launch-outline" size="16" />
+              <span>تطبيق هذا النموذج على الموقع الآن</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
       <!-- Bottom Save Action Bar -->
       <div class="bottom-save-bar mt-6 d-flex align-center justify-space-between admin-card">
         <div class="d-flex align-center gap-2">
@@ -508,10 +643,12 @@ definePageMeta({
   middleware: ['auth']
 })
 
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { usePortfolioStore } from '~/stores/portfolio'
 import { useAdminStore } from '~/stores/admin'
 import adminService from '~/services/adminService'
+import HeroAvatarFrame from '~/components/public/HeroAvatarFrame.vue'
+
 
 const portfolioStore = usePortfolioStore()
 const adminStore = useAdminStore()
@@ -526,6 +663,123 @@ const deletingResume = ref(false)
 const avatarFileInput = ref(null)
 const resumeFileInput = ref(null)
 const logoFileInput = ref(null)
+const selectedBackground = ref('constellation')
+const savedBackground = ref('constellation')
+const savingBackground = ref(false)
+
+const backgroundOptions = [
+  { id: 'constellation', title: 'شبكة الجسيمات', description: 'جسيمات مترابطة تستجيب لحركة المؤشر.' },
+  { id: 'aurora', title: 'ستائر الشفق', description: 'ستائر ضوئية تنساب بحركة هادئة.' },
+  { id: 'orbit', title: 'المدارات الكوكبية', description: 'أجرام مضيئة تدور حول مركز متوهج.' },
+  { id: 'horizon', title: 'تموجات الأفق', description: 'خطوط شبكية تتموج فوق أفق مضيء.' }
+]
+
+const backgroundDirty = computed(() => selectedBackground.value !== savedBackground.value)
+
+async function fetchBackgroundSetting() {
+  try {
+    const data = await adminService.getSettings()
+    const items = Array.isArray(data) ? data : (data?.results || [])
+    const setting = items.find(item => item.key === 'hero_background')
+    const value = setting?.value
+    const choice = backgroundOptions.some(option => option.id === value) ? value : 'constellation'
+    selectedBackground.value = choice
+    savedBackground.value = choice
+  } catch {
+    adminStore.notify('تعذر تحميل إعداد الخلفية المتحركة', 'error')
+  }
+}
+
+
+const heroModelOptions = [
+  { id: 'royal-glass', title: 'الزجاج البلوري الملكي (Royal Crystal Glass)', tag: 'فخامة ملكية • Apple Glass', icon: 'mdi-shield-star', color: '#38BDF8', desc: 'زجاج أكريليكي مثلج فائق النقاء مستوحى من لغة Apple مع لمعان علوي وشارات متناسقة.' },
+  { id: 'cinematic-aura', title: 'الهالة السينمائية الفاخرة (Cinematic Aura)', tag: 'توهج سينمائي • Ambient Glow', icon: 'mdi-shimmer', color: '#10B981', desc: 'إطار أوبسيديان فاحم مع هالة ضوئية زمردية وسماوية ناعمة تنبض في الخلفية بنقاء تام.' },
+  { id: 'cyber-pulse', title: 'إطار النيون السيبراني النقي (Cyber Pulse HUD)', tag: 'تقني دقيق • Cyber Edge', icon: 'mdi-radar', color: '#06B6D4', desc: 'تصميم تكنولوجي مستقبلي مع محيط نيون هادئ وعلامات زوايا هندسية تقنية دقيقة على أطراف الإطار.' },
+  { id: 'golden-luxury', title: 'الإطار الهندسي الذهبي (Architectural Imperial Gold)', tag: 'طراز معماري • Imperial Gold', icon: 'mdi-crown', color: '#F59E0B', desc: 'انحناء هندسي راقٍ محاط بإطار ذهبي معدني وهالة دافئة تعكس الفخامة والاحترافية العالية.' },
+  { id: '3d-perspective', title: 'المجسم ثلاثي الأبعاد التفاعلي (3D Holographic Perspective)', tag: 'حركة تفاعلية • 3D Tilt', icon: 'mdi-cube-scan', color: '#A855F7', desc: 'تفاعل حي ومباشر مع حركة مؤشر الفأرة بزاوية عمق ثلاثية الأبعاد ولمسة طيفية ناعمة.' },
+  { id: 'minimal-monolith', title: 'استوديو المونوكروم الفاخر (Swiss Minimalist Monolith)', tag: 'بساطة سويسرية • Swiss Studio', icon: 'mdi-palette-swatch-outline', color: '#E2E8F0', desc: 'بساطة تحريرية مونوكرومية هادئة ونقية تعكس أرقى معايير الاستوديوهات العالمية الفاخرة.' }
+]
+
+const selectedHeroModel = ref('royal-glass')
+const savedHeroModel = ref('royal-glass')
+const enableHeroGlow = ref(true)
+const enableHeroBadges = ref(true)
+const savingHeroModel = ref(false)
+
+const heroModelDirty = computed(() => {
+  return selectedHeroModel.value !== savedHeroModel.value
+})
+
+function selectHeroModel(id) {
+  selectedHeroModel.value = id
+}
+
+async function fetchHeroModelSetting() {
+  try {
+    const data = await adminService.getSettings()
+    const items = Array.isArray(data) ? data : (data?.results || [])
+    const modelSetting = items.find(item => item.key === 'hero_avatar_style')
+    if (modelSetting?.value && heroModelOptions.some(m => m.id === modelSetting.value)) {
+      selectedHeroModel.value = modelSetting.value
+      savedHeroModel.value = modelSetting.value
+    } else if (portfolioStore.settings?.hero_avatar_style) {
+      selectedHeroModel.value = portfolioStore.settings.hero_avatar_style
+      savedHeroModel.value = portfolioStore.settings.hero_avatar_style
+    }
+    const glowSetting = items.find(item => item.key === 'hero_avatar_glow')
+    if (glowSetting !== undefined) {
+      enableHeroGlow.value = glowSetting.value === 'true' || glowSetting.value === true
+    }
+    const badgesSetting = items.find(item => item.key === 'hero_avatar_badges')
+    if (badgesSetting !== undefined) {
+      enableHeroBadges.value = badgesSetting.value === 'true' || badgesSetting.value === true
+    }
+  } catch {
+    if (portfolioStore.settings?.hero_avatar_style) {
+      selectedHeroModel.value = portfolioStore.settings.hero_avatar_style
+      savedHeroModel.value = portfolioStore.settings.hero_avatar_style
+    }
+  }
+}
+
+async function saveHeroModel() {
+  savingHeroModel.value = true
+  try {
+    await adminService.updateSettingsBulk({
+      hero_avatar_style: selectedHeroModel.value,
+      hero_avatar_glow: enableHeroGlow.value ? 'true' : 'false',
+      hero_avatar_badges: enableHeroBadges.value ? 'true' : 'false'
+    })
+    savedHeroModel.value = selectedHeroModel.value
+    if (portfolioStore.settings) {
+      portfolioStore.settings.hero_avatar_style = selectedHeroModel.value
+      portfolioStore.settings.hero_avatar_glow = enableHeroGlow.value
+      portfolioStore.settings.hero_avatar_badges = enableHeroBadges.value
+    }
+    await portfolioStore.fetchPublicContent()
+    await refreshNuxtData('portfolio-public-content')
+    adminStore.notify('تم حفظ وتطبيق نموذج إطار الصورة على الواجهة الرئيسية بنجاح!', 'success')
+  } catch (err) {
+    adminStore.notify(err.message || 'تعذر حفظ نموذج إطار الصورة', 'error')
+  } finally {
+    savingHeroModel.value = false
+  }
+}
+
+async function saveBackground() {
+  if (!backgroundDirty.value || savingBackground.value) return
+  savingBackground.value = true
+  try {
+    await adminService.updateSettingsBulk({ hero_background: selectedBackground.value })
+    await portfolioStore.fetchPublicContent()
+    savedBackground.value = selectedBackground.value
+    adminStore.notify('تم حفظ الخلفية المتحركة وتطبيقها على الموقع', 'success')
+  } catch (err) {
+    adminStore.notify(err.message || 'تعذر حفظ الخلفية المتحركة', 'error')
+  } finally {
+    savingBackground.value = false
+  }
+}
 
 const presetIcons = [
   { icon: 'mdi-star-four-points', label: 'نجمة التميز (الافتراضي)' },
@@ -778,6 +1032,7 @@ async function saveProfile() {
 
 onMounted(() => {
   fetchProfile()
+  fetchBackgroundSetting()
 })
 </script>
 
@@ -1022,7 +1277,52 @@ onMounted(() => {
   padding: 16px 24px;
 }
 
+.background-settings-card { margin-top: 24px; }
+.background-settings-heading { display: flex; align-items: center; justify-content: space-between; gap: 18px; margin-bottom: 20px; }
+.background-settings-heading .card-section-title { border: 0; padding: 0; margin-bottom: 4px; }
+.background-options { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+.background-option {
+  position: relative; display: flex; flex-direction: column; padding: 8px; gap: 11px; min-width: 0; text-align: right;
+  color: var(--t1); background: var(--bg-subtle); border: 1px solid var(--border); border-radius: 13px;
+  cursor: pointer; transition: border-color .18s ease, background-color .18s ease, transform .18s ease;
+}
+.background-option:hover { border-color: color-mix(in srgb, var(--primary) 55%, var(--border)); transform: translateY(-2px); }
+.background-option:focus-visible { outline: 2px solid var(--primary); outline-offset: 3px; }
+.background-option.selected { border-color: var(--primary); background: color-mix(in srgb, var(--primary) 8%, var(--bg-card)); }
+.background-preview { position: relative; display: block; width: 100%; height: 86px; overflow: hidden; border-radius: 8px; background: #10251f; isolation: isolate; }
+.background-preview::before, .background-preview::after { content: ''; position: absolute; inset: -55%; z-index: -1; }
+.background-preview::before { background: radial-gradient(ellipse at 28% 40%, rgba(89, 173, 152, .78), transparent 38%), radial-gradient(ellipse at 76% 60%, rgba(127, 139, 210, .62), transparent 36%); filter: blur(10px); animation: preview-drift 7s ease-in-out infinite alternate; }
+.background-preview::after { background: linear-gradient(130deg, transparent 40%, rgba(231, 208, 139, .22), transparent 62%); animation: preview-glide 5s linear infinite; }
+.preview-orb { position: absolute; width: 6px; height: 6px; border-radius: 50%; background: #e9dcac; box-shadow: 0 0 12px 3px rgba(194, 213, 202, .55); animation: preview-float 3s ease-in-out infinite alternate; }
+.preview-orb-one { top: 30%; left: 26%; }.preview-orb-two { top: 64%; left: 72%; animation-delay: -1.4s; }
+.preview-line { position: absolute; inset: 18% 24%; border: 1px solid rgba(209, 223, 217, .26); border-radius: 50%; transform: rotate(-24deg); }
+.preview-dots { position: absolute; inset: 0; background-image: radial-gradient(rgba(215, 231, 222, .68) 1px, transparent 1.5px); background-size: 23px 21px; opacity: .38; }
+.preview-aurora::before { background: linear-gradient(125deg, transparent 18%, rgba(69, 186, 149, .74) 36%, rgba(115, 145, 216, .68) 55%, rgba(199, 183, 117, .45) 68%, transparent 82%); filter: blur(13px); }
+.preview-aurora .preview-line, .preview-aurora .preview-dots { display: none; }
+.preview-orbit::before { background: radial-gradient(ellipse at center, rgba(25, 116, 101, .58), transparent 65%); }
+.preview-orbit .preview-line { inset: 14% 20%; border-radius: 50%; transform: rotate(-32deg); box-shadow: 0 0 0 10px rgba(190, 209, 195, .08), 0 0 0 21px rgba(190, 209, 195, .06); animation: preview-rotate 12s linear infinite; }
+.preview-orbit .preview-dots { opacity: .12; }
+.preview-horizon::before { inset: 48% -20% -60%; background: linear-gradient(0deg, rgba(89, 173, 152, .5), transparent 72%); filter: blur(8px); }
+.preview-horizon .preview-line { inset: 44% -10% auto; height: 70%; border: 0; border-top: 1px solid rgba(190, 218, 206, .45); border-radius: 50%; transform: rotate(-7deg); box-shadow: 0 -9px 0 -1px rgba(190, 218, 206, .18), 0 -19px 0 -1px rgba(190, 218, 206, .13); animation: preview-wave 4s ease-in-out infinite alternate; }
+.preview-horizon .preview-dots { display: none; }
+.background-option-copy { display: flex; flex-direction: column; gap: 3px; padding: 0 3px 4px; }
+.background-option-title { font-size: .82rem; font-weight: 800; }
+.background-option-description { min-height: 2.6em; color: var(--t2); font-size: .7rem; line-height: 1.45; }
+.background-selected-icon { position: absolute; top: 15px; inset-inline-end: 15px; color: var(--primary); filter: drop-shadow(0 1px 3px rgba(0,0,0,.5)); }
+@keyframes preview-drift { to { transform: translate(10%, -8%) rotate(10deg); } }
+@keyframes preview-glide { to { transform: translateX(34%) rotate(12deg); } }
+@keyframes preview-float { to { transform: translate(9px, -7px); opacity: .62; } }
+@keyframes preview-rotate { to { transform: rotate(328deg); } }
+@keyframes preview-wave { to { transform: translateY(7px) rotate(5deg); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .background-preview *, .background-preview::before, .background-preview::after { animation: none !important; }
+}
+
 @media (max-width: 768px) {
+  .background-settings-heading { align-items: flex-start; flex-direction: column; }
+  .background-save-button { width: 100%; justify-content: center; }
+  .background-options { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .preview-brand-item {
     width: 100%;
   }
@@ -1035,4 +1335,179 @@ onMounted(() => {
     justify-content: center;
   }
 }
+
+/* ══════════════════════════════════════════════════════════════
+   HERO AVATAR MODEL SELECTOR STYLES
+   ══════════════════════════════════════════════════════════════ */
+.badge-models-count {
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 9999px;
+  background: var(--primary-subtle, rgba(56, 189, 248, 0.12));
+  border: 1px solid var(--primary-border, rgba(56, 189, 248, 0.3));
+  color: var(--primary, #38BDF8);
+}
+
+.hero-model-settings-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.hero-models-layout {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 24px;
+  align-items: start;
+}
+
+.hero-models-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.hero-model-card {
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+  border-radius: 16px;
+  background: var(--bg-subtle, rgba(255, 255, 255, 0.03));
+  border: 1.5px solid var(--border);
+  cursor: pointer;
+  text-align: right;
+  transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+  position: relative;
+}
+
+.hero-model-card:hover {
+  border-color: var(--primary-border, rgba(56, 189, 248, 0.4));
+  transform: translateY(-2px);
+  background: var(--primary-subtle, rgba(56, 189, 248, 0.05));
+}
+
+.hero-model-card.selected {
+  border-color: var(--primary, #38BDF8);
+  background: color-mix(in srgb, var(--primary) 10%, var(--bg-card));
+  box-shadow: 0 0 0 1px var(--primary), 0 8px 24px -6px color-mix(in srgb, var(--primary) 25%, transparent);
+}
+
+.model-card-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+  width: 100%;
+}
+
+.model-icon-box {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.model-tag-pill {
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  white-space: nowrap;
+}
+
+.model-selected-check {
+  margin-inline-start: auto;
+}
+
+.model-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.model-title {
+  font-size: 0.88rem;
+  font-weight: 800;
+  color: var(--t1);
+}
+
+.model-desc {
+  font-size: 0.74rem;
+  color: var(--t2);
+  line-height: 1.45;
+}
+
+/* Preview Sidebar */
+.hero-model-preview-sidebar {
+  background: var(--bg-subtle, rgba(255, 255, 255, 0.02));
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 18px;
+}
+
+.preview-sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.badge-live-pulse {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 8px;
+  border-radius: 9999px;
+  background: rgba(16, 185, 129, 0.12);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  color: #10B981;
+  font-size: 0.68rem;
+  font-weight: 700;
+}
+
+.pulse-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #10B981;
+  box-shadow: 0 0 8px #10B981;
+  animation: radar-ping 1.8s infinite;
+}
+
+.preview-frame-wrapper {
+  background: #060911;
+  border-radius: 16px;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border);
+  min-height: 270px;
+}
+
+.preview-toggles-box {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 10px 14px;
+}
+
+@media (max-width: 960px) {
+  .hero-models-layout {
+    grid-template-columns: 1fr;
+  }
+  .hero-models-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 </style>

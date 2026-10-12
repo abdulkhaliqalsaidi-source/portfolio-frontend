@@ -1,9 +1,12 @@
 <template>
   <section class="section" id="blog" v-if="blogPosts.length > 0">
     <div class="container">
-      <div class="section-head">
+      <div class="section-head text-center">
         <div class="eyebrow">{{ eyebrow }}</div>
-        <h2 class="s-title">{{ title }} <span class="g-text">{{ titleHighlight }}</span></h2>
+        <div class="title-with-beam">
+          <h2 class="s-title">{{ title }} <span class="g-text">{{ titleHighlight }}</span></h2>
+          <div class="title-glow-beam" />
+        </div>
         <p class="s-sub">{{ sub }}</p>
       </div>
 
@@ -289,7 +292,7 @@ function handleImgFallback(e) {
   font-family: var(--f-display, 'Tajawal', sans-serif);
   font-size: 1.18rem;
   font-weight: 800;
-  color: #FFFFFF;
+  color: var(--t1);
   line-height: 1.45;
   margin-bottom: 10px;
   transition: color 0.2s ease;

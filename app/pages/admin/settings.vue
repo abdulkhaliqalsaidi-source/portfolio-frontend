@@ -65,6 +65,43 @@
             />
           </div>
 
+
+          <div class="admin-card mb-6">
+            <div class="d-flex align-center justify-space-between mb-2">
+              <h3 class="card-section-title mb-0">نموذج وتصميم إطار الصورة في الهيرو</h3>
+              <span class="text-caption text-primary font-weight-bold">6 تصاميم عالمية</span>
+            </div>
+            <p class="text-caption mb-3 text-secondary">
+              اختر النمط الجمالي الفاخر لعرض الصورة الشخصية في قسم الهيرو.
+            </p>
+
+            <v-select
+              v-model="settings.hero_avatar_style"
+              :items="avatarStyleItems"
+              item-title="title"
+              item-value="value"
+              variant="outlined"
+              density="comfortable"
+              prepend-inner-icon="mdi-palette-swatch-outline"
+              class="mb-3"
+            />
+
+            <v-switch
+              v-model="settings.hero_avatar_glow"
+              color="primary"
+              label="تفعيل الهالة الضوئية المتوهجة (Ambient Glow)"
+              hide-details
+              class="mb-2"
+            />
+
+            <v-switch
+              v-model="settings.hero_avatar_badges"
+              color="primary"
+              label="إظهار الشارات التفاعلية العائمة (Floating Badges)"
+              hide-details
+            />
+          </div>
+
           <div class="admin-card">
             <h3 class="card-section-title">ملاحظة منهجية ومعايير العمل (Quality & Methodology Note)</h3>
             <div class="mb-3">
@@ -159,6 +196,16 @@ const portfolioStore = usePortfolioStore()
 const adminStore = useAdminStore()
 
 const saving = ref(false)
+
+const avatarStyleItems = [
+  { value: 'royal-glass', title: '1. الزجاج البلوري الملكي (Royal Crystal Glass)' },
+  { value: 'cinematic-aura', title: '2. الهالة السينمائية الفاخرة (Cinematic Ambient Aura)' },
+  { value: 'cyber-pulse', title: '3. إطار النيون السيبراني النقي (Cyber Pulse HUD)' },
+  { value: 'golden-luxury', title: '4. الإطار الذهبي الملكي (Architectural Imperial Gold)' },
+  { value: '3d-perspective', title: '5. المجسم ثلاثي الأبعاد التفاعلي (3D Holographic Perspective)' },
+  { value: 'minimal-monolith', title: '6. استوديو المونوكروم الفاخر (Swiss Minimalist Monolith)' }
+]
+
 const settings = ref({
   site_title: '',
   meta_description: '',
@@ -171,6 +218,9 @@ const settings = ref({
   enable_contact_form: true,
   enable_testimonials: true,
   whatsapp_number: '',
+  hero_avatar_style: 'royal-glass',
+  hero_avatar_glow: true,
+  hero_avatar_badges: true,
 })
 
 async function fetchSettings() {

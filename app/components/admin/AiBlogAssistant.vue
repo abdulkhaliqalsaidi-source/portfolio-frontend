@@ -1009,7 +1009,7 @@ async function copyOutput() {
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.45);
-  backdrop-filter: blur(2px);
+  /* backdrop-filter: blur(2px); */
   z-index: 998;
 }
 
@@ -1505,7 +1505,7 @@ async function copyOutput() {
   position: absolute;
   inset: 0;
   background: rgba(17, 24, 39, 0.92);
-  backdrop-filter: blur(4px);
+  /* backdrop-filter: blur(4px); */
   display: flex;
   flex-direction: column;
   align-items: center;

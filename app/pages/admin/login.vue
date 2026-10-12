@@ -122,7 +122,7 @@ async function handleLogin() {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  filter: blur(60px);
+  /* filter: blur(60px); */
   pointer-events: none;
 }
 .login-grid {
@@ -139,7 +139,7 @@ async function handleLogin() {
   border: 1px solid var(--border);
   border-radius: 20px;
   padding: 36px 32px;
-  backdrop-filter: blur(20px);
+  /* backdrop-filter: blur(20px); */
   box-shadow: 0 20px 60px rgba(0,0,0,0.25);
   position: relative;
   z-index: 2;

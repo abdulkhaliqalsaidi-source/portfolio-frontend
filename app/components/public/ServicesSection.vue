@@ -4,7 +4,7 @@
 
       <div class="section-head">
         <div class="eyebrow">{{ eyebrow }}</div>
-        <h2 class="s-title">{{ title }} <span class="g-text">{{ titleHighlight }}</span></h2>
+        <h2 class="s-title">{{ title }} <span class="g-text has-swoosh">{{ titleHighlight }}</span></h2>
         <p class="s-sub">{{ sub }}</p>
       </div>
 

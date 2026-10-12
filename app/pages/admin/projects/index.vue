@@ -132,9 +132,12 @@
     <v-dialog v-model="dialog" max-width="960" scrollable>
       <v-card class="admin-dialog-card" rounded="xl">
         <v-card-title class="dialog-header d-flex align-center justify-between">
-          <div class="d-flex align-center gap-2">
+          <div class="dialog-heading">
             <v-icon :icon="isEditing ? 'mdi-pencil-box-outline' : 'mdi-plus-box-outline'" color="primary" />
-            <span class="font-weight-bold">{{ isEditing ? 'تعديل دراسة الحالة: ' + form.title : 'إضافة مشروع ودراسة حالة جديدة' }}</span>
+            <div class="dialog-heading-copy">
+              <span class="dialog-heading-title">{{ isEditing ? 'تعديل المشروع' : 'مشروع جديد' }}</span>
+              <span class="dialog-heading-subtitle">{{ isEditing ? form.title : 'أدخل المعلومات الأساسية، ثم أضف التفاصيل التي تحتاجها فقط.' }}</span>
+            </div>
           </div>
           <button class="close-btn" @click="dialog = false"><v-icon icon="mdi-close" size="18" /></button>
         </v-card-title>
@@ -148,7 +151,7 @@
             @click="activeFormTab = 'basic'"
           >
             <v-icon icon="mdi-information-outline" size="18" class="ml-1" />
-            <span>1. البيانات الأساسية</span>
+            <span>الأساسيات</span>
           </button>
           <button
             type="button"
@@ -157,47 +160,20 @@
             @click="activeFormTab = 'casestudy'"
           >
             <v-icon icon="mdi-file-document-edit-outline" size="18" class="ml-1" />
-            <span>2. دراسة الحالة والحلول</span>
+            <span>القصة والحلول</span>
           </button>
           <button
             type="button"
             class="d-tab-btn"
-            :class="{ active: activeFormTab === 'comparison' }"
-            @click="activeFormTab = 'comparison'"
+            :class="{ active: activeFormTab === 'extras' }"
+            @click="activeFormTab = 'extras'"
           >
-            <v-icon icon="mdi-compare" size="18" class="ml-1" />
-            <span>3. مقارنة قبل وبعد</span>
-          </button>
-          <button
-            type="button"
-            class="d-tab-btn"
-            :class="{ active: activeFormTab === 'metrics' }"
-            @click="activeFormTab = 'metrics'"
-          >
-            <v-icon icon="mdi-chart-line" size="18" class="ml-1" />
-            <span>4. مؤشرات الأثر ({{ form.metrics?.length || 0 }})</span>
-          </button>
-          <button
-            type="button"
-            class="d-tab-btn"
-            :class="{ active: activeFormTab === 'architecture' }"
-            @click="activeFormTab = 'architecture'"
-          >
-            <v-icon icon="mdi-sitemap" size="18" class="ml-1" />
-            <span>5. مخطط المعمارية والمسار</span>
-          </button>
-          <button
-            type="button"
-            class="d-tab-btn"
-            :class="{ active: activeFormTab === 'client' }"
-            @click="activeFormTab = 'client'"
-          >
-            <v-icon icon="mdi-comment-quote-outline" size="18" class="ml-1" />
-            <span>6. شهادة العميل</span>
+            <v-icon icon="mdi-tune-variant" size="18" class="ml-1" />
+            <span>تفاصيل اختيارية</span>
           </button>
         </div>
 
-        <v-card-text class="pa-6">
+        <v-card-text ref="formScrollContainer" class="pa-6 project-form-scroll">
           <v-form ref="projectForm">
 
             <!-- ═══════════════════════════════════════════
@@ -227,6 +203,10 @@
                   />
                 </v-col>
 
+                <v-col cols="12">
+                  <details class="optional-form-section compact-details">
+                    <summary><span>معلومات إضافية عن المشروع</span><v-icon icon="mdi-chevron-down" size="18" /></summary>
+                    <v-row class="optional-form-content" dense>
                 <v-col cols="12" md="4">
                   <label class="field-label">نطاق/تصنيف العمل (يدعم أي تخصص)</label>
                   <v-text-field
@@ -253,6 +233,9 @@
                     variant="outlined"
                     density="comfortable"
                   />
+                </v-col>
+                    </v-row>
+                  </details>
                 </v-col>
 
                 <!-- Main Image Upload -->
@@ -295,6 +278,10 @@
                   </div>
                 </v-col>
 
+                <v-col cols="12">
+                  <details class="optional-form-section compact-details">
+                    <summary><span>روابط ومعاينة وإعدادات النشر</span><v-icon icon="mdi-chevron-down" size="18" /></summary>
+                    <v-row class="optional-form-content" dense>
                 <v-col cols="12" md="4">
                   <ColorPickerInput
                     v-model="form.accent_color"
@@ -331,6 +318,9 @@
                 <v-col cols="12" sm="4">
                   <label class="field-label">الترتيب في العرض</label>
                   <v-text-field v-model.number="form.sort_order" type="number" variant="outlined" density="compact" hide-details />
+                </v-col>
+                    </v-row>
+                  </details>
                 </v-col>
               </v-row>
             </div>
@@ -469,7 +459,9 @@
             <!-- ═══════════════════════════════════════════
                  TAB 3: BEFORE & AFTER COMPARISON
                  ═══════════════════════════════════════════ -->
-            <div v-show="activeFormTab === 'comparison'">
+            <details v-show="activeFormTab === 'extras'" class="optional-form-section">
+              <summary><span>مقارنة قبل وبعد</span><v-icon icon="mdi-chevron-down" size="18" /></summary>
+              <div class="optional-form-content">
               <v-row>
                 <!-- Before Image Upload -->
                 <v-col cols="12" md="6">
@@ -587,12 +579,15 @@
                   </div>
                 </v-col>
               </v-row>
-            </div>
+              </div>
+            </details>
 
             <!-- ═══════════════════════════════════════════
                  TAB 4: METRICS & IMPACT BUILDER
                  ═══════════════════════════════════════════ -->
-            <div v-show="activeFormTab === 'metrics'">
+            <details v-show="activeFormTab === 'extras'" class="optional-form-section">
+              <summary><span>مؤشرات الأثر ({{ form.metrics?.length || 0 }})</span><v-icon icon="mdi-chevron-down" size="18" /></summary>
+              <div class="optional-form-content">
               <div class="d-flex align-center justify-between mb-4">
                 <div>
                   <h4 class="font-weight-bold" style="color:var(--t1)">مؤشرات الأداء والنتائج المحققة</h4>
@@ -635,12 +630,15 @@
                   </v-row>
                 </div>
               </div>
-            </div>
+              </div>
+            </details>
 
             <!-- ═══════════════════════════════════════════
                  TAB 5: ARCHITECTURE & WORKFLOW STAGES
                  ═══════════════════════════════════════════ -->
-            <div v-show="activeFormTab === 'architecture'">
+            <details v-show="activeFormTab === 'extras'" class="optional-form-section">
+              <summary><span>مراحل العمل والمعمارية</span><v-icon icon="mdi-chevron-down" size="18" /></summary>
+              <div class="optional-form-content">
               <div class="d-flex align-center justify-between mb-4">
                 <div>
                   <h4 class="font-weight-bold" style="color:var(--t1)">مراحل المعمارية أو مسار العمل المخصص</h4>
@@ -680,12 +678,15 @@
                   </v-row>
                 </div>
               </div>
-            </div>
+              </div>
+            </details>
 
             <!-- ═══════════════════════════════════════════
                  TAB 6: CLIENT TESTIMONIAL
                  ═══════════════════════════════════════════ -->
-            <div v-show="activeFormTab === 'client'">
+            <details v-show="activeFormTab === 'extras'" class="optional-form-section">
+              <summary><span>شهادة العميل</span><v-icon icon="mdi-chevron-down" size="18" /></summary>
+              <div class="optional-form-content">
               <v-row>
                 <v-col cols="12" md="6">
                   <label class="field-label">اسم العميل أو المؤسسة المستفيدة</label>
@@ -707,7 +708,8 @@
                   />
                 </v-col>
               </v-row>
-            </div>
+              </div>
+            </details>
 </v-form>
         </v-card-text>
 
@@ -740,7 +742,7 @@ definePageMeta({
   middleware: ['auth']
 })
 
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watch, nextTick } from 'vue'
 import { usePortfolioStore } from '~/stores/portfolio'
 import { useAdminStore } from '~/stores/admin'
 import adminService from '~/services/adminService'
@@ -759,6 +761,13 @@ const beforeFileInput = ref(null)
 const afterFileInput = ref(null)
 
 const activeFormTab = ref('basic')
+const formScrollContainer = ref(null)
+
+watch(activeFormTab, async () => {
+  await nextTick()
+  const scrollElement = formScrollContainer.value?.$el || formScrollContainer.value
+  if (scrollElement) scrollElement.scrollTop = 0
+})
 
 const projectsList = ref([])
 const search = ref('')
@@ -1117,6 +1126,12 @@ onMounted(() => {
 }
 
 .field-label { font-size: 0.8rem; font-weight: 700; color: var(--t2); margin-bottom: 6px; display: block; }
+.dialog-header { gap: 14px; min-width: 0; padding-block: 16px; }
+.dialog-heading { display: flex; align-items: center; gap: 10px; min-width: 0; flex: 1; }
+.dialog-heading > .v-icon { flex: 0 0 auto; }
+.dialog-heading-copy { display: flex; flex-direction: column; min-width: 0; line-height: 1.35; }
+.dialog-heading-title { color: var(--t1); font-size: 1rem; font-weight: 800; }
+.dialog-heading-subtitle { max-width: 70ch; color: var(--t3); font-size: .76rem; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .close-btn { background: transparent; border: none; color: var(--t3); cursor: pointer; padding: 4px; border-radius: 6px; }
 .close-btn:hover { color: var(--t1); background: var(--bg-subtle); }
 
@@ -1146,7 +1161,8 @@ onMounted(() => {
 
 /* Modal Tabs Navigation */
 .dialog-tabs-bar {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   background: var(--bg-subtle, #0F172A);
   border-bottom: 1px solid var(--border, rgba(255, 255, 255, 0.1));
   padding: 8px 16px;
@@ -1169,6 +1185,9 @@ onMounted(() => {
   font-weight: 700;
   cursor: pointer;
   white-space: nowrap;
+  justify-content: center;
+  min-width: 0;
+  padding-inline: 10px;
   font-family: var(--f-body, 'Cairo', sans-serif);
   transition: all 0.2s ease;
 }
@@ -1240,8 +1259,47 @@ onMounted(() => {
   background: var(--bg-subtle);
 }
 
+.optional-form-section {
+  border: 1px solid var(--border);
+  border-radius: 15px;
+  background: color-mix(in srgb, var(--bg-card) 82%, var(--bg-subtle));
+  overflow: hidden;
+  margin-bottom: 12px;
+}
+.optional-form-section > summary {
+  min-height: 54px;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  color: var(--t1);
+  font-size: .9rem;
+  font-weight: 800;
+  cursor: pointer;
+  list-style: none;
+}
+.optional-form-section > summary::-webkit-details-marker { display: none; }
+.optional-form-section > summary::after { content: 'اختياري'; color: var(--t3); font-size: .72rem; font-weight: 600; margin-inline-start: auto; }
+.optional-form-section > summary .v-icon { color: var(--t3); transition: transform .2s ease; }
+.optional-form-section[open] > summary { border-bottom: 1px solid var(--border); }
+.optional-form-section[open] > summary .v-icon { transform: rotate(180deg); }
+.optional-form-content { padding: 18px; }
+.compact-details { width: 100%; }
+.compact-details .optional-form-content { padding: 14px 8px 0; }
+.optional-form-section:focus-within { border-color: var(--primary); }
+.project-form-scroll { min-height: 0; overscroll-behavior: contain; scrollbar-gutter: stable; }
+:global(html:not([data-theme="light"])) .admin-dialog-card :deep(.v-field__input),
+:global(html:not([data-theme="light"])) .admin-dialog-card :deep(input),
+:global(html:not([data-theme="light"])) .admin-dialog-card :deep(textarea) { color: #F4F7F3 !important; }
+:global(html:not([data-theme="light"])) .admin-dialog-card :deep(.v-field__input::placeholder),
+:global(html:not([data-theme="light"])) .admin-dialog-card :deep(input::placeholder),
+:global(html:not([data-theme="light"])) .admin-dialog-card :deep(textarea::placeholder) { color: #9AA9A5 !important; opacity: 1 !important; }
+
 @media (max-width: 768px) {
   .dialog-tabs-bar {
+    grid-template-columns: repeat(3, max-content);
+    justify-content: start;
     padding: 6px 10px;
     gap: 6px;
   }
@@ -1249,6 +1307,8 @@ onMounted(() => {
     padding: 6px 10px;
     font-size: 0.78rem;
   }
+  .dialog-header { padding-inline: 16px; }
+  .dialog-heading-subtitle { max-width: 48vw; }
   .project-image-box {
     padding: 12px !important;
   }

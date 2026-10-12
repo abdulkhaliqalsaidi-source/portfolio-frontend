@@ -367,7 +367,7 @@ function getExcerptFromContent(content) {
   width: 100%;
   padding: 14px 48px 14px 44px;
   background: rgba(15, 23, 42, 0.75);
-  backdrop-filter: blur(12px);
+  /* backdrop-filter: blur(12px); */
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 100px;
   color: #FFFFFF;
@@ -451,7 +451,7 @@ function getExcerptFromContent(content) {
   display: grid;
   grid-template-columns: 1.1fr 1fr;
   background: rgba(15, 23, 42, 0.75);
-  backdrop-filter: blur(16px);
+  /* backdrop-filter: blur(16px); */
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 24px;
   overflow: hidden;
@@ -547,7 +547,7 @@ function getExcerptFromContent(content) {
 .blog-card {
   position: relative;
   background: rgba(15, 23, 42, 0.75);
-  backdrop-filter: blur(16px);
+  /* backdrop-filter: blur(16px); */
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 22px;
   overflow: hidden;
@@ -604,7 +604,7 @@ function getExcerptFromContent(content) {
   padding: 4px 12px;
   border-radius: 100px;
   background: rgba(15, 23, 42, 0.85);
-  backdrop-filter: blur(8px);
+  /* backdrop-filter: blur(8px); */
   border: 1px solid rgba(59, 130, 246, 0.4);
   color: #60A5FA;
   font-family: var(--f-display, 'Tajawal', sans-serif);
@@ -619,7 +619,7 @@ function getExcerptFromContent(content) {
   padding: 4px 10px;
   border-radius: 100px;
   background: rgba(15, 23, 42, 0.85);
-  backdrop-filter: blur(8px);
+  /* backdrop-filter: blur(8px); */
   border: 1px solid rgba(255, 255, 255, 0.12);
   color: #CBD5E1;
   display: inline-flex;

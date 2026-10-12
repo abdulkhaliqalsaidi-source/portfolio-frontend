@@ -7,7 +7,7 @@
         <!-- Info & Channels Column -->
         <div class="contact-info-col anim-left">
           <div class="eyebrow">{{ isRtl ? (store.settings.contact_section_eyebrow || t('contact.eyebrow')) : t('contact.eyebrow') }}</div>
-          <h2 class="s-title">{{ isRtl ? (store.settings.contact_section_title || t('contact.title')) : t('contact.title') }} <span class="g-text">{{ isRtl ? (store.settings.contact_section_title_span || t('contact.titleHighlight')) : t('contact.titleHighlight') }}</span></h2>
+          <h2 class="s-title">{{ isRtl ? (store.settings.contact_section_title || t('contact.title')) : t('contact.title') }} <span class="g-text has-swoosh">{{ isRtl ? (store.settings.contact_section_title_span || t('contact.titleHighlight')) : t('contact.titleHighlight') }}</span></h2>
           <p class="s-sub">{{ isRtl ? (store.settings.contact_section_sub || t('contact.sub')) : t('contact.sub') }}</p>
 
           <!-- Featured Direct Channels (Email & WhatsApp) -->

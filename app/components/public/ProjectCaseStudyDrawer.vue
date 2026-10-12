@@ -82,7 +82,7 @@
             @click="activeTab = 'preview'"
           >
             <v-icon icon="mdi-devices" size="17" class="ml-1" />
-            <span>المعاينة والأجهزة</span>
+            <span>معاينة المشروع</span>
           </button>
 
 
@@ -92,7 +92,7 @@
             @click="activeTab = 'details'"
           >
             <v-icon icon="mdi-text-box-search-outline" size="17" class="ml-1" />
-            <span>دراسة الحالة والحلول</span>
+            <span>القصة والتفاصيل</span>
           </button>
 
 
@@ -322,6 +322,21 @@
 
         <!-- TAB: Case Study Details -->
         <div v-show="activeTab === 'details'" class="tab-pane anim-fade">
+          <section class="case-study-hero">
+            <img :src="project.image" :alt="project.title" class="case-study-hero-image" @error="handleImgFallback" />
+            <div class="case-study-hero-shade" />
+            <div class="case-study-hero-copy">
+              <div class="case-study-hero-meta">
+                <span v-if="project.category || project.role">{{ project.category || project.role }}</span>
+                <span v-if="project.year">{{ project.year }}</span>
+              </div>
+              <h1>{{ project.title }}</h1>
+              <p v-if="project.short_description">{{ project.short_description }}</p>
+              <div class="case-study-hero-tags" v-if="project.tags?.length">
+                <span v-for="tag in project.tags.slice(0, 5)" :key="tag">{{ tag }}</span>
+              </div>
+            </div>
+          </section>
           <div class="details-narrative-section">
             <div class="narrative-grid">
               <!-- Main Column -->
@@ -696,7 +711,7 @@ const props = defineProps({
 const emit = defineEmits(['update:modelValue', 'close', 'contact'])
 
 const isFullscreen = ref(false)
-const activeTab = ref('preview')
+const activeTab = ref('details')
 const currentDevice = ref('desktop') // 'desktop' | 'tablet' | 'mobile'
 const previewMode = ref('visual') // 'visual' | 'iframe'
 const selectedArchIndex = ref(0)
@@ -836,7 +851,7 @@ const hasClientTestimonial = computed(() => {
 // Watch project changes to reset tab if current tab is not available
 watch(() => props.project, (newP) => {
   if (!newP) return
-  activeTab.value = 'preview'
+  activeTab.value = 'details'
 }, { immediate: true })
 </script>
 
@@ -2350,5 +2365,63 @@ watch(() => props.project, (newP) => {
 [data-theme="light"] .cs-footer-bar {
   background: #F8FAFC;
   border-top-color: #E2E8F0;
+}
+
+/* Editorial case-study layout */
+.case-study-hero {
+  position: relative;
+  min-height: clamp(250px, 34vh, 390px);
+  display: flex;
+  align-items: flex-end;
+  overflow: hidden;
+  isolation: isolate;
+  border: 1px solid var(--border, rgba(255,255,255,.12));
+  border-radius: 26px;
+  margin: 0 0 28px;
+  background: var(--bg-subtle, #142326);
+}
+.case-study-hero-image,
+.case-study-hero-shade { position: absolute; inset: 0; width: 100%; height: 100%; }
+.case-study-hero-image { z-index: -2; object-fit: cover; opacity: .72; }
+.case-study-hero-shade {
+  z-index: -1;
+  background: linear-gradient(90deg, rgba(5,14,15,.92), rgba(5,14,15,.58) 62%, rgba(5,14,15,.2)), linear-gradient(0deg, rgba(5,14,15,.78), transparent 80%);
+}
+.case-study-hero-copy { max-width: 820px; padding: clamp(22px, 5vw, 52px); }
+.case-study-hero-meta { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+.case-study-hero-meta span,
+.case-study-hero-tags span {
+  border: 1px solid rgba(255,255,255,.24); background: rgba(10,20,21,.38);
+  color: #EAF1EA; border-radius: 999px; padding: 5px 11px; font-size: .78rem; font-weight: 700;
+  backdrop-filter: blur(12px);
+}
+.case-study-hero h1 {
+  margin: 0; color: #fff; font: 800 clamp(2rem, 4vw, 3.5rem)/1.12 var(--f-display, 'Tajawal', sans-serif);
+  letter-spacing: -.035em; max-width: 18ch;
+}
+.case-study-hero-copy > p { color: rgba(247,250,244,.86); line-height: 1.75; font-size: 1rem; max-width: 68ch; margin: 12px 0 18px; }
+.case-study-hero-tags { display: flex; flex-wrap: wrap; gap: 7px; }
+.case-study-hero-tags span { font-size: .72rem; padding: 4px 10px; }
+.narrative-grid { gap: 18px; }
+.narrative-card, .specs-summary-card { border-radius: 20px; box-shadow: 0 12px 34px rgba(0,0,0,.08); }
+.narrative-card { padding: clamp(18px, 2.3vw, 28px); }
+.narrative-title { font-size: 1.12rem; }
+.narrative-p { font-size: .96rem; line-height: 1.9; }
+.cs-content-body { padding: clamp(16px, 3vw, 34px); }
+.cs-topbar { backdrop-filter: blur(16px); }
+.cs-tabs-header { scrollbar-width: thin; }
+.cs-tab-btn { padding-inline: 14px; }
+
+[data-theme="light"] .case-study-hero { border-color: #DCE5DC; }
+[data-theme="light"] .case-study-hero-shade {
+  background: linear-gradient(90deg, rgba(13,31,29,.88), rgba(13,31,29,.52) 62%, rgba(13,31,29,.12)), linear-gradient(0deg, rgba(13,31,29,.64), transparent 82%);
+}
+[data-theme="light"] .case-study-hero-meta span,
+[data-theme="light"] .case-study-hero-tags span { color: #F3F7F1; }
+
+@media (max-width: 640px) {
+  .case-study-hero { min-height: 310px; border-radius: 19px; margin-bottom: 20px; }
+  .case-study-hero-copy { padding: 22px; }
+  .case-study-hero-copy > p { font-size: .9rem; }
 }
 </style>

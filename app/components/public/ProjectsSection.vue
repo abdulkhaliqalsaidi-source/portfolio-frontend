@@ -2,190 +2,182 @@
   <section class="section" id="projects" v-if="store.projects.length">
     <div class="container">
 
-      <!-- Section Header -->
-      <div class="proj-head">
-        <div>
-          <div class="eyebrow">{{ isRtl ? (store.settings.projects_section_eyebrow || t('projects.eyebrow')) : t('projects.eyebrow') }}</div>
-          <h2 class="s-title">{{ isRtl ? (store.settings.projects_section_title || t('projects.title')) : t('projects.title') }} <span class="g-text">{{ isRtl ? 'وقصص النجاح' : t('projects.titleHighlight') }}</span></h2>
-          <p class="s-sub">{{ isRtl ? (store.settings.projects_section_sub || t('projects.sub')) : t('projects.sub') }}</p>
+      <!-- Section Header Matching emanjameel.pro & Screenshot -->
+      <div class="em-proj-head text-center">
+        <div class="em-title-wrap">
+          <h2 class="em-title s-title">
+            {{ isRtl ? (store.settings.projects_section_title || 'أعمال تصنع') : t('projects.title') }}
+            <span class="g-text">{{ isRtl ? (store.settings.projects_section_title_span || 'فَرْقًا.') : t('projects.titleHighlight') }}</span>
+          </h2>
+          <div class="em-title-glow-line" />
         </div>
-        <a href="#contact" class="btn btn-ghost" @click.prevent="go('#contact')">
-          <span>{{ isRtl ? 'طلب تنفيذ عمل جديد' : 'Request a Project' }}</span>
-          <svg width="12" height="12" viewBox="0 0 13 13" fill="none">
-            <path d="M2 11L11 2M11 2H5M11 2V8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-          </svg>
-        </a>
-      </div>
+        <p class="em-sub">
+          {{ isRtl ? (store.settings.projects_section_sub || 'اختر إحدى فئات الأعمال التالية لاستكشاف جميع المشاريع والتصاميم الخاصة بها') : t('projects.sub') }}
+        </p>
 
-      <!-- Filter tabs -->
-      <div class="filter-tabs-wrapper" v-if="filterTags.length > 1">
-        <div class="filter-tabs">
+        <!-- Put real work first; category browsing stays one click away. -->
+        <div class="proj-view-modes">
           <button
-            v-for="tag in filterTags" :key="tag"
-            class="filter-tab" :class="{ active: activeFilter === tag }"
-            @click="activeFilter = tag"
-          >{{ tag }}</button>
-        </div>
-      </div>
-
-      <!-- Empty State -->
-      <div v-if="filteredProjects.length === 0" class="empty-projects text-center py-12">
-        <v-icon icon="mdi-folder-open-outline" size="48" color="var(--t3)" class="mb-3" />
-        <h4 style="color:var(--t2)">لا توجد أعمال مضافة حالياً في هذا التصنيف</h4>
-      </div>
-
-      <div v-else class="showcase-stream">
-
-        <!-- ══════════════════════════════════════════
-             LAYOUT 1: PANORAMIC FEATURED HERO SYSTEM
-             ══════════════════════════════════════════ -->
-        <div
-          v-if="featuredProject"
-          class="hero-case-study anim"
-          :style="{ '--proj-accent': featuredProject.accent_color || '#3B82F6' }"
-          @click="openCaseStudy(featuredProject)"
-        >
-          <div class="hcs-preview">
-            <div class="window-chrome">
-              <div class="chrome-dots">
-                <span class="c-dot red" />
-                <span class="c-dot yellow" />
-                <span class="c-dot green" />
-              </div>
-              <span class="chrome-url">{{ featuredProject.demo_url || featuredProject.title }}</span>
-              <span class="chrome-status"><span class="c-live-dot"/> تم الإنجاز والإطلاق</span>
-            </div>
-            <div class="hcs-img-wrap">
-              <img :src="featuredProject.image" :alt="featuredProject.title" loading="lazy" @error="handleImgFallback" />
-            </div>
-          </div>
-
-          <div class="hcs-body">
-            <div class="hcs-meta-bar">
-              <div class="hcs-badge" :style="{ color: featuredProject.accent_color || '#38BDF8', borderColor: `color-mix(in srgb, ${featuredProject.accent_color || '#3B82F6'} 30%, transparent)`, background: `color-mix(in srgb, ${featuredProject.accent_color || '#3B82F6'} 12%, transparent)` }">
-                <v-icon icon="mdi-star-four-points" size="14" :color="featuredProject.accent_color || 'var(--primary)'" class="ml-1" />
-                <span>عمل مميز • Featured Work</span>
-              </div>
-              <div class="hcs-year" v-if="featuredProject.year">
-                {{ featuredProject.year }}
-              </div>
-            </div>
-
-            <h3 class="hcs-title">{{ featuredProject.title }}</h3>
-            <p class="hcs-desc">{{ featuredProject.short_description || featuredProject.full_description }}</p>
-
-            <!-- Case Study Specs Grid -->
-            <div class="hcs-specs-grid" v-if="featuredProject.role || featuredProject.category">
-              <div class="hcs-spec-item" v-if="featuredProject.role">
-                <span class="hcs-spec-label">الدور المهني</span>
-                <span class="hcs-spec-val">{{ featuredProject.role }}</span>
-              </div>
-              <div class="hcs-spec-item" v-if="featuredProject.category">
-                <span class="hcs-spec-label">نطاق العمل</span>
-                <span class="hcs-spec-val">{{ featuredProject.category }}</span>
-              </div>
-            </div>
-
-            <!-- Tags -->
-            <div class="hcs-tags" v-if="featuredProject.tags?.length">
-              <span class="tag" v-for="t in featuredProject.tags" :key="t">{{ t }}</span>
-            </div>
-
-            <!-- Client Quote Snippet -->
-            <div class="hcs-quote-snippet mt-3" v-if="featuredProject.testimonial_quote" @click.stop="openCaseStudy(featuredProject)">
-              <v-icon icon="mdi-format-quote-open" size="16" color="#F59E0B" class="ml-1" />
-              <span class="hcs-quote-text">"{{ featuredProject.testimonial_quote }}"</span>
-              <span class="hcs-quote-author" v-if="featuredProject.client_name">— {{ featuredProject.client_name }}</span>
-            </div>
-
-            <!-- Action CTAs -->
-            <div class="hcs-actions" @click.stop>
-              <button class="btn btn-primary" @click="openCaseStudy(featuredProject)">
-                <span>قراءة دراسة الحالة التفاعلية</span>
-                <v-icon icon="mdi-arrow-left" size="15" class="mr-1" />
-              </button>
-              <a v-if="featuredProject.demo_url" :href="featuredProject.demo_url" target="_blank" class="btn btn-ghost">
-                <v-icon icon="mdi-open-in-new" size="15" class="ml-1" />
-                <span>معاينة العمل</span>
-              </a>
-              <a v-if="featuredProject.github_url" :href="featuredProject.github_url" target="_blank" class="btn btn-ghost">
-                <v-icon :icon="getLinkIcon(featuredProject.github_url)" size="15" class="ml-1" />
-                <span>{{ getLinkLabel(featuredProject.github_url) }}</span>
-              </a>
-            </div>
-          </div>
-        </div>
-
-        <!-- ══════════════════════════════════════════
-             LAYOUT 2: HORIZONTAL SPLIT CASE STUDIES
-             ══════════════════════════════════════════ -->
-        <div class="horizontal-projects" v-if="splitProjects.length">
-          <div
-            v-for="(p, i) in splitProjects" :key="p.id"
-            class="split-card anim" :class="[`d-${i+1}`, { 'reverse-split': i % 2 === 1 }]"
-            :style="{ '--proj-accent': p.accent_color || '#3B82F6' }"
-            @click="openCaseStudy(p)"
+            class="view-mode-pill"
+            :class="{ active: viewMode === 'all' || selectedCategory !== null }"
+            @click="viewMode = 'all'; selectedCategory = null"
           >
-            <div class="split-preview">
-              <div class="window-chrome">
-                <div class="chrome-dots">
-                  <span class="c-dot red" /><span class="c-dot yellow" /><span class="c-dot green" />
+            <v-icon icon="mdi-view-grid-outline" size="16" aria-hidden="true" />
+            <span>{{ t('projects.viewAllProjects') }}</span>
+          </button>
+          <button
+            class="view-mode-pill"
+            :class="{ active: viewMode === 'deck' && !selectedCategory }"
+            @click="viewMode = 'deck'; selectedCategory = null"
+          >
+            <v-icon icon="mdi-cards-outline" size="16" aria-hidden="true" />
+            <span>{{ t('projects.browseByCategory') }}</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- ══════════════════════════════════════════════════════════
+           VIEW 1: 3D STACKED CATEGORIES DECK (EXACT MATCH TO PICTURE)
+           ══════════════════════════════════════════════════════════ -->
+      <div v-if="viewMode === 'deck' && !selectedCategory" class="categories-deck-grid anim" :class="{ 'is-light-theme': !isDark }">
+        <button
+          v-for="cat in categories"
+          :key="cat.id"
+          class="category-deck-item"
+          type="button"
+          :aria-label="`${t('projects.browseByCategory')}: ${cat.displayName}`"
+          @click="selectCategory(cat)"
+        >
+          <!-- 3D Stack Stage -->
+          <div class="deck-stage">
+            <!-- Back Card Left -->
+            <div class="deck-card deck-card-back-left">
+              <img v-if="cat.projects[1]?.image" :src="cat.projects[1].image" class="deck-bg-img" alt="" loading="lazy" />
+              <div v-else class="deck-card-mock-wireframe">
+                <div class="wireframe-header">
+                  <span class="wf-dot" /><span class="wf-dot" /><span class="wf-dot" />
                 </div>
-                <span class="chrome-url">{{ p.demo_url || p.title }}</span>
-              </div>
-              <div class="split-img-box">
-                <img :src="p.image" :alt="p.title" loading="lazy" @error="handleImgFallback" />
+                <div class="wf-lines">
+                  <div class="wf-line short" />
+                  <div class="wf-line med" />
+                </div>
               </div>
             </div>
 
-            <div class="split-content">
-              <div class="d-flex align-center justify-between gap-2 mb-2">
-                <span class="tag-primary">{{ p.category || 'مشروع متخصص' }}</span>
-                <span class="split-year font-mono text-caption" v-if="p.year">{{ p.year }}</span>
+            <!-- Back Card Right -->
+            <div class="deck-card deck-card-back-right">
+              <img v-if="cat.projects[2]?.image" :src="cat.projects[2].image" class="deck-bg-img" alt="" loading="lazy" />
+              <div v-else class="deck-card-mock-wireframe">
+                <div class="wireframe-header">
+                  <span class="wf-dot" /><span class="wf-dot" /><span class="wf-dot" />
+                </div>
+                <div class="wf-lines">
+                  <div class="wf-line short" />
+                  <div class="wf-line med" />
+                </div>
+              </div>
+            </div>
+
+            <!-- Main Front Card -->
+            <div class="deck-card deck-card-front">
+              <!-- Top bar: Project Name + Pill Badge -->
+              <div class="deck-front-header">
+                <span class="deck-front-title" :title="cat.topProject?.title">
+                  {{ getCleanProjectTitle(cat.topProject?.title) }}
+                </span>
+                <div class="deck-count-badge">
+                  <span class="deck-badge-dot" />
+                  <span>{{ getCountLabel(cat.count) }}</span>
+                </div>
               </div>
 
-              <h3 class="split-title">{{ p.title }}</h3>
-              <p class="split-desc">{{ p.short_description || p.full_description }}</p>
-
-              <div class="split-tags" v-if="p.tags?.length">
-                <span class="tag" v-for="t in p.tags.slice(0, 4)" :key="t">{{ t }}</span>
-              </div>
-
-              <!-- Client Quote Snippet -->
-              <div class="split-quote-snippet mt-2" v-if="p.testimonial_quote" @click.stop="openCaseStudy(p)">
-                <v-icon icon="mdi-format-quote-open" size="14" color="#F59E0B" class="ml-1" />
-                <span class="sq-text">"{{ p.testimonial_quote }}"</span>
-              </div>
-
-              <div class="split-actions" @click.stop>
-                <button class="btn btn-ghost btn-sm" @click="openCaseStudy(p)">
-                  <span>دراسة الحالة</span>
-                  <v-icon icon="mdi-arrow-left" size="14" class="mr-1" />
-                </button>
-                <a v-if="p.demo_url" :href="p.demo_url" target="_blank" class="icon-action-btn" title="معاينة العمل">
-                  <v-icon icon="mdi-open-in-new" size="14" />
-                </a>
-                <a v-if="p.github_url" :href="p.github_url" target="_blank" class="icon-action-btn" :title="getLinkLabel(p.github_url)">
-                  <v-icon :icon="getLinkIcon(p.github_url)" size="14" />
-                </a>
+              <!-- Media Preview Frame -->
+              <div class="deck-front-media">
+                <img
+                  v-if="cat.topProject?.image"
+                  :src="cat.topProject.image"
+                  :alt="cat.topProject?.title"
+                  class="deck-front-img"
+                  loading="lazy"
+                  @error="handleImgFallback"
+                />
+                <div v-else class="fallback-media">
+                  <v-icon icon="mdi-laptop" size="48" color="var(--primary)" />
+                </div>
               </div>
             </div>
           </div>
+
+          <!-- Bottom Meta & Action Link -->
+          <h3 class="deck-cat-title">{{ cat.displayName }}</h3>
+          <span class="deck-explore-btn">
+            <span>{{ t('projects.exploreCategory') }}</span>
+            <v-icon icon="mdi-arrow-left" size="16" class="arrow-icon" />
+          </span>
+        </button>
+      </div>
+
+      <!-- ══════════════════════════════════════════════════════════
+           VIEW 2: CATEGORY / ALL PROJECTS SHOWCASE EXPLORER
+           ══════════════════════════════════════════════════════════ -->
+      <div v-else class="category-explorer-view anim">
+        <!-- Navigation & Filter Bar -->
+        <div class="explorer-nav-bar">
+          <button class="back-to-deck-btn" @click="selectedCategory = null; viewMode = 'deck'">
+            <v-icon icon="mdi-arrow-right" size="18" />
+            <span>{{ t('projects.backToCategories') }}</span>
+          </button>
+
+          <!-- Category Quick Selector Tabs -->
+          <div class="explorer-tabs">
+            <button
+              class="filter-tab"
+              :class="{ active: !selectedCategory }"
+              @click="selectedCategory = null; viewMode = 'all'"
+            >
+              {{ t('projects.viewAllProjects') }} ({{ projects.length }})
+            </button>
+            <button
+              v-for="c in categories"
+              :key="c.id"
+              class="filter-tab"
+              :class="{ active: selectedCategory === c.rawName }"
+              @click="selectCategory(c)"
+            >
+              {{ c.displayName }} ({{ c.count }})
+            </button>
+          </div>
         </div>
 
-        <!-- ══════════════════════════════════════════
-             LAYOUT 3: EDITORIAL GRID FOR OTHER PROJECTS
-             ══════════════════════════════════════════ -->
-        <div class="editorial-grid" v-if="gridProjects.length">
-          <div
-            class="grid-proj-card anim" :class="`d-${i+1}`"
-            v-for="(p, i) in gridProjects" :key="p.id"
-            :style="{ '--proj-accent': p.accent_color || '#3B82F6' }"
-            @click="openCaseStudy(p)"
+        <!-- Selected Category Header Banner -->
+        <div class="active-category-banner" v-if="currentSelectedCategory">
+          <div class="acb-content">
+            <span class="acb-badge"><span class="deck-badge-dot"/> {{ getCountLabel(currentSelectedCategory.count) }}</span>
+            <h3 class="acb-title">{{ currentSelectedCategory.displayName }}</h3>
+            <p class="acb-desc" v-if="currentSelectedCategory.arName && currentSelectedCategory.enName">
+              {{ currentSelectedCategory.arName }}
+            </p>
+          </div>
+        </div>
+
+        <!-- Empty State -->
+        <div v-if="displayedProjects.length === 0" class="empty-projects text-center py-12">
+          <v-icon icon="mdi-folder-open-outline" size="48" color="var(--t3)" class="mb-3" />
+          <h4 style="color:var(--t2)">{{ t('projects.emptyCategory') }}</h4>
+        </div>
+
+        <!-- Projects Grid -->
+        <div v-else class="editorial-grid">
+          <article
+            class="grid-proj-card anim"
+            v-for="p in displayedProjects"
+            :key="p.id"
+            :style="{ '--proj-accent': p.accent_color || 'var(--primary)' }"
           >
             <div class="gpc-window">
               <div class="gpc-chrome">
                 <span class="gpc-dot" /><span class="gpc-dot" /><span class="gpc-dot" />
+                <span class="chrome-url">{{ p.demo_url || p.title }}</span>
               </div>
               <div class="gpc-img">
                 <img :src="p.image" :alt="p.title" loading="lazy" @error="handleImgFallback" />
@@ -197,39 +189,35 @@
                 <span class="tag" v-for="t in p.tags.slice(0, 3)" :key="t">{{ t }}</span>
               </div>
               <h3 class="gpc-title">{{ p.title }}</h3>
-              <p class="gpc-desc">{{ p.short_description || p.description }}</p>
+              <p class="gpc-desc">{{ p.short_description || p.full_description }}</p>
 
-              <!-- Client Quote Snippet -->
-              <div class="grid-quote-snippet mt-2" v-if="p.testimonial_quote" @click.stop="openCaseStudy(p)">
-                <v-icon icon="mdi-format-quote-open" size="13" color="#F59E0B" class="ml-1" />
+              <div class="grid-quote-snippet mt-2" v-if="p.testimonial_quote">
+                <v-icon icon="mdi-format-quote-open" size="13" color="var(--accent)" class="ml-1" />
                 <span class="gq-text">"{{ p.testimonial_quote }}"</span>
               </div>
 
-              <div class="gpc-footer" @click.stop>
+              <div class="gpc-footer">
                 <button class="gpc-view-btn" @click="openCaseStudy(p)">
-                  <span>دراسة الحالة التفاعلية</span>
-                  <v-icon icon="mdi-arrow-left" size="14" class="mr-1" />
+                  <span>{{ t('projects.readCaseStudy') }}</span>
+                  <v-icon :icon="isRtl ? 'mdi-arrow-left' : 'mdi-arrow-right'" size="14" class="mr-1" aria-hidden="true" />
                 </button>
                 <div class="d-flex align-center gap-1">
-                  <a v-if="p.github_url" :href="p.github_url" target="_blank" class="icon-action-btn" title="الكود">
-                    <v-icon icon="mdi-github" size="14" />
+                  <a v-if="p.github_url" :href="p.github_url" target="_blank" rel="noopener noreferrer" class="icon-action-btn" :aria-label="getLinkLabel(p.github_url)">
+                    <v-icon :icon="getLinkIcon(p.github_url)" size="14" />
                   </a>
-                  <a v-if="p.demo_url" :href="p.demo_url" target="_blank" class="icon-action-btn" title="معاينة حية">
+                  <a v-if="p.demo_url" :href="p.demo_url" target="_blank" rel="noopener noreferrer" class="icon-action-btn" :aria-label="isRtl ? 'معاينة حية' : 'Live preview'">
                     <v-icon icon="mdi-open-in-new" size="14" />
                   </a>
                 </div>
               </div>
             </div>
-          </div>
+          </article>
         </div>
-
       </div>
 
     </div>
 
-    <!-- ══════════════════════════════════════════════════════════════════
-         INTERACTIVE CASE STUDY DRAWER MODAL
-         ══════════════════════════════════════════════════════════════════ -->
+    <!-- Interactive Case Study Drawer Modal -->
     <ClientOnly>
       <ProjectCaseStudyDrawer
         v-model="caseStudyOpen"
@@ -247,10 +235,16 @@ import { usePortfolioStore } from '~/stores/portfolio'
 import { useLocale } from '~/composables/useLocale'
 import { useScrollReveal } from '~/composables/useScrollReveal'
 import ProjectCaseStudyDrawer from '~/components/public/ProjectCaseStudyDrawer.vue'
+import { useTheme } from '~/composables/useTheme'
 
 const store = usePortfolioStore()
 const { t, isRtl } = useLocale()
 const router = useRouter()
+const { isDark } = useTheme()
+
+// View Modes: 'deck' (Default 3D Stacked Cards) or 'all'
+const viewMode = ref('all')
+const selectedCategory = ref(null)
 
 // Interactive Case Study Drawer State
 const caseStudyOpen = ref(false)
@@ -267,51 +261,89 @@ function handleContactFromProject(p) {
   if (el) el.scrollIntoView({ behavior: 'smooth' })
 }
 
-const go = (href) => document.querySelector(href)?.scrollIntoView({ behavior: 'smooth' })
-const go2 = (p) => {
-  if (typeof p === 'object' && p !== null) {
-    openCaseStudy(p)
-  } else {
-    const found = projects.value.find(item => item.slug === p || item.id === p)
-    if (found) openCaseStudy(found)
-    else router.push(`/projects/${p}`)
-  }
-}
-
 useScrollReveal('.anim')
 
 const activeFilter = ref('الكل')
-
 const projects = computed(() => store.projects || [])
 
-const filterTags = computed(() => {
-  const tagsSet = new Set()
+// Group projects by category for the 3D card deck
+const categories = computed(() => {
+  const map = new Map()
+
   projects.value.forEach(p => {
-    if (Array.isArray(p.tags)) {
-      p.tags.forEach(t => tagsSet.add(t))
+    const rawCat = (p.category && p.category.trim()) || (p.tags?.[0]) || 'تطوير البرمجيات'
+
+    if (!map.has(rawCat)) {
+      let arName = rawCat
+      let enName = ''
+      const match = rawCat.match(/^(.*?)\s*[\(\[]\s*(.*?)\s*[\)\]]$/)
+      if (match) {
+        arName = match[1].trim()
+        enName = match[2].trim()
+      }
+
+      map.set(rawCat, {
+        id: rawCat,
+        rawName: rawCat,
+        displayName: enName || arName,
+        arName,
+        enName,
+        count: 0,
+        projects: [],
+        topProject: null
+      })
+    }
+
+    const cat = map.get(rawCat)
+    cat.projects.push(p)
+    cat.count++
+    if (!cat.topProject || p.is_featured) {
+      cat.topProject = p
     }
   })
-  return ['الكل', ...Array.from(tagsSet)]
+
+  return Array.from(map.values())
 })
 
-const filteredProjects = computed(() => {
-  if (activeFilter.value === 'الكل') return projects.value
-  return projects.value.filter(p => Array.isArray(p.tags) && p.tags.includes(activeFilter.value))
+const currentSelectedCategory = computed(() => {
+  if (!selectedCategory.value) return null
+  return categories.value.find(c => c.rawName === selectedCategory.value) || null
 })
 
-const featuredProject = computed(() => {
-  if (!filteredProjects.value.length) return null
-  return filteredProjects.value.find(p => p.is_featured) || filteredProjects.value[0]
+const displayedProjects = computed(() => {
+  if (selectedCategory.value) {
+    return projects.value.filter(p => {
+      const rawCat = (p.category && p.category.trim()) || (p.tags?.[0]) || 'تطوير البرمجيات'
+      return rawCat === selectedCategory.value
+    })
+  }
+  if (activeFilter.value && activeFilter.value !== 'الكل') {
+    return projects.value.filter(p => Array.isArray(p.tags) && p.tags.includes(activeFilter.value))
+  }
+  return projects.value
 })
 
-const otherProjects = computed(() => {
-  if (!featuredProject.value) return []
-  return filteredProjects.value.filter(p => p.id !== featuredProject.value.id)
-})
+function selectCategory(cat) {
+  selectedCategory.value = cat.rawName
+  viewMode.value = 'category'
+  const el = document.getElementById('projects')
+  if (el) el.scrollIntoView({ behavior: 'smooth' })
+}
 
-// Layout division: first 2 go to Split Horizontal, remaining go to Editorial Grid
-const splitProjects = computed(() => otherProjects.value.slice(0, 2))
-const gridProjects = computed(() => otherProjects.value.slice(2))
+function getCleanProjectTitle(title) {
+  if (!title) return 'مشروع متميز'
+  const match = title.match(/\(([^)]+)\)$/)
+  if (match) return match[1]
+  if (title.length > 24) return title.slice(0, 22) + '...'
+  return title
+}
+
+function getCountLabel(count) {
+  if (count === 1) return '1 عمل'
+  if (count === 2) return 'عملان'
+  if (count >= 3 && count <= 10) return `${count} أعمال`
+  return `${count} عمل`
+}
 
 function getLinkIcon(url) {
   if (!url) return 'mdi-open-in-new'
@@ -321,7 +353,6 @@ function getLinkIcon(url) {
   if (u.includes('dribbble.com')) return 'mdi-dribbble'
   if (u.includes('figma.com')) return 'mdi-vector-selection'
   if (u.includes('youtube.com') || u.includes('youtu.be')) return 'mdi-youtube'
-  if (u.includes('drive.google.com') || u.includes('dropbox.com')) return 'mdi-cloud-download-outline'
   return 'mdi-link-variant'
 }
 
@@ -337,415 +368,524 @@ function getLinkLabel(url) {
 }
 
 function handleImgFallback(e) {
-  // If the image cannot be found, provide a sleek dark gradient placeholder
   e.target.style.opacity = '0.7'
-  e.target.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="800" height="450" viewBox="0 0 800 450"><rect width="800" height="450" fill="%23111827"/><circle cx="400" cy="225" r="40" fill="%233B82F6" opacity="0.2"/><text x="50%" y="52%" dominant-baseline="middle" text-anchor="middle" fill="%2364748B" font-family="sans-serif" font-size="16">Showcase</text></svg>'
+  e.target.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="800" height="450" viewBox="0 0 800 450"><rect width="800" height="450" fill="%23111827"/><circle cx="400" cy="225" r="40" fill="%2338BDF8" opacity="0.2"/><text x="50%" y="52%" dominant-baseline="middle" text-anchor="middle" fill="%2364748B" font-family="sans-serif" font-size="16">Showcase</text></svg>'
 }
 </script>
 
 <style scoped>
-.proj-head {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  margin-bottom: var(--sp-5);
-  flex-wrap: wrap;
-  gap: var(--sp-4);
-}
-
-/* Filter tabs */
-.filter-tabs-wrapper {
-  overflow-x: auto;
-  padding-bottom: 6px;
-  margin-bottom: var(--sp-6);
-  -webkit-overflow-scrolling: touch;
-}
-.filter-tabs {
-  display: flex;
-  gap: 6px;
-  min-width: max-content;
-}
-.filter-tab {
-  padding: 6px 14px;
-  border-radius: var(--r-xs);
-  font-size: 0.8rem;
-  font-weight: 600;
-  font-family: var(--f-body);
-  cursor: pointer;
-  border: 1px solid var(--border);
-  background: var(--bg-2);
-  color: var(--t3);
-  transition: all var(--t-fast);
-  white-space: nowrap;
-}
-.filter-tab:hover { color: var(--t1); border-color: var(--border-h); background: var(--bg-subtle); }
-.filter-tab.active {
-  background: var(--primary);
-  border-color: var(--primary);
-  color: #fff;
-}
-
-.showcase-stream {
+/* ══════════════════════════════════════════════════════════════
+   SECTION HEADER (MATCHING emanjameel.pro & SCREENSHOT)
+   ══════════════════════════════════════════════════════════════ */
+.em-proj-head {
+  text-align: center;
+  margin-bottom: clamp(32px, 5vw, 48px);
   display: flex;
   flex-direction: column;
-  gap: var(--sp-7);
+  align-items: center;
+  position: relative;
 }
 
-/* Window Chrome */
-.window-chrome {
-  display: flex;
+.em-title-wrap {
+  position: relative;
+  display: inline-flex;
+  flex-direction: column;
   align-items: center;
-  gap: 12px;
-  padding: 8px 14px;
-  background: var(--bg-subtle);
-  border-bottom: 1px solid var(--border);
+  margin-bottom: 12px;
 }
-.chrome-dots { display: flex; gap: 5px; }
-.c-dot { width: 9px; height: 9px; border-radius: 50%; }
-.c-dot.red { background: #EF4444; }
-.c-dot.yellow { background: #F59E0B; }
-.c-dot.green { background: #10B981; }
-.chrome-url {
-  font-size: 0.72rem;
-  color: var(--t3);
-  font-family: var(--f-mono);
-  direction: ltr;
+
+.em-title {
+  font-family: var(--f-display, 'Tajawal', sans-serif);
+  font-size: clamp(2.2rem, 4vw, 3rem);
+  font-weight: 800;
+  color: var(--t1) !important;
+  letter-spacing: normal !important;
+  margin: 0;
+  padding: 0 1rem;
+  text-shadow: none;
 }
-.chrome-status {
-  margin-right: auto;
-  font-size: 0.7rem;
+
+.em-title-glow-line {
+  width: 140px;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, var(--primary), transparent);
+  border-radius: 999px;
+  margin-top: 10px;
+  box-shadow: 0 0 12px color-mix(in srgb, var(--primary) 35%, transparent);
+}
+
+.em-sub {
+  color: var(--t2);
+  font-size: 0.95rem;
+  max-width: 640px;
+  margin: 0 auto;
+  line-height: 1.7;
+  font-family: var(--f-body, 'Cairo', sans-serif);
+}
+
+/* View Mode Pills */
+.proj-view-modes {
+  display: inline-flex;
+  gap: 8px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  padding: 4px;
+  border-radius: 999px;
+  margin-top: 20px;
+  box-shadow: var(--shadow-sm);
+}
+
+.view-mode-pill {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 16px;
+  border-radius: 999px;
+  font-size: 0.8rem;
   font-weight: 600;
-  color: var(--accent);
+  font-family: var(--f-body, 'Cairo', sans-serif);
+  color: var(--t2);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.view-mode-pill:hover {
+  color: var(--primary);
+}
+
+.view-mode-pill.active {
+  background: var(--primary-subtle);
+  color: var(--primary);
+  border: 1px solid var(--primary-border);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   VIEW 1: 3D STACKED CATEGORIES DECK (EXACT MATCH TO PICTURE)
+   ══════════════════════════════════════════════════════════════ */
+.categories-deck-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
+  gap: clamp(28px, 4vw, 44px);
+  max-width: 1220px;
+  margin: 0 auto;
+  padding: 12px 0 24px;
+}
+
+.category-deck-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  border: 0;
+  padding: 0;
+  width: 100%;
+  color: inherit;
+  background: transparent;
+  font: inherit;
+  text-align: inherit;
+  text-decoration: none;
+  transition: transform 0.35s ease;
+}
+
+.category-deck-item:focus-visible,
+.view-mode-pill:focus-visible,
+.filter-tab:focus-visible,
+.gpc-view-btn:focus-visible,
+.icon-action-btn:focus-visible,
+.back-to-deck-btn:focus-visible {
+  outline: 3px solid var(--border-focus);
+  outline-offset: 3px;
+}
+
+/* Stage container with 3D perspective */
+.deck-stage {
+  position: relative;
+  width: 100%;
+  max-width: 380px;
+  height: 250px;
+  perspective: 1000px;
   display: flex;
   align-items: center;
-  gap: 5px;
-  font-family: var(--f-body);
+  justify-content: center;
 }
-.c-live-dot {
+
+/* Base Card styling */
+.deck-card {
+  position: absolute;
+  border-radius: 20px;
+  transition: transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.45s ease, border-color 0.45s ease;
+  will-change: transform;
+  overflow: hidden;
+}
+
+/* Back-left card: fanned out rotated to the left in dark obsidian glass */
+.deck-card-back-left {
+  z-index: 1;
+  width: 95%;
+  height: 96%;
+  transform: rotate(-8deg) translateY(-8px) translateX(-6px) scale(0.96);
+  transform-origin: bottom center;
+  background: linear-gradient(155deg, rgba(30, 41, 59, 0.75) 0%, rgba(15, 23, 42, 0.95) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.7);
+  opacity: 0.95;
+}
+
+/* Back-right card: fanned out rotated to the right in dark obsidian glass */
+.deck-card-back-right {
+  z-index: 2;
+  width: 95%;
+  height: 96%;
+  transform: rotate(8deg) translateY(-8px) translateX(6px) scale(0.96);
+  transform-origin: bottom center;
+  background: linear-gradient(155deg, rgba(30, 41, 59, 0.75) 0%, rgba(15, 23, 42, 0.95) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.7);
+  opacity: 0.95;
+}
+
+.deck-bg-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.35;
+}
+
+.deck-card-mock-wireframe {
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at 50% 20%, rgba(56, 189, 248, 0.12) 0%, rgba(15, 23, 42, 0.7) 100%);
+  padding: 14px 18px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.wireframe-header {
+  display: flex;
+  gap: 5px;
+  margin-bottom: 12px;
+}
+
+.wf-dot {
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: var(--accent);
-  animation: pulse-dot 2s infinite;
+  background: rgba(56, 189, 248, 0.5);
 }
 
-/* ══════════════════════════════════════════
-   LAYOUT 1: HERO CASE STUDY
-   ══════════════════════════════════════════ */
-.hero-case-study {
-  position: relative;
-  display: grid;
-  grid-template-columns: 1.25fr 1fr;
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: var(--r-xl, 16px);
-  overflow: hidden;
-  cursor: pointer;
-  box-shadow: var(--shadow-md);
-  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), border-color 0.4s ease, box-shadow 0.4s ease;
+.wf-lines {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
-.hero-case-study::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  background: radial-gradient(circle at 35% 0%, color-mix(in srgb, var(--proj-accent, #3B82F6) 18%, transparent) 0%, transparent 65%);
-  opacity: 0;
-  transition: opacity 0.4s ease;
-  pointer-events: none;
-  z-index: 1;
+.wf-line {
+  height: 5px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.08);
 }
 
-.hero-case-study:hover {
-  border-color: var(--proj-accent, #3B82F6);
-  transform: translateY(-6px);
-  box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.7), 0 0 35px color-mix(in srgb, var(--proj-accent, #3B82F6) 35%, transparent);
+.wf-line.short { width: 40%; }
+.wf-line.med { width: 70%; }
+
+/* Front card: Deep obsidian slate chassis matching dark theme */
+.deck-card-front {
+  z-index: 3;
+  width: 94%;
+  height: 96%;
+  transform: translateY(0);
+  background: linear-gradient(180deg, #171E2D 0%, #0F1422 100%);
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  box-shadow: 0 24px 50px rgba(0, 0, 0, 0.75), 0 0 0 1px rgba(255, 255, 255, 0.05) inset;
+  display: flex;
+  flex-direction: column;
+  padding: 12px 14px 12px;
 }
 
-.hero-case-study:hover::before {
+/* Hover effect on category item fans out the cards */
+.category-deck-item:hover .deck-card-front {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 32px 64px rgba(0, 0, 0, 0.85), 0 0 25px rgba(56, 189, 248, 0.25);
+  border-color: rgba(56, 189, 248, 0.55);
+}
+
+.category-deck-item:hover .deck-card-back-left {
+  transform: rotate(-13deg) translateY(-14px) translateX(-18px) scale(0.98);
   opacity: 1;
+  border-color: rgba(56, 189, 248, 0.3);
 }
 
-.hcs-preview {
-  position: relative;
-  z-index: 2;
-  display: flex;
-  flex-direction: column;
-  background: #0B1120;
-  border-left: 1px solid rgba(255, 255, 255, 0.08);
+.category-deck-item:hover .deck-card-back-right {
+  transform: rotate(13deg) translateY(-14px) translateX(18px) scale(0.98);
+  opacity: 1;
+  border-color: rgba(56, 189, 248, 0.3);
 }
-.hcs-img-wrap {
-  height: 100%;
-  min-height: 320px;
-  max-height: 480px;
-  overflow: hidden;
-}
-.hcs-img-wrap img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-  transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
-}
-.hero-case-study:hover .hcs-img-wrap img { transform: scale(1.04); }
 
-.hcs-body {
-  position: relative;
-  z-index: 2;
-  padding: clamp(24px, 4vw, 40px);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-.hcs-meta-bar {
+/* Front card Header: Title in Solid Pure White + Translucent Pill Badge */
+.deck-front-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: var(--sp-3);
-  flex-wrap: wrap;
-  gap: 8px;
-}
-.hcs-badge {
-  display: inline-flex;
-  align-items: center;
-  font-size: 0.78rem;
-  font-weight: 700;
-  color: var(--primary);
-  background: var(--primary-subtle);
-  border: 1px solid var(--primary-border);
-  padding: 4px 10px;
-  border-radius: var(--r-xs, 4px);
-  font-family: var(--f-body, 'Cairo', sans-serif);
-}
-.hcs-year {
-  font-size: 0.78rem;
-  font-weight: 700;
-  color: #94A3B8;
-  font-family: var(--f-mono, 'Tajawal', sans-serif);
+  width: 100%;
+  margin-bottom: 10px;
+  padding: 0 4px;
+  z-index: 2;
 }
 
-.hcs-title {
-  font-family: var(--f-display, 'Tajawal', sans-serif);
-  font-size: clamp(1.4rem, 2.4vw, 1.9rem);
-  font-weight: 900;
-  color: #FFFFFF;
-  margin-bottom: 12px;
-  line-height: 1.3;
-}
-.hcs-desc {
-  font-size: 0.92rem;
-  color: #94A3B8;
-  line-height: 1.8;
-  margin-bottom: 20px;
-  font-family: var(--f-body, 'Cairo', sans-serif);
-}
-
-.hcs-specs-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  padding: 14px 18px;
-  background: var(--bg-subtle);
-  border: 1px solid var(--border);
-  border-radius: var(--r-md, 8px);
-  margin-bottom: 20px;
-}
-.hcs-spec-item { display: flex; flex-direction: column; }
-.hcs-spec-label { font-size: 0.72rem; color: #64748B; font-family: var(--f-body, 'Cairo', sans-serif); margin-bottom: 2px; }
-.hcs-spec-val { font-size: 0.86rem; font-weight: 800; color: #E2E8F0; font-family: var(--f-body, 'Cairo', sans-serif); }
-
-.hcs-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px; }
-.hcs-actions { display: flex; gap: 12px; flex-wrap: wrap; }
-
-/* Quote Snippets in Cards */
-.hcs-quote-snippet {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 14px;
-  border-radius: 10px;
-  background: rgba(245, 158, 11, 0.08);
-  border: 1px solid rgba(245, 158, 11, 0.25);
-  font-size: 0.82rem;
-  color: #F8FAFC;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  max-width: 100%;
-  margin-bottom: 18px;
-}
-
-.hcs-quote-snippet:hover {
-  background: rgba(245, 158, 11, 0.15);
-  border-color: rgba(245, 158, 11, 0.4);
-}
-
-.hcs-quote-text {
-  font-style: italic;
-  font-weight: 600;
-}
-
-.hcs-quote-author {
-  color: #F59E0B;
-  font-weight: 700;
-}
-
-.split-quote-snippet,
-.grid-quote-snippet {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 5px 10px;
-  border-radius: 8px;
-  background: rgba(245, 158, 11, 0.08);
-  border: 1px solid rgba(245, 158, 11, 0.2);
-  font-size: 0.76rem;
-  color: #F8FAFC;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  max-width: 100%;
-}
-
-.split-quote-snippet:hover,
-.grid-quote-snippet:hover {
-  background: rgba(245, 158, 11, 0.14);
-}
-
-.sq-text, .gq-text {
-  font-style: italic;
+.deck-front-title {
+  font-family: var(--f-display, 'Alexandria', 'Tajawal', sans-serif);
+  font-size: 0.98rem;
+  font-weight: 800;
+  color: #FFFFFF !important;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 320px;
+  max-width: 62%;
+  letter-spacing: normal !important;
 }
 
-/* ══════════════════════════════════════════
-   LAYOUT 2: HORIZONTAL SPLIT CARDS
-   ══════════════════════════════════════════ */
-.horizontal-projects {
-  display: flex;
-  flex-direction: column;
-  gap: 28px;
+.deck-count-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #F8FAFC;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 0.74rem;
+  font-weight: 700;
+  font-family: var(--f-body, 'Cairo', sans-serif);
+  letter-spacing: normal !important;
 }
-.split-card {
-  position: relative;
-  display: grid;
-  grid-template-columns: 1.1fr 1fr;
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: var(--r-xl, 14px);
+
+.deck-badge-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #38BDF8;
+  box-shadow: 0 0 6px rgba(56, 189, 248, 0.8);
+}
+
+/* Front card Media Area: Sleek Dark Container */
+.deck-front-media {
+  flex: 1;
+  width: 100%;
+  border-radius: 13px;
   overflow: hidden;
-  cursor: pointer;
-  box-shadow: var(--shadow-sm);
-  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), border-color 0.35s ease, box-shadow 0.35s ease;
-}
-.split-card.reverse-split {
-  grid-template-columns: 1fr 1.1fr;
-}
-.split-card.reverse-split .split-preview {
-  order: 2;
-  border-left: none;
-  border-right: 1px solid var(--border);
-}
-
-.split-card::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  background: radial-gradient(circle at 35% 0%, color-mix(in srgb, var(--proj-accent, #3B82F6) 16%, transparent) 0%, transparent 65%);
-  opacity: 0;
-  transition: opacity 0.35s ease;
-  pointer-events: none;
-  z-index: 1;
-}
-
-.split-card:hover {
-  border-color: var(--proj-accent, #3B82F6);
-  transform: translateY(-5px);
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7), 0 0 30px color-mix(in srgb, var(--proj-accent, #3B82F6) 30%, transparent);
-}
-
-.split-card:hover::before {
-  opacity: 1;
-}
-
-.split-preview {
-  position: relative;
-  z-index: 2;
+  background: #0B0E17;
+  border: 1px solid rgba(255, 255, 255, 0.08);
   display: flex;
-  flex-direction: column;
-  background: var(--bg-subtle);
-  border-left: 1px solid var(--border);
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.4);
 }
-.split-img-box {
-  height: 100%;
-  min-height: 240px;
-  max-height: 340px;
-  overflow: hidden;
-}
-.split-img-box img {
+
+.deck-front-img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  display: block;
-  transition: transform 0.4s ease;
+  object-position: top center;
+  transition: transform 0.5s ease;
 }
-.split-card:hover .split-img-box img { transform: scale(1.02); }
 
-.split-content {
-  position: relative;
-  z-index: 2;
-  padding: clamp(20px, 3vw, 30px);
+.category-deck-item:hover .deck-front-img {
+  transform: scale(1.05);
+}
+
+.fallback-media {
+  width: 100%;
+  height: 100%;
+  background: #0F172A;
   display: flex;
-  flex-direction: column;
+  align-items: center;
   justify-content: center;
 }
-.tag-primary {
-  font-size: 0.78rem;
-  font-weight: 700;
-  color: var(--primary);
-  font-family: var(--f-body, 'Cairo', sans-serif);
-}
-.split-year { color: var(--t3); font-weight: 600; }
 
-.split-title {
+/* Below Deck: Title & Explore Link */
+.deck-cat-title {
   font-family: var(--f-display, 'Tajawal', sans-serif);
-  font-size: clamp(1.15rem, 1.6vw, 1.4rem);
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #FFFFFF !important;
+  text-align: center;
+  margin-top: 20px;
+  margin-bottom: 6px;
+  letter-spacing: normal !important;
+  transition: color 0.25s ease;
+}
+
+.category-deck-item:hover .deck-cat-title {
+  color: #38BDF8 !important;
+}
+
+.deck-explore-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #E2E8F0;
+  font-size: 0.86rem;
+  font-weight: 600;
+  font-family: var(--f-body, 'Cairo', sans-serif);
+  transition: all 0.25s ease;
+}
+
+.deck-explore-btn .arrow-icon {
+  transition: transform 0.25s ease;
+}
+
+.category-deck-item:hover .deck-explore-btn {
+  color: #38BDF8;
+}
+
+.category-deck-item:hover .deck-explore-btn .arrow-icon {
+  transform: translateX(-5px);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   VIEW 2: CATEGORY SHOWCASE EXPLORER
+   ══════════════════════════════════════════════════════════════ */
+.category-explorer-view {
+  width: 100%;
+}
+
+.explorer-nav-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.back-to-deck-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 18px;
+  border-radius: 999px;
+  background: rgba(30, 41, 59, 0.7);
+  color: #F8FAFC;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  font-size: 0.84rem;
+  font-weight: 700;
+  font-family: var(--f-body, 'Cairo', sans-serif);
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.back-to-deck-btn:hover {
+  background: var(--primary-subtle);
+  border-color: var(--primary-border);
+  color: var(--primary);
+  transform: translateX(4px);
+}
+
+.explorer-tabs {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.filter-tab {
+  min-height: 44px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  font-family: var(--f-body, 'Cairo', sans-serif);
+  cursor: pointer;
+  border: 1px solid var(--border);
+  background: var(--bg-2);
+  color: var(--t2);
+  transition: all 0.25s ease;
+}
+
+.filter-tab:hover {
+  color: var(--t1);
+  border-color: var(--border-h);
+}
+
+.filter-tab.active {
+  background: var(--primary-subtle);
+  border-color: var(--primary-border);
+  color: var(--primary);
+  font-weight: 700;
+}
+
+.active-category-banner {
+  background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-2) 100%);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 20px 24px;
+  margin-bottom: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.acb-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--primary-subtle);
+  color: var(--primary);
+  border: 1px solid var(--primary-border);
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 2px 10px;
+  border-radius: 999px;
+  margin-bottom: 6px;
+}
+
+.acb-title {
+  font-family: var(--f-display, 'Tajawal', sans-serif);
+  font-size: 1.4rem;
   font-weight: 800;
   color: var(--t1);
-  margin-bottom: 8px;
-  line-height: 1.3;
+  margin: 0;
+  letter-spacing: normal !important;
 }
-.split-desc {
-  font-size: 0.88rem;
+
+.acb-desc {
   color: var(--t2);
-  line-height: 1.75;
-  margin-bottom: 16px;
+  font-size: 0.88rem;
+  margin: 4px 0 0;
   font-family: var(--f-body, 'Cairo', sans-serif);
 }
-.split-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; }
-.split-actions { display: flex; align-items: center; gap: 10px; }
+
+.empty-projects {
+  background: var(--bg-2);
+  border: 1px dashed var(--border);
+  border-radius: var(--r-md);
+}
 
 /* ══════════════════════════════════════════
-   LAYOUT 3: EDITORIAL GRID
+   EDITORIAL GRID
    ══════════════════════════════════════════ */
 .editorial-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
   gap: clamp(18px, 2.5vw, 26px);
 }
+
 .grid-proj-card {
   position: relative;
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: var(--r-lg, 12px);
   overflow: hidden;
-  cursor: pointer;
   display: flex;
   flex-direction: column;
   box-shadow: var(--shadow-sm);
-  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), border-color 0.35s ease, box-shadow 0.35s ease;
+  transition: transform 0.24s ease, border-color 0.24s ease, box-shadow 0.24s ease;
 }
 
 .grid-proj-card::before {
@@ -753,55 +893,167 @@ function handleImgFallback(e) {
   position: absolute;
   inset: 0;
   border-radius: inherit;
-  background: radial-gradient(circle at 50% 0%, color-mix(in srgb, var(--proj-accent, #3B82F6) 16%, transparent) 0%, transparent 65%);
+  background: radial-gradient(circle at 50% 0%, color-mix(in srgb, var(--proj-accent, var(--primary)) 12%, transparent) 0%, transparent 65%);
   opacity: 0;
-  transition: opacity 0.35s ease;
+  transition: opacity 0.24s ease;
   pointer-events: none;
   z-index: 1;
 }
 
 .grid-proj-card:hover {
-  border-color: var(--proj-accent, #3B82F6);
-  transform: translateY(-5px);
-  box-shadow: 0 25px 50px -15px rgba(0, 0, 0, 0.65), 0 0 28px color-mix(in srgb, var(--proj-accent, #3B82F6) 30%, transparent);
+  border-color: var(--proj-accent, var(--primary));
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
 }
 
 .grid-proj-card:hover::before {
   opacity: 1;
 }
 
-.gpc-window { position: relative; z-index: 2; background: #0B1120; border-bottom: 1px solid rgba(255, 255, 255, 0.08); }
-.gpc-chrome { display: flex; gap: 6px; padding: 8px 14px; background: rgba(30, 41, 59, 0.5); border-bottom: 1px solid rgba(255, 255, 255, 0.06); }
-.gpc-dot { width: 8px; height: 8px; border-radius: 50%; background: #475569; }
+.gpc-window {
+  position: relative;
+  z-index: 2;
+  background: var(--bg-2);
+  border-bottom: 1px solid var(--border);
+}
 
-.gpc-img { height: 200px; overflow: hidden; }
-.gpc-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1); }
-.grid-proj-card:hover .gpc-img img { transform: scale(1.04); }
+.gpc-chrome {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  background: var(--bg-3);
+  border-bottom: 1px solid var(--border);
+}
 
-.gpc-body { position: relative; z-index: 2; padding: clamp(18px, 2.5vw, 24px); display: flex; flex-direction: column; flex: 1; }
-.gpc-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
-.gpc-title { font-family: var(--f-display, 'Tajawal', sans-serif); font-size: 1.12rem; font-weight: 800; color: #FFFFFF; margin-bottom: 8px; }
-.gpc-desc  { font-size: 0.86rem; color: #94A3B8; line-height: 1.7; margin-bottom: 18px; font-family: var(--f-body, 'Cairo', sans-serif); flex: 1; }
+.gpc-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--t3);
+}
+
+.chrome-url {
+  font-size: 0.72rem;
+  color: var(--t3);
+  font-family: var(--f-mono);
+  direction: ltr;
+  margin-right: auto;
+}
+
+.gpc-img {
+  height: 200px;
+  overflow: hidden;
+}
+
+.gpc-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.32s ease;
+}
+
+.grid-proj-card:hover .gpc-img img {
+  transform: scale(1.04);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .category-deck-item,
+  .deck-card,
+  .grid-proj-card,
+  .gpc-img img,
+  .grid-proj-card::before {
+    transition: none !important;
+  }
+
+  .category-deck-item:hover,
+  .grid-proj-card:hover {
+    transform: none;
+  }
+}
+
+.gpc-body {
+  position: relative;
+  z-index: 2;
+  padding: clamp(18px, 2.5vw, 24px);
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.gpc-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.gpc-title {
+  font-family: var(--f-display, 'Tajawal', sans-serif);
+  font-size: 1.12rem;
+  font-weight: 800;
+  color: var(--t1);
+  margin-bottom: 8px;
+  letter-spacing: normal !important;
+}
+
+.gpc-desc {
+  font-size: 0.86rem;
+  color: var(--t2);
+  line-height: 1.7;
+  margin-bottom: 18px;
+  font-family: var(--f-body, 'Cairo', sans-serif);
+  flex: 1;
+}
+
+.grid-quote-snippet {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.78rem;
+  color: var(--t2);
+  background: var(--bg-subtle);
+  padding: 6px 10px;
+  border-radius: 6px;
+  margin-bottom: 12px;
+}
+
+.gq-text {
+  font-style: italic;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 
 .gpc-footer {
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding-top: 14px;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  border-top: 1px solid var(--border);
 }
+
 .gpc-view-btn {
+  min-height: 44px;
   color: var(--primary);
   background: transparent;
   border: none;
   cursor: pointer;
   font-family: var(--f-body);
+  font-weight: 600;
+  font-size: 0.85rem;
+  display: inline-flex;
+  align-items: center;
+  transition: color 0.2s ease;
 }
-.gpc-view-btn:hover { color: var(--primary-hover); }
+
+.gpc-view-btn:hover {
+  color: var(--primary-hover);
+}
 
 .icon-action-btn {
-  width: 30px;
-  height: 30px;
+  width: 44px;
+  height: 44px;
   border-radius: var(--r-xs);
   border: 1px solid var(--border);
   background: var(--bg-subtle);
@@ -812,152 +1064,221 @@ function handleImgFallback(e) {
   text-decoration: none;
   transition: all var(--t-fast);
 }
+
 .icon-action-btn:hover {
   color: var(--t1);
   border-color: var(--border-h);
   background: var(--bg-2);
 }
 
-.empty-projects {
-  background: var(--bg-2);
-  border: 1px dashed var(--border);
-  border-radius: var(--r-md);
+/* ══════════════════════════════════════════
+   LIGHT THEME OVERRIDES
+   ══════════════════════════════════════════ */
+[data-theme="light"] .em-title,
+html[data-theme="light"] .em-title {
+  color: var(--t1) !important;
+  text-shadow: none !important;
 }
 
-/* Light Theme Overrides */
-[data-theme="light"] .hero-case-study,
-html[data-theme="light"] .hero-case-study,
-[data-theme="light"] .split-card,
-html[data-theme="light"] .split-card,
+[data-theme="light"] .em-sub,
+html[data-theme="light"] .em-sub {
+  color: var(--t2) !important;
+}
+
+[data-theme="light"] .deck-cat-title,
+html[data-theme="light"] .deck-cat-title {
+  color: var(--t1) !important;
+}
+
+[data-theme="light"] .deck-explore-btn,
+html[data-theme="light"] .deck-explore-btn {
+  color: var(--t2) !important;
+}
+
+[data-theme="light"] .deck-explore-btn:hover,
+html[data-theme="light"] .deck-explore-btn:hover {
+  color: var(--primary) !important;
+}
+
 [data-theme="light"] .grid-proj-card,
 html[data-theme="light"] .grid-proj-card {
-  background: #FFFFFF !important;
-  border-color: rgba(226, 232, 240, 0.9) !important;
-  box-shadow: 0 20px 45px -12px rgba(15, 23, 42, 0.08), 0 0 0 1px rgba(255, 255, 255, 0.9) inset !important;
+  background: var(--bg-card) !important;
+  border-color: var(--border) !important;
+  box-shadow: var(--shadow-sm) !important;
 }
 
-[data-theme="light"] .hcs-preview,
-html[data-theme="light"] .hcs-preview,
-[data-theme="light"] .split-preview,
-html[data-theme="light"] .split-preview,
 [data-theme="light"] .gpc-window,
 html[data-theme="light"] .gpc-window {
-  background: #F8FAFC !important;
-  border-color: #E2E8F0 !important;
+  background: var(--bg-2) !important;
+  border-color: var(--border) !important;
 }
 
-[data-theme="light"] .window-chrome,
-html[data-theme="light"] .window-chrome,
 [data-theme="light"] .gpc-chrome,
 html[data-theme="light"] .gpc-chrome {
-  background: #F1F5F9 !important;
-  border-bottom-color: #E2E8F0 !important;
+  background: var(--bg-3) !important;
+  border-bottom-color: var(--border) !important;
 }
 
-[data-theme="light"] .chrome-url,
-html[data-theme="light"] .chrome-url {
-  color: #64748B !important;
-}
-
-[data-theme="light"] .hcs-title,
-html[data-theme="light"] .hcs-title,
-[data-theme="light"] .split-title,
-html[data-theme="light"] .split-title,
 [data-theme="light"] .gpc-title,
 html[data-theme="light"] .gpc-title {
-  color: #0F172A !important;
+  color: var(--t1) !important;
 }
 
-[data-theme="light"] .hcs-desc,
-html[data-theme="light"] .hcs-desc,
-[data-theme="light"] .split-desc,
-html[data-theme="light"] .split-desc,
 [data-theme="light"] .gpc-desc,
 html[data-theme="light"] .gpc-desc {
-  color: #475569 !important;
-}
-
-[data-theme="light"] .hcs-specs-grid,
-html[data-theme="light"] .hcs-specs-grid {
-  background: #F8FAFC !important;
-  border-color: #E2E8F0 !important;
-}
-
-[data-theme="light"] .hcs-spec-label,
-html[data-theme="light"] .hcs-spec-label {
-  color: #64748B !important;
-}
-
-[data-theme="light"] .hcs-spec-val,
-html[data-theme="light"] .hcs-spec-val {
-  color: #0F172A !important;
-}
-
-[data-theme="light"] .hcs-badge,
-html[data-theme="light"] .hcs-badge {
-  background: #EFF6FF !important;
-  border-color: #BFDBFE !important;
-  color: #1D4ED8 !important;
-}
-
-[data-theme="light"] .hcs-year,
-html[data-theme="light"] .hcs-year,
-[data-theme="light"] .split-year,
-html[data-theme="light"] .split-year {
-  color: #64748B !important;
+  color: var(--t2) !important;
 }
 
 [data-theme="light"] .tag,
-html[data-theme="light"] .tag,
-[data-theme="light"] .tag-xs,
-html[data-theme="light"] .tag-xs {
-  background: #F1F5F9 !important;
-  border-color: #E2E8F0 !important;
-  color: #334155 !important;
+html[data-theme="light"] .tag {
+  background: var(--bg-3) !important;
+  border-color: var(--border) !important;
+  color: var(--t2) !important;
 }
 
 [data-theme="light"] .gpc-footer,
 html[data-theme="light"] .gpc-footer {
-  border-top-color: #E2E8F0 !important;
+  border-top-color: var(--border) !important;
 }
 
 [data-theme="light"] .icon-action-btn,
 html[data-theme="light"] .icon-action-btn {
-  background: #F8FAFC !important;
-  border-color: #E2E8F0 !important;
-  color: #64748B !important;
+  background: var(--bg-2) !important;
+  border-color: var(--border) !important;
+  color: var(--t2) !important;
 }
 
 [data-theme="light"] .filter-tab,
 html[data-theme="light"] .filter-tab {
-  background: #F8FAFC !important;
-  border-color: #E2E8F0 !important;
-  color: #475569 !important;
+  background: var(--bg-2) !important;
+  border-color: var(--border) !important;
+  color: var(--t2) !important;
 }
 
 [data-theme="light"] .filter-tab:hover,
 html[data-theme="light"] .filter-tab:hover {
-  background: #F1F5F9 !important;
-  color: #0F172A !important;
+  background: var(--bg-3) !important;
+  color: var(--t1) !important;
 }
 
 [data-theme="light"] .filter-tab.active,
 html[data-theme="light"] .filter-tab.active {
-  background: #2563EB !important;
-  border-color: #2563EB !important;
-  color: #FFFFFF !important;
+  background: var(--primary) !important;
+  border-color: var(--primary) !important;
+  color: var(--on-primary) !important;
 }
 
 @media (max-width: 960px) {
-  .hero-case-study { grid-template-columns: 1fr; }
-  .hcs-preview { border-left: none; border-bottom: 1px solid var(--border); }
-  .split-card, .split-card.reverse-split { grid-template-columns: 1fr; }
-  .split-card.reverse-split .split-preview { order: 0; border-right: none; border-bottom: 1px solid var(--border); }
-  .split-preview { border-left: none; border-bottom: 1px solid var(--border); }
+  .categories-deck-grid {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 32px;
+  }
 }
 
 @media (max-width: 600px) {
-  .hcs-specs-grid { grid-template-columns: 1fr; }
   .editorial-grid { grid-template-columns: 1fr; }
+  .deck-stage { max-width: 320px; height: 230px; }
+  .categories-deck-grid { grid-template-columns: 1fr; }
 }
+
+/* ══════════════════════════════════════════════════════════════
+   LIGHT THEME GUARANTEED ADAPTATION (VUE REF + ATTRIBUTES)
+   ══════════════════════════════════════════════════════════════ */
+.is-light-theme .deck-card-front,
+:deep([data-theme="light"]) .deck-card-front,
+:deep(html[data-theme="light"]) .deck-card-front,
+:deep(.v-theme--light) .deck-card-front {
+  background: var(--bg-card) !important;
+  border-color: var(--border) !important;
+  box-shadow: var(--shadow-sm) !important;
+}
+
+.is-light-theme .deck-front-title,
+:deep([data-theme="light"]) .deck-front-title,
+:deep(html[data-theme="light"]) .deck-front-title,
+:deep(.v-theme--light) .deck-front-title {
+  color: var(--t1) !important;
+}
+
+.is-light-theme .deck-count-badge,
+:deep([data-theme="light"]) .deck-count-badge,
+:deep(html[data-theme="light"]) .deck-count-badge,
+:deep(.v-theme--light) .deck-count-badge {
+  background: var(--bg-3) !important;
+  border-color: var(--border) !important;
+  color: var(--t1) !important;
+}
+
+.is-light-theme .deck-badge-dot,
+:deep([data-theme="light"]) .deck-badge-dot,
+:deep(html[data-theme="light"]) .deck-badge-dot,
+:deep(.v-theme--light) .deck-badge-dot {
+  background: var(--primary) !important;
+  box-shadow: 0 0 6px color-mix(in srgb, var(--primary) 40%, transparent) !important;
+}
+
+.is-light-theme .deck-front-media,
+:deep([data-theme="light"]) .deck-front-media,
+:deep(html[data-theme="light"]) .deck-front-media,
+:deep(.v-theme--light) .deck-front-media {
+  background: var(--bg-2) !important;
+  border-color: var(--border) !important;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.04) !important;
+}
+
+.is-light-theme .deck-card-back-left,
+.is-light-theme .deck-card-back-right,
+:deep([data-theme="light"]) .deck-card-back-left,
+:deep([data-theme="light"]) .deck-card-back-right,
+:deep(html[data-theme="light"]) .deck-card-back-left,
+:deep(html[data-theme="light"]) .deck-card-back-right,
+:deep(.v-theme--light) .deck-card-back-left,
+:deep(.v-theme--light) .deck-card-back-right {
+  background: linear-gradient(155deg, var(--bg-card) 0%, var(--bg-3) 100%) !important;
+  border-color: var(--border) !important;
+  box-shadow: var(--shadow-sm) !important;
+}
+
+.is-light-theme .deck-card-mock-wireframe,
+:deep([data-theme="light"]) .deck-card-mock-wireframe,
+:deep(html[data-theme="light"]) .deck-card-mock-wireframe,
+:deep(.v-theme--light) .deck-card-mock-wireframe {
+  background: radial-gradient(circle at 50% 20%, color-mix(in srgb, var(--primary) 7%, transparent) 0%, var(--bg-2) 100%) !important;
+}
+
+.is-light-theme .wf-dot,
+:deep([data-theme="light"]) .wf-dot,
+:deep(html[data-theme="light"]) .wf-dot,
+:deep(.v-theme--light) .wf-dot {
+  background: color-mix(in srgb, var(--primary) 45%, transparent) !important;
+}
+
+.is-light-theme .wf-line,
+:deep([data-theme="light"]) .wf-line,
+:deep(html[data-theme="light"]) .wf-line,
+:deep(.v-theme--light) .wf-line {
+  background: var(--border) !important;
+}
+
+.is-light-theme .deck-cat-title,
+:deep([data-theme="light"]) .deck-cat-title,
+:deep(html[data-theme="light"]) .deck-cat-title,
+:deep(.v-theme--light) .deck-cat-title {
+  color: var(--t1) !important;
+}
+
+.is-light-theme .deck-explore-btn,
+:deep([data-theme="light"]) .deck-explore-btn,
+:deep(html[data-theme="light"]) .deck-explore-btn,
+:deep(.v-theme--light) .deck-explore-btn {
+  color: var(--primary) !important;
+}
+
+.is-light-theme .deck-explore-btn .arrow-icon,
+:deep([data-theme="light"]) .deck-explore-btn .arrow-icon,
+:deep(html[data-theme="light"]) .deck-explore-btn .arrow-icon,
+:deep(.v-theme--light) .deck-explore-btn .arrow-icon {
+  color: var(--primary) !important;
+}
+
 </style>

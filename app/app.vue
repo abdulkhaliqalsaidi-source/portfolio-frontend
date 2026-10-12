@@ -21,6 +21,10 @@ await useAsyncData('portfolio-public-content', async () => {
 
 onMounted(() => {
   portfolioStore.fetchPublicContent()
+
+  // Clean up any stuck theme-ripple-overlay elements left from a previous session
+  // This can happen if the browser was closed/navigated during a theme transition
+  document.querySelectorAll('.theme-ripple-overlay').forEach(el => el.remove())
 })
 
 const theme = useCookie('theme', { default: () => 'dark' })
@@ -31,6 +35,10 @@ useHead({
     'data-theme': () => theme.value,
     lang: () => locale.value,
     dir: () => dir.value
-  }
+  },
+  meta: [{
+    name: 'theme-color',
+    content: () => theme.value === 'light' ? '#EEF3EF' : '#0B1518'
+  }]
 })
 </script>
