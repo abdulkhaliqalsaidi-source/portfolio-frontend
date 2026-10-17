@@ -4,6 +4,8 @@ import { ref, computed } from 'vue'
 export const usePortfolioStore = defineStore('portfolio', () => {
   const isLoading = ref(false)
   const isInitialized = ref(false)
+  const isWakingUp = ref(false)
+  const retryAttempt = ref(0)
   const error = ref<string | null>(null)
 
   const developer = ref<any>({
@@ -40,6 +42,16 @@ export const usePortfolioStore = defineStore('portfolio', () => {
   const timeline = ref<any[]>([])
   const blogPosts = ref<any[]>([])
   const settings = ref<Record<string, any>>({})
+
+  const hasContent = computed(() => {
+    return !!(
+      developer.value?.name ||
+      developer.value?.full_name ||
+      developer.value?.title ||
+      projects.value?.length > 0 ||
+      services.value?.length > 0
+    )
+  })
 
   const featuredProject = computed(() => {
     return projects.value.find(p => p.is_featured) || projects.value[0] || null
@@ -132,25 +144,74 @@ export const usePortfolioStore = defineStore('portfolio', () => {
     return config.public?.apiBaseUrl || 'http://127.0.0.1:8000/api'
   }
 
-  async function fetchPublicContent() {
+  async function fetchPublicContent(force = false) {
+    if (isInitialized.value && !force && hasContent.value) {
+      return
+    }
+
     isLoading.value = true
     error.value = null
+
+    const isClient = import.meta.client
+    const maxRetries = isClient ? 3 : 1
+    // 25s timeout on client to wait for Render cold starts; 4.5s on SSR so Vercel doesn't exceed serverless function limits
+    const timeoutMs = isClient ? 25000 : 4500
+    const baseURL = getApiBaseUrl()
+
+    // Show waking indicator if request takes > 1.8s on client and content is missing
+    let wakingTimer: any = null
+    if (isClient && !hasContent.value) {
+      wakingTimer = setTimeout(() => {
+        if (isLoading.value && !hasContent.value) {
+          isWakingUp.value = true
+        }
+      }, 1800)
+    }
+
     try {
-      const baseURL = getApiBaseUrl()
-      const data = await $fetch<any>(`${baseURL}/public/content/`, { timeout: 4000 })
-      setPublicContent(data)
-      return data
-    } catch (err: any) {
-      console.warn('[PortfolioStore] Primary API warning, attempting fallback:', err)
-      try {
-        const fallbackData = await $fetch<any>('http://127.0.0.1:8000/api/public/content/', { timeout: 3000 })
-        setPublicContent(fallbackData)
-        return fallbackData
-      } catch (fallbackErr) {
-        error.value = err.message
-        isInitialized.value = true
+      for (let attempt = 1; attempt <= maxRetries; attempt++) {
+        retryAttempt.value = attempt
+        try {
+          const data = await $fetch<any>(`${baseURL}/public/content/`, {
+            timeout: timeoutMs,
+            headers: { 'Cache-Control': 'no-cache' }
+          })
+          if (data && (data.profile || data.developer || data.projects)) {
+            setPublicContent(data)
+            isWakingUp.value = false
+            if (wakingTimer) clearTimeout(wakingTimer)
+            return data
+          }
+        } catch (err: any) {
+          console.warn(`[PortfolioStore] Attempt ${attempt}/${maxRetries} failed:`, err?.message || err)
+          if (isClient && !hasContent.value) {
+            isWakingUp.value = true
+          }
+
+          if (attempt < maxRetries) {
+            // Wait 2.5 seconds before retrying to let the backend finish waking up
+            await new Promise(resolve => setTimeout(resolve, 2500))
+          } else {
+            // Final fallback to local development port if running locally
+            if (baseURL !== 'http://127.0.0.1:8000/api') {
+              try {
+                const fallbackData = await $fetch<any>('http://127.0.0.1:8000/api/public/content/', { timeout: 2000 })
+                if (fallbackData) {
+                  setPublicContent(fallbackData)
+                  isWakingUp.value = false
+                  if (wakingTimer) clearTimeout(wakingTimer)
+                  return fallbackData
+                }
+              } catch (fallbackErr) {}
+            }
+            error.value = err?.message || 'Could not fetch public content'
+            isInitialized.value = true
+          }
+        }
       }
     } finally {
+      if (wakingTimer) clearTimeout(wakingTimer)
+      isWakingUp.value = false
       isLoading.value = false
     }
   }
@@ -227,6 +288,9 @@ export const usePortfolioStore = defineStore('portfolio', () => {
     settings,
     isLoading,
     isInitialized,
+    isWakingUp,
+    retryAttempt,
+    hasContent,
     error,
     setPublicContent,
     fetchPublicContent,

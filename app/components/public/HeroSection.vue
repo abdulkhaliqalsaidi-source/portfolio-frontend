@@ -19,11 +19,20 @@
             <span class="hero-name" v-if="dev.name || dev.full_name">{{ dev.name || dev.full_name }}</span>
             <span class="hero-role" v-if="dev.title">{{ dev.title }}</span>
           </h1>
+          <div class="hero-skeleton-wrapper mb-4" v-else-if="store.isLoading || store.isWakingUp">
+            <div class="skeleton-pill mb-2" style="width: 140px; height: 18px;" />
+            <div class="skeleton-pill mb-2" style="width: min(320px, 80%); height: 42px;" />
+            <div class="skeleton-pill" style="width: min(220px, 60%); height: 28px;" />
+          </div>
 
           <!-- Confident Positioning Statement -->
           <p class="hero-sub" ref="elSub" v-if="dev.tagline || dev.bio">
             {{ isRtl ? (dev.tagline || dev.bio) : t('hero.tagline') }}
           </p>
+          <div class="hero-skeleton-sub mb-4" v-else-if="store.isLoading || store.isWakingUp">
+            <div class="skeleton-pill mb-2" style="width: min(480px, 95%); height: 16px;" />
+            <div class="skeleton-pill" style="width: min(360px, 75%); height: 16px;" />
+          </div>
 
           <!-- Action Buttons -->
           <div class="hero-ctas" ref="elCtas">
@@ -715,5 +724,21 @@ onMounted(() => {
   .avatar-ambient-glow {
     animation: none !important;
   }
+}
+
+.skeleton-pill {
+  border-radius: 8px;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.04) 25%, rgba(255, 255, 255, 0.1) 50%, rgba(255, 255, 255, 0.04) 75%);
+  background-size: 200% 100%;
+  animation: hero-skeleton-shimmer 1.5s ease-in-out infinite;
+}
+
+[data-theme="light"] .skeleton-pill {
+  background: linear-gradient(90deg, rgba(0, 0, 0, 0.04) 25%, rgba(0, 0, 0, 0.08) 50%, rgba(0, 0, 0, 0.04) 75%);
+}
+
+@keyframes hero-skeleton-shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
 }
 </style>

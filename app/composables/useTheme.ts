@@ -1,4 +1,4 @@
-import { computed } from 'vue'
+import { computed, nextTick } from 'vue'
 
 export function useTheme() {
   const themeCookie = useCookie<'dark' | 'light'>('theme', {
@@ -40,48 +40,10 @@ export function useTheme() {
     radius: number,
     onFinish: () => void
   ) {
-    const portfolio = document.getElementById('__portfolio')
-    if (!portfolio) return false
-
     const snapshot = document.createElement('div')
     snapshot.className = 'theme-transition-snapshot'
-    snapshot.dataset.theme = previousTheme
     snapshot.setAttribute('aria-hidden', 'true')
-
-    const rootStyles = getComputedStyle(document.documentElement)
-    for (let index = 0; index < rootStyles.length; index += 1) {
-      const property = rootStyles.item(index)
-      if (property.startsWith('--')) {
-        snapshot.style.setProperty(property, rootStyles.getPropertyValue(property))
-      }
-    }
-
-    const bodyStyles = getComputedStyle(document.body)
-    snapshot.style.backgroundColor = bodyStyles.backgroundColor
-    snapshot.style.backgroundImage = bodyStyles.backgroundImage
-    snapshot.style.color = bodyStyles.color
-    snapshot.style.direction = bodyStyles.direction
-    snapshot.style.fontFamily = bodyStyles.fontFamily
-
-    const portfolioCopy = portfolio.cloneNode(true) as HTMLElement
-    portfolioCopy.style.position = 'absolute'
-    portfolioCopy.style.top = `${-window.scrollY}px`
-    portfolioCopy.style.left = '0'
-    portfolioCopy.style.width = `${document.documentElement.clientWidth}px`
-    portfolioCopy.style.minHeight = `${document.documentElement.scrollHeight}px`
-    snapshot.append(portfolioCopy)
-
-    const sourceCanvases = portfolio.querySelectorAll('canvas')
-    const copiedCanvases = portfolioCopy.querySelectorAll('canvas')
-    sourceCanvases.forEach((source, index) => {
-      try {
-        const context = copiedCanvases[index]?.getContext('2d')
-        if (!context) return
-        context.drawImage(source, 0, 0)
-      } catch {
-        // A decorative canvas may be unavailable for copying; the page still transitions.
-      }
-    })
+    snapshot.style.backgroundColor = previousTheme === 'dark' ? '#0B1518' : '#EEF3EF'
 
     document.body.append(snapshot)
     try {
@@ -89,8 +51,8 @@ export function useTheme() {
         { clipPath: `circle(${radius}px at ${x}px ${y}px)` },
         { clipPath: `circle(0px at ${x}px ${y}px)` }
       ], {
-        duration: 520,
-        easing: 'cubic-bezier(0.2, 0.75, 0.25, 1)',
+        duration: 220,
+        easing: 'cubic-bezier(0.16, 1, 0.3, 1)',
         fill: 'forwards'
       })
 
@@ -140,11 +102,14 @@ export function useTheme() {
       root.style.setProperty('--theme-reveal-radius', `${radius}px`)
 
       const transitionDocument = document as Document & {
-        startViewTransition?: (updateCallback: () => void) => { finished: Promise<void> }
+        startViewTransition?: (updateCallback: () => void | Promise<void>) => { finished: Promise<void> }
       }
 
       try {
-        const transition = transitionDocument.startViewTransition?.(() => applyTheme(nextTheme))
+        const transition = transitionDocument.startViewTransition?.(async () => {
+          applyTheme(nextTheme)
+          await nextTick()
+        })
         if (transition) {
           void transition.finished.then(finishThemeTransition, finishThemeTransition)
           return

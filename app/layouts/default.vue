@@ -1,6 +1,7 @@
 <template>
   <v-app :theme="isDark ? 'dark' : 'light'" class="portfolio-app">
     <NavBar />
+    <ServerWakeLoader />
     <WhatsAppButton />
     <BackToTop />
 
@@ -17,6 +18,7 @@ import { onMounted } from 'vue'
 import { usePortfolioStore } from '~/stores/portfolio'
 import { useTheme } from '~/composables/useTheme'
 import NavBar from '~/components/public/NavBar.vue'
+import ServerWakeLoader from '~/components/public/ServerWakeLoader.vue'
 import FooterSection from '~/components/public/FooterSection.vue'
 import WhatsAppButton from '~/components/public/WhatsAppButton.vue'
 import BackToTop from '~/components/public/BackToTop.vue'

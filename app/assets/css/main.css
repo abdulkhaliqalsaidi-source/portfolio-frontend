@@ -199,8 +199,8 @@ html,
 }
 
 ::view-transition-group(root) {
-  animation-duration: 520ms;
-  animation-timing-function: cubic-bezier(0.2, 0.75, 0.25, 1);
+  animation-duration: 220ms;
+  animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 ::view-transition-old(root) {
@@ -209,7 +209,7 @@ html,
 
 ::view-transition-new(root) {
   z-index: 2;
-  animation: theme-circle-reveal 520ms cubic-bezier(0.2, 0.75, 0.25, 1) both;
+  animation: theme-circle-reveal 220ms cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 .theme-transition-snapshot {
