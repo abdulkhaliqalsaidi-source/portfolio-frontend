@@ -39,7 +39,7 @@
             </div>
 
             <div class="bio-actions mt-5">
-              <a v-if="store.resumeUrl" :href="store.resumeUrl" :download="cvFileName" target="_blank" class="btn btn-primary btn-sm">
+              <a v-if="store.resumeUrl" :href="store.resumeUrl" :download="cvFileName" @click.prevent="store.downloadResume(cvFileName)" class="btn btn-primary btn-sm">
                 <v-icon icon="mdi-file-pdf-box" size="18" color="#EF4444" class="ml-1" />
                 <span>{{ t('stats.downloadCv') }}</span>
               </a>

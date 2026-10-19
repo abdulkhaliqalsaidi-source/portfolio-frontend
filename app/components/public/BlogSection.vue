@@ -136,7 +136,7 @@ function formatDate(dateStr) {
   if (!dateStr) return locale.value === 'en' ? 'Recent' : 'مؤخراً'
   try {
     const d = new Date(dateStr)
-    return d.toLocaleDateString(locale.value === 'en' ? 'en-US' : 'ar-EG', { year: 'numeric', month: 'short', day: 'numeric' })
+    return d.toLocaleDateString(locale.value === 'en' ? 'en-US' : 'ar-EG', { year: 'numeric', month: 'short', day: 'numeric', timeZone: 'UTC' })
   } catch (e) {
     return dateStr
   }

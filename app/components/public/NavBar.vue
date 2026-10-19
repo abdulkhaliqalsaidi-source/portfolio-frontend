@@ -53,8 +53,9 @@
         </a>
 
         <!-- PDF Resume Direct Download Action Button -->
-        <a v-if="store.resumeUrl" :href="store.resumeUrl" :download="cvFileName" target="_blank"
-          class="btn btn-primary btn-sm nav-btn cv-download-btn" :title="t('nav.downloadCv')">
+        <a v-if="store.resumeUrl" :href="store.resumeUrl" :download="cvFileName"
+          class="btn btn-primary btn-sm nav-btn cv-download-btn" :title="t('nav.downloadCv')"
+          @click.prevent="store.downloadResume(cvFileName)">
           <span class="pdf-pill font-mono">PDF</span>
           <span>{{ t('nav.resumePdf') }}</span>
           <v-icon icon="mdi-download" size="15" class="download-icon" />
@@ -127,8 +128,9 @@
           </div>
 
           <div class="mobile-sheet-footer">
-            <a v-if="store.resumeUrl" :href="store.resumeUrl" :download="cvFileName" target="_blank"
-              class="btn btn-primary w-100 mb-2 cv-mobile-download-btn" :title="t('nav.downloadCv')">
+            <a v-if="store.resumeUrl" :href="store.resumeUrl" :download="cvFileName"
+              class="btn btn-primary w-100 mb-2 cv-mobile-download-btn" :title="t('nav.downloadCv')"
+              @click.prevent="store.downloadResume(cvFileName)">
               <span class="pdf-pill font-mono">PDF</span>
               <span>{{ t('nav.downloadCv') }}</span>
               <v-icon icon="mdi-download" size="16" class="download-icon" />

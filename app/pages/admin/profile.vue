@@ -462,10 +462,10 @@
             />
 
             <div v-if="profile.resume" class="d-flex align-center gap-2">
-              <a :href="profile.resume" target="_blank" class="btn-preview-resume flex-1">
+              <button type="button" @click="previewCurrentResume" class="btn-preview-resume flex-1">
                 <v-icon icon="mdi-open-in-new" size="15" />
                 معاينة الملف الحالي
-              </a>
+              </button>
               <v-btn
                 color="error"
                 variant="outlined"
@@ -884,27 +884,113 @@ function getCleanProfilePayload() {
   return p
 }
 
+function compressImageToBase64(file, maxWidth = 800, quality = 0.85) {
+  return new Promise((resolve, reject) => {
+    if (file.type === 'image/svg+xml') {
+      const reader = new FileReader()
+      reader.onload = (e) => resolve(e.target.result)
+      reader.onerror = reject
+      reader.readAsDataURL(file)
+      return
+    }
+
+    const reader = new FileReader()
+    reader.onload = (e) => {
+      const img = new Image()
+      img.onload = () => {
+        let width = img.width
+        let height = img.height
+
+        if (width > maxWidth || height > maxWidth) {
+          if (width > height) {
+            height = Math.round((height * maxWidth) / width)
+            width = maxWidth
+          } else {
+            width = Math.round((width * maxWidth) / height)
+            height = maxWidth
+          }
+        }
+
+        const canvas = document.createElement('canvas')
+        canvas.width = width
+        canvas.height = height
+        const ctx = canvas.getContext('2d')
+        ctx.drawImage(img, 0, 0, width, height)
+
+        let dataUrl = ''
+        try {
+          dataUrl = canvas.toDataURL('image/webp', quality)
+        } catch (err) {}
+
+        if (!dataUrl || !dataUrl.startsWith('data:image/webp')) {
+          dataUrl = canvas.toDataURL('image/jpeg', quality)
+        }
+        resolve(dataUrl)
+      }
+      img.onerror = reject
+      img.src = e.target.result
+    }
+    reader.onerror = reject
+    reader.readAsDataURL(file)
+  })
+}
+
+function readFileAsBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader()
+    reader.onload = (e) => resolve(e.target.result)
+    reader.onerror = reject
+    reader.readAsDataURL(file)
+  })
+}
+
+function previewCurrentResume() {
+  const url = profile.value.resume
+  if (!url) return
+  if (url.startsWith('data:')) {
+    try {
+      const parts = url.split(',')
+      const mime = parts[0].match(/:(.*?);/)?.[1] || 'application/pdf'
+      const binaryStr = atob(parts[1])
+      const len = binaryStr.length
+      const bytes = new Uint8Array(len)
+      for (let i = 0; i < len; i++) {
+        bytes[i] = binaryStr.charCodeAt(i)
+      }
+      const blob = new Blob([bytes], { type: mime })
+      const blobUrl = URL.createObjectURL(blob)
+      window.open(blobUrl, '_blank')
+      setTimeout(() => URL.revokeObjectURL(blobUrl), 60000)
+      return
+    } catch (err) {
+      console.error('Error previewing base64 resume:', err)
+    }
+  }
+  window.open(url, '_blank')
+}
+
 async function handleAvatarUpload(e) {
   const file = e.target.files?.[0]
   if (!file) return
 
   uploadingAvatar.value = true
   try {
-    const res = await adminService.uploadMedia(file, `avatar_${file.name}`)
-    const uploadedUrl = res?.file_url || res?.file
-    if (uploadedUrl) {
-      profile.value.avatar = uploadedUrl
+    const base64Url = await compressImageToBase64(file, 800, 0.85)
+    if (base64Url) {
+      profile.value.avatar = base64Url
       const payload = getCleanProfilePayload()
-      payload.avatar = uploadedUrl
+      payload.avatar = base64Url
       const updated = await adminService.updateProfile(payload)
       if (updated) {
         profile.value = { ...profile.value, ...updated }
       }
-      await portfolioStore.fetchPublicContent()
-      adminStore.notify('تم رفع وحفظ صورة الملف الشخصي بنجاح وتحديث الموقع!', 'success')
+      portfolioStore.developer.avatar = base64Url
+      await portfolioStore.fetchPublicContent(true)
+      await refreshNuxtData('portfolio-public-content')
+      adminStore.notify('تم تحويل وتخزين صورة الملف الشخصي كبيانات دائمة في قاعدة البيانات وتحديث الموقع بنجاح!', 'success')
     }
   } catch (err) {
-    adminStore.notify(err.message || 'فشل رفع الصورة', 'error')
+    adminStore.notify(err.message || 'فشل معالجة ورفع الصورة', 'error')
   } finally {
     uploadingAvatar.value = false
     if (avatarFileInput.value) avatarFileInput.value.value = ''
@@ -915,23 +1001,30 @@ async function handleResumeUpload(e) {
   const file = e.target.files?.[0]
   if (!file) return
 
+  if (file.size > 5 * 1024 * 1024) {
+    adminStore.notify(`حجم ملف السيرة الذاتية (${(file.size / (1024 * 1024)).toFixed(1)} ميغابايت) كبير جداً. الحد الأقصى المسموح به هو 5 ميغابايت لضمان سرعة التحميل.`, 'error')
+    if (resumeFileInput.value) resumeFileInput.value.value = ''
+    return
+  }
+
   uploadingResume.value = true
   try {
-    const res = await adminService.uploadMedia(file, `resume_${file.name}`)
-    const uploadedUrl = res?.file_url || res?.file
-    if (uploadedUrl) {
-      profile.value.resume = uploadedUrl
+    const base64Url = await readFileAsBase64(file)
+    if (base64Url) {
+      profile.value.resume = base64Url
       const payload = getCleanProfilePayload()
-      payload.resume = uploadedUrl
+      payload.resume = base64Url
       const updated = await adminService.updateProfile(payload)
       if (updated) {
         profile.value = { ...profile.value, ...updated }
       }
-      await portfolioStore.fetchPublicContent()
-      adminStore.notify('تم رفع وحفظ السيرة الذاتية بنجاح وتحديث الموقع!', 'success')
+      portfolioStore.developer.resume = base64Url
+      await portfolioStore.fetchPublicContent(true)
+      await refreshNuxtData('portfolio-public-content')
+      adminStore.notify('تم تحويل وحفظ السيرة الذاتية كبيانات دائمة في قاعدة البيانات وتحديث الموقع بنجاح!', 'success')
     }
   } catch (err) {
-    adminStore.notify(err.message || 'فشل رفع السيرة الذاتية', 'error')
+    adminStore.notify(err.message || 'فشل معالجة ورفع السيرة الذاتية', 'error')
   } finally {
     uploadingResume.value = false
     if (resumeFileInput.value) resumeFileInput.value.value = ''
@@ -944,21 +1037,19 @@ async function handleLogoUpload(e) {
 
   uploadingLogo.value = true
   try {
-    const res = await adminService.uploadMedia(file, `logo_${file.name}`)
-    const uploadedUrl = res?.file_url || res?.file
-    if (uploadedUrl) {
-      profile.value.logo = uploadedUrl
-      const updated = await adminService.updateProfile({ logo: uploadedUrl })
+    const base64Url = await compressImageToBase64(file, 300, 0.85)
+    if (base64Url) {
+      profile.value.logo = base64Url
+      const updated = await adminService.updateProfile({ logo: base64Url })
       if (updated) {
-        profile.value.logo = updated.logo || uploadedUrl
-        portfolioStore.developer.logo = updated.logo || uploadedUrl
+        profile.value.logo = updated.logo || base64Url
+        portfolioStore.developer.logo = updated.logo || base64Url
       } else {
-        portfolioStore.developer.logo = uploadedUrl
+        portfolioStore.developer.logo = base64Url
       }
-      // Immediately update logo in public store for instant navbar update
-      await portfolioStore.fetchPublicContent()
+      await portfolioStore.fetchPublicContent(true)
       await refreshNuxtData('portfolio-public-content')
-      adminStore.notify('تم رفع وحفظ شعار الموقع بنجاح وتحديث الموقع!', 'success')
+      adminStore.notify('تم حفظ وتحديث شعار الموقع بنجاح!', 'success')
     }
   } catch (err) {
     adminStore.notify(err.message || 'فشل رفع الشعار', 'error')

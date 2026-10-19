@@ -12,6 +12,7 @@
 </template>
 
 <script setup>
+import { computed, onMounted } from 'vue'
 import { usePortfolioStore } from '~/stores/portfolio'
 import { useSeoEngine } from '~/composables/useSeoEngine'
 import { useJsonLd } from '~/composables/useJsonLd'
@@ -22,48 +23,50 @@ import ProjectsSection from '~/components/public/ProjectsSection.vue'
 import TestimonialsSection from '~/components/public/TestimonialsSection.vue'
 import TimelineSection from '~/components/public/TimelineSection.vue'
 import BlogSection from '~/components/public/BlogSection.vue'
-import { onMounted } from 'vue'
 import ContactSection from '~/components/public/ContactSection.vue'
 
 const portfolioStore = usePortfolioStore()
 
-if (!portfolioStore.isInitialized) {
-  await useAsyncData('home-content', async () => {
-    await portfolioStore.fetchPublicContent()
-    return true
-  })
-}
+await useAsyncData('home-content', async () => {
+  if (!portfolioStore.hasContent) await portfolioStore.fetchPublicContent()
+  return true
+})
 
-const dev = portfolioStore.developer
-const settings = portfolioStore.settings
+// شبكة أمان: إذا فشل الـ SSR (السيرفر نائم) أعد المحاولة من المتصفح
+onMounted(() => {
+  if (!portfolioStore.hasContent) portfolioStore.fetchPublicContent(true)
+})
 
-const devName = dev?.name || dev?.full_name || 'الملف المهني الشخصي'
-const devTitle = dev?.title || dev?.role || 'خبير وممارس مهني'
+const dev = computed(() => portfolioStore.developer || {})
+const settings = computed(() => portfolioStore.settings || {})
+
+const devName = computed(() => dev.value?.name || dev.value?.full_name || 'الملف المهني الشخصي')
+const devTitle = computed(() => dev.value?.title || dev.value?.role || 'خبير وممارس مهني')
 
 // Professional Dynamic SEO setup
 const seo = useSeoEngine({
-  title: settings?.site_title || `${devName} | ${devTitle}`,
-  description: settings?.site_description || dev?.tagline || dev?.bio || `الموقع الرسمي والملف المهني لـ ${devName} - ${devTitle}.`,
-  image: settings?.og_image || dev?.avatar || '/avatar.jpg',
+  title: settings.value?.site_title || `${devName.value} | ${devTitle.value}`,
+  description: settings.value?.site_description || dev.value?.tagline || dev.value?.bio || `الموقع الرسمي والملف المهني لـ ${devName.value} - ${devTitle.value}.`,
+  image: settings.value?.og_image || dev.value?.avatar || '/avatar.jpg',
   slug: '',
   type: 'website',
-  devName: devName,
-  devTitle: devTitle,
-  keywords: settings?.meta_keywords,
-  author: settings?.site_author || devName,
-  geoPlacename: settings?.geo_placename,
-  googleVerification: settings?.google_site_verification
+  devName: devName.value,
+  devTitle: devTitle.value,
+  keywords: settings.value?.meta_keywords,
+  author: settings.value?.site_author || devName.value,
+  geoPlacename: settings.value?.geo_placename,
+  googleVerification: settings.value?.google_site_verification
 })
 
 // Structured JSON-LD Schema
 const { setPersonSchema, addSchema } = useJsonLd()
-setPersonSchema(dev, [], portfolioStore.services)
+setPersonSchema(portfolioStore.developer, [], portfolioStore.services)
 addSchema({
   '@context': 'https://schema.org',
   '@type': 'WebSite',
   '@id': `${seo.canonicalUrl}/#website`,
-  name: devName,
-  alternateName: `موقع ${devName} الشخصي | Portfolio`,
+  name: devName.value,
+  alternateName: `موقع ${devName.value} الشخصي | Portfolio`,
   url: seo.canonicalUrl,
   description: seo.pageDesc,
   inLanguage: ['ar', 'en'],

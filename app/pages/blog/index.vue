@@ -282,7 +282,7 @@ function formatDate(dateStr) {
   if (!dateStr) return 'مؤخراً'
   try {
     const d = new Date(dateStr)
-    return d.toLocaleDateString('ar-EG', { year: 'numeric', month: 'short', day: 'numeric' })
+    return d.toLocaleDateString('ar-EG', { year: 'numeric', month: 'short', day: 'numeric', timeZone: 'UTC' })
   } catch (e) {
     return dateStr
   }

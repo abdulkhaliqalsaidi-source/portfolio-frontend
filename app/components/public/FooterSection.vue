@@ -114,6 +114,10 @@ const cols = computed(() => {
 })
 
 function nav(href) {
+  if (href === '#resume' || (store.resumeUrl && href === store.resumeUrl)) {
+    store.downloadResume()
+    return
+  }
   if (href.startsWith('#')) {
     if (window.location.pathname !== '/') {
       window.location.href = '/' + href

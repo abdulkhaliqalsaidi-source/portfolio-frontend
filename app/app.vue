@@ -20,7 +20,9 @@ await useAsyncData('portfolio-public-content', async () => {
 }, { getCachedData: () => undefined })
 
 onMounted(() => {
-  portfolioStore.fetchPublicContent()
+  if (!portfolioStore.hasContent) {
+    portfolioStore.fetchPublicContent(true)
+  }
 
   // Clean up any stuck theme-ripple-overlay elements left from a previous session
   // This can happen if the browser was closed/navigated during a theme transition

@@ -73,18 +73,22 @@ export const usePortfolioStore = defineStore('portfolio', () => {
 
   function sanitizeMediaUrl(url: any): string {
     if (!url || typeof url !== 'string') return ''
+    const trimmed = url.trim()
+    if (trimmed.startsWith('data:')) {
+      return trimmed
+    }
     const isDev = process.env.NODE_ENV !== 'production'
     if (isDev) {
-      return url.replace(/^http:\/\/localhost:8000/i, 'http://127.0.0.1:8000')
+      return trimmed.replace(/^http:\/\/localhost:8000/i, 'http://127.0.0.1:8000')
     }
     if (typeof window !== 'undefined') {
       const host = window.location.hostname
       if (host === 'localhost' || host === '127.0.0.1') {
-        return url.replace(/^http:\/\/localhost:8000/i, 'http://127.0.0.1:8000')
+        return trimmed.replace(/^http:\/\/localhost:8000/i, 'http://127.0.0.1:8000')
       }
     }
-    return url.replace(/^http:\/\/localhost:8000/i, 'https://portfolio-backend-1kar.onrender.com')
-              .replace(/^http:\/\/127\.0\.0\.1:8000/i, 'https://portfolio-backend-1kar.onrender.com')
+    return trimmed.replace(/^http:\/\/localhost:8000/i, 'https://portfolio-backend-1kar.onrender.com')
+                  .replace(/^http:\/\/127\.0\.0\.1:8000/i, 'https://portfolio-backend-1kar.onrender.com')
   }
 
   function sanitizeLogo(logo: any): string {
@@ -92,7 +96,48 @@ export const usePortfolioStore = defineStore('portfolio', () => {
     const trimmed = logo.trim()
     if (!trimmed) return 'mdi-star-four-points'
     if (trimmed.startsWith('mdi-')) return trimmed
+    if (trimmed.startsWith('data:')) return trimmed
     return sanitizeMediaUrl(trimmed)
+  }
+
+  function downloadResume(customFileName?: string) {
+    const url = resumeUrl.value
+    if (!url) return
+    const fallbackName = `${developer.value.name || developer.value.full_name || 'Resume'}_CV.pdf`
+    const fileName = customFileName || fallbackName
+
+    if (url.startsWith('data:')) {
+      try {
+        const parts = url.split(',')
+        const mime = parts[0].match(/:(.*?);/)?.[1] || 'application/pdf'
+        const binaryStr = atob(parts[1])
+        const len = binaryStr.length
+        const bytes = new Uint8Array(len)
+        for (let i = 0; i < len; i++) {
+          bytes[i] = binaryStr.charCodeAt(i)
+        }
+        const blob = new Blob([bytes], { type: mime })
+        const blobUrl = URL.createObjectURL(blob)
+        const a = document.createElement('a')
+        a.href = blobUrl
+        a.download = fileName
+        document.body.appendChild(a)
+        a.click()
+        document.body.removeChild(a)
+        setTimeout(() => URL.revokeObjectURL(blobUrl), 2000)
+        return
+      } catch (err) {
+        console.error('Error downloading base64 resume:', err)
+      }
+    }
+
+    const a = document.createElement('a')
+    a.href = url
+    a.download = fileName
+    a.target = '_blank'
+    document.body.appendChild(a)
+    a.click()
+    document.body.removeChild(a)
   }
 
   function setPublicContent(data: any) {
@@ -205,7 +250,6 @@ export const usePortfolioStore = defineStore('portfolio', () => {
               } catch (fallbackErr) {}
             }
             error.value = err?.message || 'Could not fetch public content'
-            isInitialized.value = true
           }
         }
       }
@@ -299,5 +343,6 @@ export const usePortfolioStore = defineStore('portfolio', () => {
     recordPostView,
     likePost,
     submitContact,
+    downloadResume,
   }
 })
