@@ -144,11 +144,19 @@ export const usePortfolioStore = defineStore('portfolio', () => {
     if (!data) return
     if (data.profile || data.developer) {
       const prof = data.profile || data.developer
+      let cleanAvatar = prof.avatar || ''
+      if (cleanAvatar && (cleanAvatar.includes('11.png') || cleanAvatar.includes('127.0.0.1:8000'))) {
+        cleanAvatar = ''
+      }
+      let cleanResume = prof.resume || ''
+      if (cleanResume && cleanResume.includes('Abdulkhaliq_Alsaidi_CV.pdf')) {
+        cleanResume = ''
+      }
       developer.value = {
         ...prof,
         name: prof.full_name || prof.name || '',
-        avatar: sanitizeMediaUrl(prof.avatar),
-        resume: sanitizeMediaUrl(prof.resume),
+        avatar: sanitizeMediaUrl(cleanAvatar),
+        resume: sanitizeMediaUrl(cleanResume),
         logo: sanitizeLogo(prof.logo)
       }
     }

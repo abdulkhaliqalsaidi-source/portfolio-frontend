@@ -863,6 +863,12 @@ async function fetchProfile() {
   try {
     const data = await adminService.getProfile()
     if (data) {
+      if (data.avatar && (data.avatar.includes('11.png') || data.avatar.includes('127.0.0.1:8000'))) {
+        data.avatar = ''
+      }
+      if (data.resume && data.resume.includes('Abdulkhaliq_Alsaidi_CV.pdf')) {
+        data.resume = ''
+      }
       profile.value = { ...profile.value, ...data }
     }
   } catch (err) {
